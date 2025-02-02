@@ -8,7 +8,7 @@
   width: 100%; /* Ensure full width */
   height: 300px; /* Default height for mobile */
   min-height: 200px; /* Prevent collapse */
-  max-height: 550px;
+  max-height: 700px;
   border-radius: 10px !important;
   z-index: 1 !important;
   padding-bottom: 30px !important;
