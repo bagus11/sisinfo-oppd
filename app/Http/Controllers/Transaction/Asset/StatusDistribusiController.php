@@ -335,6 +335,7 @@ class StatusDistribusiController extends Controller
                   
                     foreach($item as $items){
                         $asset = Asset::where('asset_code', $items->asset_code)->first();
+                        $lokasiAsal = MasterSatgas::find($asset->lokasi);
                         $postAsset = [
                             'lokasi'        => $head->des_location,
                         ];
@@ -352,7 +353,7 @@ class StatusDistribusiController extends Controller
                             'pic'           =>$asset->pic,
                             'kondisi'       =>$asset->kondisi,
                             'lokasi'        =>$head->des_location,
-                            'remark'        =>auth()->user()->name .' telah memindahkan lokasi aset : '.$lokasiTujuan->name
+                            'remark'        =>auth()->user()->name .' telah memindahkan lokasi aset dari : '.$lokasiAsal->name.' ke '.$lokasiTujuan->name
                         ];
                         AssetLog::create($assetLog);
                         Asset::where('asset_code', $asset->asset_code)->update($postAsset);
