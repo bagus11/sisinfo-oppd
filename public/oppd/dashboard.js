@@ -382,7 +382,7 @@ function getRadialBar(response) {
 
     // iterate over each item in the array
     for (let i = 0; i < response.data.length; i++ ) {
-        sumOfArray += response.data[i];
+        sumOfArray += parseInt(response.data[i], 10);
     }
     const percentageData = response.data.map(value => ((value / sumOfArray) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
     console.log('total : ' + sumOfArray)
