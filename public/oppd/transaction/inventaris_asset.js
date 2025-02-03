@@ -56,7 +56,6 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
     $('#editAssetModal').modal('show');
     const data = table.row(this).data();
     var response = data.detail_relation;
-    console.log(response)
     $('#update_inventaris_code').val(response[0].inventaris_code)
     // Check if `response` contains data
     if (response && Array.isArray(response)) {
@@ -135,7 +134,6 @@ $('#detailTableAsset').on('click', '.btn-edit-row', function (e) {
     $('.general_asset').prop('hidden', false)
     const asset_code = $(this).data('asset_code');
     getCallbackNoSwal('getInventarisDetail', { 'asset_code' :asset_code, 'inventaris_code' : $('#update_inventaris_code').val() }, function (response) {
-        console.log(response)
         $('#update_label_asset_code').html(': ' + response.detail.asset_code)
         $('#update_label_no_un').html(': ' + response.detail.asset_relation.no_un)
         $('#update_label_no_rangka').html(': ' + response.detail.asset_relation.no_rangka)
@@ -263,7 +261,6 @@ $('#btn_add_asset').on('click', function(){
                         data: 'merk_relation', 
                         name: 'merk_relation.name', 
                         render: function (data) {
-                            console.log(data ? data.name : 'test again')
                             return data ? data.name : '-'; // Safely check for null/undefined
                         }
                     },
@@ -546,7 +543,6 @@ $('#btn_add_asset').on('click', function(){
         $('#btn_print_pdf').on('click', function(){
             var detail = $('#update_inventaris_code').val()
             var final = detail.replaceAll('/','_')
-            console.log(final)
             window.open(`printInventarisDetail/${final}`,'_blank');
         })
     // Export To PDF
