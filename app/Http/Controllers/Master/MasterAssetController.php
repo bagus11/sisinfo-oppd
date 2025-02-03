@@ -30,7 +30,7 @@ class MasterAssetController extends Controller
     
     function getMasterAsset(Request $request) {
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
-            $query = leftJoin::with([
+            $query = Asset::leftJoin([
                 'categoryRelation',
                 'subCategoryRelation',
                 'typeRelation',
@@ -42,7 +42,7 @@ class MasterAssetController extends Controller
             ->get();
         }else{
             $type = MasterSatgas::find(auth()->user()->satgas);
-            $query = leftJoin::with([
+            $query = Asset::leftJoin([
                 'categoryRelation',
                 'subCategoryRelation',
                 'typeRelation',
