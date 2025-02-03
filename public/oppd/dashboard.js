@@ -74,10 +74,10 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
             
                 // Fixed color mapping for each kondisi
                 const kondisiColors = {
-                    'BAIK': '#16C47F',       // Green
-                    'RR OPS': '#40A2E3',     // Blue
-                    'RB': '#E82561',         // Red
-                    'RR TDK OPS': '#500073', // Purple
+                    'BAIK': "var(--bs-success)",       // Green
+                    'RR OPS': "var(--bs-info)",     // Blue
+                    'RB': "var(--bs-danger)",         // Red
+                    'RR TDK OPS': "var(--bs-primary)", // Purple
                     'M': '#697565',          // Grey
                     'D': '#3C3D37'           // Dark Grey
                 };
@@ -394,7 +394,7 @@ function getRadialBar(response) {
         series: percentageData, // Use percentage data for radial bars
         chart: {
             type: "radialBar",
-            height: 400,
+            height: 600,
             fontFamily: "inherit",
             foreColor: "#c6d1e9",
         },
@@ -415,7 +415,7 @@ function getRadialBar(response) {
                 dataLabels: {
                     name: {
                         show: true,
-                        fontSize: '12px',
+                        fontSize: '20px',
                         color: '#333',
                         offsetY: -10,
                     },
@@ -432,9 +432,12 @@ function getRadialBar(response) {
                         show: true,
                         label: 'Total',
                         color: '#000',
-                        fontSize: '12px',
+                        style: {
+                            fontSize: '20px',  // Set font size to 20px
+                            fontWeight: 'bold', // Set font weight to bold
+                        },
                         formatter: function () {
-                            return sumOfArray
+                            return sumOfArray;
                         },
                     },
                 },
@@ -455,6 +458,23 @@ function getRadialBar(response) {
                     const count = response.data[opts.seriesIndex];
                     return `Total: ${count}`; // Show count value
                 },
+            },
+        },
+        legend: {
+            show: true,
+            position: "left", // Place legend on the left
+            floating: true, // Float the legend to the blank space
+            offsetX: 5, // Adjust position if needed
+            offsetY: 30, // Adjust vertical alignment
+            markers: {
+                width: 12,
+                height: 12,
+                radius: 2,
+            },
+            labels: {
+                colors: "#333",
+                fontWeight:'bold',
+                useSeriesColors: false, // Match legend colors with series
             },
         },
     };
