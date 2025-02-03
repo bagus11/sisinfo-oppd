@@ -386,7 +386,7 @@ function getRadialBar(response) {
         console.warn("No data available for radial chart.");
         return;
     }
-
+    console.log(response.data)
     const percentageData = response.data.map(value => ((value / sum) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
 
     const options = {
@@ -451,8 +451,8 @@ function getRadialBar(response) {
             y: {
                 formatter: function (val, opts) {
                     // Get original count value from the `response.data` array
-                    var allAsset = response.allAsset || 0; // Ensure allAsset is defined
-                    return `Total Asset: ${allAsset}`; // Show count value
+                    const count = response.data[opts.seriesIndex];
+                    return `Total: ${count}`; // Show count value
                 },
             },
         },
