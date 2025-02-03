@@ -210,24 +210,24 @@ $('#btn_add_asset').on('click', function(){
                         data: 'kondisi', 
                         name: 'kondisi',
                         render: function(data, type, row) {
+                            var kondisi  = ''
                             switch(data) {
                                 case 0:
-                                    return '-';
+                                    kondisi = '-';
                                 case 1:
-                                    return 'BAIK';
+                                    kondisi = 'BAIK';
                                 case 2:
-                                    return 'RR OPS';
+                                    kondisi = 'RR OPS';
                                 case 3:
-                                    return 'RB';
+                                    kondisi = 'RB';
                                 case 4:
-                                    return 'RR TDK OPS';
+                                    kondisi = 'RR TDK OPS';
                                 case 5:
-                                    return 'M';
+                                    kondisi = 'M';
                                 case 6:
-                                    return 'D';
-                                default:
-                                    return 'Unknown';
+                                    kondisi = 'D';
                             }
+                            return kondisi
                         }
                     },
                     { 
