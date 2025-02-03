@@ -167,6 +167,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                             data: 'merk_relation.name', 
                                             name: 'merk_relation.name', 
                                             render: function (data) {
+                                                console.log(data)
                                                 return data ? data : '-'; // Safely check for null/undefined
                                             }
                                         },
