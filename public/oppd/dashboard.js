@@ -128,14 +128,62 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                         data :{'type' : satgasType, kondisi : selectedKondisi}
                                     },
                                     columns: [
-                                        { data: 'satgas_relation.name', name: 'satgas_relation.name' },
-                                        { data: 'no_un', name: 'no_un' },
-                                        { data: 'category_relation.name', name: 'category_relation.name' },
-                                        { data: 'sub_category_relation.name', name: 'sub_category_relation.name' },
-                                        { data: 'type_relation.name', name: 'type_relation.name' },
-                                        { data: 'merk_relation.name', name: 'merk_relation.name' },
-                                        { data: 'no_mesin', name: 'no_mesin' },
-                                        { data: 'no_rangka', name: 'no_rangka' },
+                                        { 
+                                            data: 'satgas_relation', 
+                                            name: 'satgas_relation.name', 
+                                            render: function (data) {
+                                                return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                                            }
+                                        },
+                                        { 
+                                            data: 'no_un', 
+                                            name: 'no_un', 
+                                            render: function (data) {
+                                                return data ? data : '-'; // Return '-' if the value is null or undefined
+                                            }
+                                        },
+                                        { 
+                                            data: 'category_relation.name', 
+                                            name: 'category_relation.name', 
+                                            render: function (data) {
+                                                return data ? data : '-'; // Safely check for null/undefined
+                                            }
+                                        },
+                                        { 
+                                            data: 'sub_category_relation', // Check if sub_category_relation exists
+                                            name: 'sub_category_relation.name', 
+                                            render: function (data) {
+                                                return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                                            }
+                                        },
+                                        { 
+                                            data: 'type_relation.name', 
+                                            name: 'type_relation.name', 
+                                            render: function (data) {
+                                                return data ? data : '-'; // Safely check for null/undefined
+                                            }
+                                        },
+                                        { 
+                                            data: 'merk_relation.name', 
+                                            name: 'merk_relation.name', 
+                                            render: function (data) {
+                                                return data ? data : '-'; // Safely check for null/undefined
+                                            }
+                                        },
+                                        { 
+                                            data: 'no_mesin', 
+                                            name: 'no_mesin', 
+                                            render: function (data) {
+                                                return data ? data : '-'; // Safely check for null/undefined
+                                            }
+                                        },
+                                        { 
+                                            data: 'no_rangka', 
+                                            name: 'no_rangka',
+                                            render: function (data) {
+                                                return data ? data : '-'; // Safely check for null/undefined
+                                            }
+                                        },
                                         {
                                             data: 'kondisi',
                                             name: 'kondisi',

@@ -63,7 +63,7 @@ class AssetController extends Controller
                     $kondisi = 6;
                     break;
             }
-            $data = Asset::with([
+            $data = Asset::leftJoin([
                 'categoryRelation',
                 'subCategoryRelation',
                 'typeRelation',

@@ -59,7 +59,7 @@ class MasterAssetController extends Controller
                 'merkRelation',
                 'satgasRelation'
             ])
-            ->where(function ($q) use ($request) {
+            ->where(function ($q) use ($type) {
                 if (!empty($request->satgas_type)) {
                     $q->where('master_satgas.type', 'like', $type->type);
                 }
