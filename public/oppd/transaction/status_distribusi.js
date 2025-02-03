@@ -126,10 +126,10 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                 }
             },
             { 
-                data: 'asset_relation.category_relation.name', 
+                data: 'asset_relation.category_relation', 
                 name: 'asset_relation.category_relation.name', 
                 render: function (data) {
-                    return data ? data : '-'; // Safely check for null/undefined
+                    return data ? data.name : '-'; // Safely check for null/undefined
                 }
             },
             { 
@@ -140,17 +140,17 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                 }
             },
             { 
-                data: 'asset_relation.type_relation.name', 
+                data: 'asset_relation.type_relation', 
                 name: 'asset_relation.type_relation.name', 
                 render: function (data) {
-                    return data ? data : '-'; // Safely check for null/undefined
+                    return data ? data.name : '-'; // Safely check for null/undefined
                 }
             },
             { 
-                data: 'asset_relation.merk_relation.name', 
+                data: 'asset_relation.merk_relation', 
                 name: 'asset_relation.merk_relation.name', 
                 render: function (data) {
-                    return data ? data : '-'; // Safely check for null/undefined
+                    return data ? data.name : '-'; // Safely check for null/undefined
                 }
             },
             { 
@@ -468,12 +468,42 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                                 return kondisiMap[data] || 'Unknown';
                             }
                         },
-                        { data: 'satgas_relation.name', name: 'satgas_relation.name' },
+                        { 
+                            data: 'satgas_relation', 
+                            name: 'satgas_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
                         { data: 'no_un', name: 'no_un' },
-                        { data: 'category_relation.name', name: 'category_relation.name' },
-                        { data: 'sub_category_relation.name', name: 'sub_category_relation.name' },
-                        { data: 'type_relation.name', name: 'type_relation.name' },
-                        { data: 'merk_relation.name', name: 'merk_relation.name' },
+                        { 
+                            data: 'category_relation', 
+                            name: 'category_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
+                        { 
+                            data: 'sub_category_relation', 
+                            name: 'sub_category_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
+                        { 
+                            data: 'type_relation', 
+                            name: 'type_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
+                        { 
+                            data: 'merk_relation', 
+                            name: 'merk_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
                         { data: 'no_mesin', name: 'no_mesin' },
                         { data: 'no_rangka', name: 'no_rangka' }
                     ],

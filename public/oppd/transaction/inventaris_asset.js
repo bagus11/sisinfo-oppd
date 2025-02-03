@@ -209,9 +209,6 @@ $('#btn_add_asset').on('click', function(){
                         name: 'kondisi',
                         render: function(data, type, row) {
                             let kondisi = '-'; // Default value
-                        
-                            console.log("Kondisi Data:", data, "Type:", typeof data); // Debugging
-                        
                             switch (parseInt(data)) {  // Konversi data ke integer sekali di awal
                                 case 1:
                                     kondisi = 'BAIK';
