@@ -452,21 +452,35 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                                 return `<input type="checkbox" class="row-checkbox" value="${row.asset_code}">`;
                             }
                         },
-                        {
-                            data: 'kondisi',
+                        { 
+                            data: 'kondisi', 
                             name: 'kondisi',
-                            render: function (data) {
-                                const kondisiMap = {
-                                    0: '-',
-                                    1: 'BAIK',
-                                    2: 'RR OPS',
-                                    3: 'RB',
-                                    4: 'RR TDK OPS',
-                                    5: 'M',
-                                    6: 'D'
-                                };
-                                return kondisiMap[data] || 'Unknown';
+                            render: function(data, type, row) {
+                                let kondisi = '-'; // Default value
+                                switch (parseInt(data)) {  // Konversi data ke integer sekali di awal
+                                    case 1:
+                                        kondisi = 'BAIK';
+                                        break;
+                                    case 2:
+                                        kondisi = 'RR OPS';
+                                        break;
+                                    case 3:
+                                        kondisi = 'RB';
+                                        break;
+                                    case 4:
+                                        kondisi = 'RR TDK OPS';
+                                        break;
+                                    case 5:
+                                        kondisi = 'M';
+                                        break;
+                                    case 6:
+                                        kondisi = 'D';
+                                        break;
+                                }
+                            
+                                return kondisi;
                             }
+                            
                         },
                         { 
                             data: 'satgas_relation', 
@@ -500,7 +514,8 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                         { 
                             data: 'merk_relation', 
                             name: 'merk_relation.name', 
-                            render: function (data) {
+                            render: function(data, type, row) {
+                                console.log("Kondisi Data:", data, "Type:", typeof data); // Debugging
                                 return data ? data.name : '-';
                             }
                         },
