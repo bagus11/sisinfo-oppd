@@ -438,7 +438,7 @@ function getRadialBar(response) {
                         color: '#000',
                         fontSize: '12px',
                         formatter: function () {
-                            return sumOfArray; // Display total sum in the center
+                            return 'test'; // Display total sum in the center
                         },
                     },
                 },
