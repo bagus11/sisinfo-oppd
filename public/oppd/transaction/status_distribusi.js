@@ -19,7 +19,7 @@ const table = $('#status_distribusi_table').DataTable({
             data: 'status', 
             name: 'status',
             render: function(data, type, row) {
-                switch(data) {
+                switch(parseInt(data)) {
                     case 0: return '<span style="text-align:center;font-size:10px" class="mb-1 badge w-80 bg-dark-subtle" >Order And Preparation</span>';
                     case 1: return '<span style="text-align:center;font-size:10px" class="mb-1 badge w-80 bg-secondary" >Shipping & Tracking</span>';
                     case 2: return '<span style="text-align:center;font-size:10px" class="mb-1 badge w-80 bg-success" >Delivery Confirmation</span>';
@@ -356,7 +356,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                     data: 'status', 
                     name: 'status',
                     render: function(data, type, row) {
-                        switch(data) {
+                        switch(parseInt(data)) {
                             case 0: return '<span style="text-align:center;font-size:10px" class="mb-1 badge w-100 bg-dark-subtle" >Order And Preparation</span>';
                             case 1: return '<span style="text-align:center;font-size:10px" class="mb-1 badge w-100 bg-secondary" >Shipping & Tracking</span>';
                             case 2: return '<span style="text-align:center;font-size:10px" class="mb-1 badge w-100 bg-success" >Delivery Confirmation</span>';
@@ -767,7 +767,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
             // Loop through each item in the response and create table rows
             for(i = 0 ; i < response.length ; i++){
                 var status = '';
-                switch (response[i].status) {
+                switch (parseInt(response[i].status)) {
                     case 0: status= '<span style="text-align:center;font-size:10px" class="mb-1 badge w-80 bg-dark-subtle" >Order And Preparation</span>';break;
                     case 1: status= '<span style="text-align:center;font-size:10px" class="mb-1 badge w-80 bg-secondary" >Shipping & Tracking</span>';break;
                     case 2: status= '<span style="text-align:center;font-size:10px" class="mb-1 badge w-80 bg-success" >Delivery Confirmation</span>';break;
