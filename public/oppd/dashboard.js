@@ -316,6 +316,7 @@ const options = {
             formatter: function (val, opts) {
                 // Get original count value from the `response.data` array
                 const count = response.allAsset;
+                alert(count)
                 return `Total: ${count}`; // Show count value
             },
         },
