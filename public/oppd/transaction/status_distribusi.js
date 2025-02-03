@@ -515,10 +515,10 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                             data: 'merk_relation', 
                             name: 'merk_relation.name', 
                             render: function(data, type, row) {
-                                console.log("Kondisi Data:", data, "Type:", typeof data); // Debugging
-                                return data ? data.name : '-';
+                                console.log("Merk Data:", data); // Debugging
+                                return data && data.name ? data.name : '-'; // Cek apakah data dan data.name ada
                             }
-                        },
+                        },                        
                         { data: 'no_mesin', name: 'no_mesin' },
                         { data: 'no_rangka', name: 'no_rangka' }
                     ],
