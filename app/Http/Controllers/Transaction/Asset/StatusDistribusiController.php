@@ -308,6 +308,7 @@ class StatusDistribusiController extends Controller
             }
             
             $head = StatusDistribusi::where('distribution_code', $request->distribution_code)->first();
+            $lokasiTujuan = MasterSatgas::find($head->des_location);
             $posDetail = [
                 'distribution_code' =>$request->distribution_code,
                 'detail_distribution_code'=>$detail_ticket_code,
@@ -326,7 +327,7 @@ class StatusDistribusiController extends Controller
           
             
             // dd($postDistribution);
-            DB::transaction(function() use($request, $postDistribution,$posDetail,$head,$file,$fileName) {
+            DB::transaction(function() use($request, $postDistribution,$posDetail,$head,$file,$fileName,$lokasiTujuan) {
                 StatusDistribusi::where('distribution_code', $request->distribution_code)->update($postDistribution);
                 StatusDistribusiDetail::create($posDetail);
                 if($request->update_status == 2){
@@ -350,7 +351,8 @@ class StatusDistribusiController extends Controller
                             'user_id'       =>auth()->user()->id,
                             'pic'           =>$asset->pic,
                             'kondisi'       =>$asset->kondisi,
-                            'lokasi'        =>$head->des_location
+                            'lokasi'        =>$head->des_location,
+                            'remark'        =>auth()->user()->name .' telah memindahkan lokasi aset : '.$lokasiTujuan->name
                         ];
                         AssetLog::create($assetLog);
                         Asset::where('asset_code', $asset->asset_code)->update($postAsset);
