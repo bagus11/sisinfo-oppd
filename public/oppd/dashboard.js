@@ -342,7 +342,6 @@ chart.render();
 
     // Add markers to the map
     const bounds = [];
-    console.log(response.country)
     response.country.forEach(country => {
         const bounds = [];
         response.country.forEach(country => {
@@ -557,4 +556,3 @@ $('.pengajuan_filter').on('click', function(){
         ]
     });
 })
-console.log('test')
