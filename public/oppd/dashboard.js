@@ -385,7 +385,8 @@ function getRadialBar(response) {
         sumOfArray += response.data[i];
     }
     const percentageData = response.data.map(value => ((value / sumOfArray) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
-    console.log(sumOfArray)
+    console.log('total : ' + sumOfArray)
+    console.log(response.data)
     const options = {
         series: percentageData, // Use percentage data for radial bars
         chart: {
