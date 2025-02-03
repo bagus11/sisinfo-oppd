@@ -26,7 +26,8 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
         'bg-secondary'
     ];
     
-    
+    getRadialBar(response)
+
         for (let i = 0; i < response.countingSatgasAsset.length; i++) {
             let satgas = response.countingSatgasAsset[i];
     
@@ -52,10 +53,8 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                     </div>
                 </div>`;
         }
-    
         // Hapus konten lama sebelum menambahkan elemen baru
         $('#satgas_type_container').append(containerSatgas);
-    
         // Panggil fungsi untuk mendapatkan dan menampilkan pie chart
         for (let i = 0; i < response.countingSatgasAsset.length; i++) {
             getPieSatgas(i, response.countingSatgasAsset[i].type); // Kirim index dan type
@@ -246,89 +245,14 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
             });
             
         }
+
+        // Horizontal Bar
+            getHorizontalBar(response)
+            verticalBarChart(response)
+        // Horizontal Bar
         
 // Calculate total and percentages
 
-const sum = Array.isArray(response.data) ? response.data.reduce((a, b) => a + b, 0) : 0;
-
-const percentageData = response.data.map(value => ((value / sum) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
-const options = {
-    series: percentageData, // Use percentage data for radial bars
-    chart: {
-        type: "radialBar",
-        height: 400,
-        fontFamily: "inherit",
-        foreColor: "#c6d1e9",
-    },
-    labels: response.type,
-    plotOptions: {
-        radialBar: {
-            inverseOrder: false,
-                startAngle: 0,
-                endAngle: 270,
-                hollow: {
-                    margin: 1,
-                    size: "40%",
-                },
-            track: {
-                background: '#e7e7e7', // Track background color
-                strokeWidth: '100%', // Track thickness
-            },
-            dataLabels: {
-                name: {
-                    show: true,
-                    fontSize: '12px',
-                    color: '#333',
-                    offsetY: -10,
-                },
-                value: {
-                    show: true,
-                    fontSize: '14px',
-                    color: '#111',
-                    offsetY: 5,
-                    formatter: function (val) {
-                        return `${val}%`; // Display percentage for radial bars
-                    },
-                },
-                total: {
-                    show: true,
-                    label: 'Total',
-                    color: '#000',
-                    fontSize: '12px',
-                    formatter: function (w) {
-                        return sum; // Display total sum in the center
-                    },
-                },
-            },
-          
-        },
-    },
-    stroke: { width: 10, lineCap: "round" },
-    colors: ["var(--bs-primary)","var(--bs-secondary)","var(--bs-danger)","var(--bs-success)"], // Custom colors
-    tooltip: {
-        enabled: true, // Enable tooltips
-        theme: "dark", // Use dark theme (white font by default)
-        style: {
-            fontSize: '12px', // Adjust font size
-            color: '#fff', // Force white font color
-        },
-        y: {
-            formatter: function (val, opts) {
-                // Get original count value from the `response.data` array
-                var allAsset = response.allAsset;
-                return `Total Asset: ${allAsset}`; // Show count value
-            },
-        },
-    },
-};
-
-const chart = new ApexCharts(document.querySelector("#radialChart"), options);
-chart.render();
-
-
-
-    
-    
     // Initialize the map
     const map = L.map('asset_map_track').setView([1.5074, 10.1278], 3);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -363,117 +287,9 @@ chart.render();
           }
         });
     });
-   
-    // Fit map to bounds if markers exist
-    // if (bounds.length > 0) {
-    //     map.fitBounds(bounds);
-    // }
-    // $('#country_list').empty()
-    // var countryList = ''
-    // for(i = 0; i < response.country.length ; i++){
-    //     countryList +=`
-    //         <div class="col-7">
-    //            <label> ${response.country[i].country} </label>
-    //         </div>
-    //         <div class="col-5">
-    //                <label> : ${response.country[i].total} <label>
-    //         </div>
-    //     `
-    // }
-    // // console.log(response.country[i])
-    // $('#country_list').html(countryList)
 
 });
 
-
-$('#select_asset_type').on('change', function(){
-    var type =  $('#select_asset_type').val()
-    var data = {
-        'type'  :type
-    }
-    getCallbackNoSwal('assetChartFilter',data, function(response){
-        $(document).ready(function () {
-            $('#asset_chart').empty(); // Clear the container if needed
-            const labels = response.data.map(item => item.kondisi_label); // Extract labels
-            const seriesData = response.data.map(item => item.total); // Extract numerical data
-            const predefinedColors = ['#1E90FF', '#FFD700', '#FF6347', '#32CD32']; // Define colors for each bar
-            const options = {
-                chart: {
-                    type: 'bar', // Bar chart type
-                    height: 350
-                },
-                series: [
-                    {
-                        name: type == '' ? 'OPPD': type,
-                        data: seriesData // Array of numbers
-                    }
-                ],
-                xaxis: {
-                    categories: labels // Labels for the x-axis
-                },
-                plotOptions: {
-                    bar: {
-                        distributed: true, // Enables different colors for each bar
-                    }
-                },
-                colors: predefinedColors, // Array of colors
-                title: {
-                    text: type == '' ? 'OPPD': type,
-                    align: 'center'
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            };
-    
-            const chart = new ApexCharts(document.querySelector("#asset_chart"), options);
-            chart.render();
-            $('#asset_group_condition').empty()
-          
-           
-        });
-    })
-})
-getCallbackNoSwal('assetChart', null, function(response){
-    $(document).ready(function () {
-        $('#asset_chart').empty(); // Clear the container if needed
-        const labels = response.data.map(item => item.kondisi_label); // Extract labels
-        const seriesData = response.data.map(item => item.total); // Extract numerical data
-        const predefinedColors = ['#1E90FF', '#FFD700', '#FF6347', '#32CD32']; // Define colors for each bar
-        const options = {
-            chart: {
-                type: 'bar', // Bar chart type
-                height: 350
-            },
-            series: [
-                {
-                    name: 'OPPD',
-                    data: seriesData // Array of numbers
-                }
-            ],
-            xaxis: {
-                categories: labels // Labels for the x-axis
-            },
-            plotOptions: {
-                bar: {
-                    distributed: true, // Enables different colors for each bar
-                }
-            },
-            colors: predefinedColors, // Array of colors
-            title: {
-                text: 'OPPD',
-                align: 'center'
-            },
-            legend: {
-                position: 'bottom'
-            }
-        };
-
-        const chart = new ApexCharts(document.querySelector("#asset_chart"), options);
-        chart.render();
-        $('#asset_group_condition').empty() 
-    });
-})
 $('#pengajuan_asset_table').DataTable().clear().destroy();
 $('#pengajuan_asset_table').DataTable({
     scrollY:200,
@@ -559,3 +375,89 @@ $('.pengajuan_filter').on('click', function(){
         ]
     });
 })
+
+
+function getRadialBar(response) {
+    // Check if response data exists and is an array
+    const sum = Array.isArray(response.data) ? response.data.reduce((a, b) => a + b, 0) : 0;
+
+    // If sum is 0, handle the case gracefully (e.g., display 'No data')
+    if (sum === 0) {
+        console.warn("No data available for radial chart.");
+        return;
+    }
+
+    const percentageData = response.data.map(value => ((value / sum) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
+
+    const options = {
+        series: percentageData, // Use percentage data for radial bars
+        chart: {
+            type: "radialBar",
+            height: 400,
+            fontFamily: "inherit",
+            foreColor: "#c6d1e9",
+        },
+        labels: response.type || [], // Ensure 'response.type' is an array
+        plotOptions: {
+            radialBar: {
+                inverseOrder: false,
+                startAngle: 0,
+                endAngle: 270,
+                hollow: {
+                    margin: 1,
+                    size: "40%",
+                },
+                track: {
+                    background: '#e7e7e7', // Track background color
+                    strokeWidth: '100%', // Track thickness
+                },
+                dataLabels: {
+                    name: {
+                        show: true,
+                        fontSize: '12px',
+                        color: '#333',
+                        offsetY: -10,
+                    },
+                    value: {
+                        show: true,
+                        fontSize: '14px',
+                        color: '#111',
+                        offsetY: 5,
+                        formatter: function (val) {
+                            return `${val}%`; // Display percentage for radial bars
+                        },
+                    },
+                    total: {
+                        show: true,
+                        label: 'Total',
+                        color: '#000',
+                        fontSize: '12px',
+                        formatter: function () {
+                            return sum; // Display total sum in the center
+                        },
+                    },
+                },
+            },
+        },
+        stroke: { width: 10, lineCap: "round" },
+        colors: ["var(--bs-primary)", "var(--bs-secondary)", "var(--bs-danger)", "var(--bs-success)"], // Custom colors
+        tooltip: {
+            enabled: true, // Enable tooltips
+            theme: "dark", // Use dark theme (white font by default)
+            style: {
+                fontSize: '12px', // Adjust font size
+                color: '#fff', // Force white font color
+            },
+            y: {
+                formatter: function (val, opts) {
+                    // Get original count value from the `response.data` array
+                    var allAsset = response.allAsset || 0; // Ensure allAsset is defined
+                    return `Total Asset: ${allAsset}`; // Show count value
+                },
+            },
+        },
+    };
+
+    const chart = new ApexCharts(document.querySelector("#radialChart"), options);
+    chart.render();
+}

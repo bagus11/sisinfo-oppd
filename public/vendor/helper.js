@@ -428,3 +428,129 @@ function convertDate(inputDate) {
 
     return formattedDate;
 }
+
+
+function getHorizontalBar(response) {
+    if (response.summaryChartCategory && response.summaryChartCategory.length > 0) {
+        $('#horizontalBarChart').empty();
+        
+        let chartData = response.summaryChartCategory;
+
+        // Get unique categories and satgas names
+        let categories = [...new Set(chartData.map(item => item.category_name))];
+        let satgasNames = [...new Set(chartData.map(item => item.satgas_type))];
+
+        if (categories.length === 0 || satgasNames.length === 0) {
+            console.warn("No valid data found for categories or satgas.");
+            return;
+        }
+
+        let series = satgasNames.map(satgas => {
+            return {
+                name: satgas,
+                data: categories.map(cat => {
+                    let found = chartData.find(d => d.category_name === cat && d.satgas_type === satgas);
+                    return found ? found.total : 0;
+                }),
+            };
+        });
+
+        let optionBarChart = {
+            chart: {
+                fontFamily: "Poppins",
+                type: "bar",
+                height: 400,  // Overall height of the chart
+                stacked: true, // Ensure bars are stacked
+                toolbar: {
+                    show: false,
+                },
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,  // Horizontal bars
+                    borderRadius: 0,  // Ensure there is no border-radius for bars
+                    barHeight: '50%', // Bar height is 100% of available space (use full height of the chart)
+                    dataLabels: {
+                        enabled: true,  // Enable data labels inside bars
+                        style: {
+                            fontSize: '5px',  // Font size for values inside bars
+                            fontWeight: 'bold', // Font weight (optional)
+                            colors: '#fff',    // Font color
+                        },
+                    }
+                },
+                
+            },
+            grid: {
+                borderColor: "transparent",
+            },
+            colors: [
+                "var(--bs-primary)",
+                "var(--bs-secondary)",
+                "#ffae1f",
+                "#fa896b",
+                "#39b69a",
+            ],
+            stroke: {
+                width: 0,  // Remove any border around the bars
+                colors: ["#fff"],
+            },
+            series: series, // Dynamic series based on satgasNames
+            xaxis: {
+                categories: categories, // Categories on x-axis
+                labels: {
+                    formatter: function (val) {
+                        return val; // Format label in x-axis
+                    },
+                    style: {
+                        colors: "#a1aab2", // Label color on x-axis
+                        fontSize: 9,
+                    },
+                },
+            },
+            yaxis: {
+                title: {
+                    text: undefined,
+                },
+                labels: {
+                    style: {
+                        colors: "#a1aab2", // Label color on y-axis
+                        fontSize: 9,
+                    },
+                },
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return val; // Format tooltip
+                    },
+                },
+                theme: "dark",
+            },
+            fill: {
+                opacity: 1, // Keep bars fully opaque
+            },
+            legend: {
+                position: "top",
+                horizontalAlign: "left",
+                offsetX: 10,
+                labels: {
+                    colors: ["#a1aab2"], // Style legend text
+                },
+            },
+            title: {
+                text: "Jumlah Aset per Kategori dan Satgas", // Chart title
+                align: "center",
+                style: {
+                    color: "#a1aab2", // Styling title
+                },
+            },
+        };
+
+        // Initialize and render the chart
+        let barChart = new ApexCharts(document.querySelector("#horizontalBarChart"), optionBarChart);
+        barChart.render();
+    } else {
+        console.warn("Tidak ada data untuk chart.");
+    }
+}

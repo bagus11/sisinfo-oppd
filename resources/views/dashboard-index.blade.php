@@ -232,80 +232,69 @@
         <div class="row overflow-auto flex-nowrap" id="satgas_type_container" style="white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch;">
       </div>
     </div>
-    
- 
-      <!-- ----------------------------------------- -->
-      <!-- Revenue Forecast -->
-      <!-- ----------------------------------------- -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-body">
-            <div class="row mb-4">
-              <div class="col-8">
-                <h5 class="card-title">Kondisi Aset</h5>
-              </div>
-              <div class="col-4">
-                <select name="select_asset_type" class="select2" id="select_asset_type"></select>
-              </div>
-            </div>
-            <div style="height: 405px;" class="me-n2 rounded-bars mb-4">
-              <div id="asset_chart"></div>
-            </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body p-0 mx-1">
+          <div id="horizontalBarChart"></div>  
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body p-0 mx-1">
+          <div id="verticalBarChart"></div>  
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Pengajuan Aset</h5>
+          <ul class="nav nav-tabs theme-tab gap-3 flex-nowrap" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link pengajuan_filter active" data-pengajuan="1" data-bs-toggle="tab" href="#app" role="tab">
+                <div class="hstack gap-2">
+                  <iconify-icon icon="solar:widget-linear" class="fs-4"></iconify-icon>
+                  <span>Pengajuan Perbaikan</span>
+                </div>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link pengajuan_filter" data-pengajuan="2" data-bs-toggle="tab" href="#mobile" role="tab">
+                <div class="hstack gap-2">
+                  <iconify-icon icon="solar:smartphone-line-duotone" class="fs-4"></iconify-icon>
+                  <span>Pengajuan Penggantian</span>
+                </div>
+              </a>
+            </li>
+          </ul>
+         <div class="row mt-2">
+          <div class="col-12">
+            <div class="table-responsive" style="overflow-y: hidden">
             
+              <table id="pengajuan_asset_table" class="table table-striped table-bordered text-nowrap">
+                  <thead class="text-dark fs-1">
+                      <tr>
+                          <th>Satgas</th>
+                          <th>No UN</th>
+                          <th>Kategori</th>
+                          <th>Sub Kategori</th>
+                          <th>No Mesin</th>
+                          <th>No Rangka</th>
+                          <th>Status</th>
+                      </tr>
+                  </thead>
+              </table>
+            
+        </div>
           </div>
+         </div>
         </div>
       </div>
-      <!-- ----------------------------------------- -->
-      <!-- Annual Profit -->
-      <!-- ----------------------------------------- -->
-      <div class="col-lg-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title mb-4">Pengajuan Aset</h5>
-            <ul class="nav nav-tabs theme-tab gap-3 flex-nowrap" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link pengajuan_filter active" data-pengajuan="1" data-bs-toggle="tab" href="#app" role="tab">
-                  <div class="hstack gap-2">
-                    <iconify-icon icon="solar:widget-linear" class="fs-4"></iconify-icon>
-                    <span>Pengajuan Perbaikan</span>
-                  </div>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link pengajuan_filter" data-pengajuan="2" data-bs-toggle="tab" href="#mobile" role="tab">
-                  <div class="hstack gap-2">
-                    <iconify-icon icon="solar:smartphone-line-duotone" class="fs-4"></iconify-icon>
-                    <span>Pengajuan Penggantian</span>
-                  </div>
-                </a>
-              </li>
-            </ul>
-           <div class="row mt-2">
-            <div class="col-12">
-              <div class="table-responsive" style="overflow-y: hidden">
-              
-                <table id="pengajuan_asset_table" class="table table-striped table-bordered text-nowrap">
-                    <thead class="text-dark fs-1">
-                        <tr>
-                            <th>Satgas</th>
-                            <th>No UN</th>
-                            <th>Kategori</th>
-                            <th>Sub Kategori</th>
-                            <th>No Mesin</th>
-                            <th>No Rangka</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                </table>
-              
-          </div>
-            </div>
-           </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-5">
-
     </div>
   </div>
 </div>
@@ -316,6 +305,105 @@
 @push('js')
     <script src="{{ asset('oppd/dashboard.js') }}"></script>
     <script>
-     
+      function verticalBarChart(response){
+        var summaryChartSatgas = response.summaryChartSatgas;
+        // Prepare the data for the chart
+    var satgasNames = summaryChartSatgas.map(function(item) {
+        return item.satgas_name;  // Get satgas names
+    });
+
+    var totalCounts = summaryChartSatgas.map(function(item) {
+        return item.total;  // Get total count of assets for each satgas
+    });
+
+    // Dynamically generate colors for each satgas_name (you can customize the colors as needed)
+    var colors = [
+        "#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33A6", // You can add more colors as per your requirement
+        "#FF8C00", "#A52A2A", "#6A5ACD", "#20B2AA", "#D2691E"
+    ];
+
+    // Make sure the number of colors matches the number of satgas names
+    if (colors.length < satgasNames.length) {
+        // In case there are more satgas names than colors, repeat the colors
+        while (colors.length < satgasNames.length) {
+            colors.push(colors[colors.length % colors.length]);
+        }
+    }
+
+    // Chart options
+    var options = {
+        chart: {
+            type: 'bar',  // Set the chart type to vertical bar
+            height: 350,
+            toolbar: {
+                show: false
+            },
+        },
+        plotOptions: {
+            bar: {
+                columnWidth: '50%',  // Width of the bars
+                endingShape: 'flat',  // Ensure bars end flat
+                dataLabels: {
+                    position: 'top',  // Position the data labels at the top of the bars
+                },
+            },
+        },
+        grid: {
+            borderColor: 'transparent',  // Remove grid borders
+        },
+        colors: colors,  // Assign dynamic colors based on satgas_name
+        series: [{
+            name: 'Total Aset',
+            data: totalCounts  // Use the total counts as the data for the bars
+        }],
+        xaxis: {
+            categories: satgasNames,  // Use satgas names as x-axis labels
+            labels: {
+                style: {
+                    colors: '#a1aab2',  // Label color for x-axis
+                    fontSize: '12px',
+                }
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Jumlah Aset',
+            },
+            labels: {
+                style: {
+                    colors: '#a1aab2',  // Label color for y-axis
+                    fontSize: '12px',
+                }
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(val) {
+                    return "Total Aset: " + val;  // Show the total in tooltip
+                }
+            },
+            theme: "dark",
+        },
+        title: {
+            text: 'Jumlah Aset per Satgas',  // Chart title
+            align: 'center',
+            style: {
+                color: '#a1aab2',
+            },
+        },
+        dataLabels: {
+            enabled: true,  // Enable data labels
+            style: {
+                colors: ['#000'],  // Set the color of the data labels to black
+                fontSize: '9px',   // Adjust font size for the labels
+            },
+            offsetY: -20,  // Adjust the vertical offset to move the labels up (negative value places labels above the bars)
+        }
+    };
+
+    // Create the chart
+    var chart = new ApexCharts(document.querySelector("#verticalBarChart"), options);
+    chart.render();
+      }
     </script>
 @endpush

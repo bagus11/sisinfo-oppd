@@ -73,7 +73,22 @@ class HomeController extends Controller
             ->whereNot('a.type', 'OPPD')
             ->select(DB::raw('COUNT(b.id) AS total'))
             ->first(); // Gunakan first() agar hanya mengambil satu nilai total
-        
+
+            $summaryChartCategory =  DB::table('assets as a')
+                                        ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                                        ->join('inventory_categories as c', 'a.kategori', '=', 'c.id')
+                                        ->select(DB::raw('COUNT(a.id) AS total'), 'b.type as satgas_type', 'c.name as category_name')
+                                        ->groupBy('b.type', 'c.name')
+                                        ->orderBy('b.type', 'asc')
+                                        ->orderBy('c.name', 'asc')
+                                        ->get();
+
+            $summaryChartSatgas =  DB::table('assets as a')
+                                        ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                                        ->select(DB::raw('COUNT(a.id) AS total'), 'b.name as satgas_name')
+                                        ->groupBy('b.name')
+                                        ->orderBy('b.name', 'asc')
+                                        ->get();
         return response()->json([
             'oppd' => $oppd,
             'countOppd' => $countOppd,
@@ -83,6 +98,8 @@ class HomeController extends Controller
             'allAsset' => $allAsset,
             'country' => $country,
             'countingSatgasAsset' => $countingSatgasAsset,
+            'summaryChartCategory' => $summaryChartCategory,
+            'summaryChartSatgas' => $summaryChartSatgas,
         ]);
     }
     
