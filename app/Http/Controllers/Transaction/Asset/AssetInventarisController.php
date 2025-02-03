@@ -225,7 +225,7 @@ class AssetInventarisController extends Controller
                         'D' => 6,
                         default => 0,
                     };
-    
+                    dd($status);
                     // Prepare attachment path
                     $attachmentPath = null;
                     if (array_key_exists($key, $files) && $status != 1) {
