@@ -30,28 +30,44 @@ class MasterAssetController extends Controller
     
     function getMasterAsset(Request $request) {
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
-            $query = Asset::leftJoin([
+            $query = Asset::query()
+            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->with([
                 'categoryRelation',
                 'subCategoryRelation',
                 'typeRelation',
                 'merkRelation',
-                'satgasRelation',
-            ])->whereHas('satgasRelation', function ($q) use ($request) {
-                $q->where('type', 'like', '%' .$request->satgas_type. '%');
-            })->where('kondisi', 'like', '%' .$request->kondisi. '%')
+                'satgasRelation'
+            ])
+            ->where(function ($q) use ($request) {
+                if (!empty($request->satgas_type)) {
+                    $q->where('master_satgas.type', 'like', '%' . $request->satgas_type . '%');
+                }
+            })
+            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
+            ->select('assets.*')
             ->get();
+        
         }else{
             $type = MasterSatgas::find(auth()->user()->satgas);
-            $query = Asset::leftJoin([
+            $query = Asset::query()
+            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->with([
                 'categoryRelation',
                 'subCategoryRelation',
                 'typeRelation',
                 'merkRelation',
-                'satgasRelation',
-            ])->whereHas('satgasRelation', function ($q) use ($type) {
-                $q->where('type', $type->type);
-            })->where('kondisi', 'like', '%' .$request->kondisi. '%')
+                'satgasRelation'
+            ])
+            ->where(function ($q) use ($request) {
+                if (!empty($request->satgas_type)) {
+                    $q->where('master_satgas.type', 'like', $type->type);
+                }
+            })
+            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
+            ->select('assets.*')
             ->get();
+        
 
         }
         if ($request->ajax()) {
