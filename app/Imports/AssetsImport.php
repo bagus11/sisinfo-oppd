@@ -27,55 +27,54 @@ class AssetsImport implements ToModel, WithStartRow
         $date_month = strtotime(date('Y-m-d'));
         $month = idate('m', $date_month);
         $year = idate('y', $date_month);
-        $month_convert =  NumConvert::roman($month);
-        // dd($increment_code);
-        if($increment_code ==null){
-            $ticket_code = '1/ASSET/'.$month_convert.'/'.$year;
-        }else{
-            $month_before = explode('/',$increment_code->asset_code);
-           
-            if($month_convert != $month_before[2]){
-                $ticket_code = '1/ASSET/'.$month_convert.'/'.$year;
-            }else{
-                $ticket_code = $month_before[0] + 1 .'/ASSET/'.$month_convert.'/'.$year;
-            }   
+        $month_convert = NumConvert::roman($month);
+    
+        if ($increment_code == null) {
+            $ticket_code = '1/ASSET/' . $month_convert . '/' . $year;
+        } else {
+            $month_before = explode('/', $increment_code->asset_code);
+            if ($month_convert != $month_before[2]) {
+                $ticket_code = '1/ASSET/' . $month_convert . '/' . $year;
+            } else {
+                $ticket_code = ($month_before[0] + 1) . '/ASSET/' . $month_convert . '/' . $year;
+            }
         }
-
+    
         // Transform Excel serialized date and append the time
         $created_at = $this->transformDate($row[0], date('H:i:s'));
-
+    
+        // Cek apakah data ditemukan sebelum mengakses properti id
         $kategori = InventoryCategory::where('name', $row[4])->first();
         $subkategori = InventorySubCategory::where('name', $row[5])->first();
         $jenis = Inventory_type::where('name', $row[6])->first();
         $merk = InventoryBrand::where('name', $row[7])->first();
         $lokasi = MasterSatgas::where('name', $row[8])->first();
-        $lokasiType = MasterSatgas::where('type', $row[8])->first();
-        
+        $lokasiType = MasterSatgas::where('type', $row[8])->first();    
         AssetLog::create([
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
-            'no_un'         => $row[1] == null ? '' : $row[1],
-            'no_rangka'     => $row[2] == null ? '' : $row[2],
-            'no_mesin'      => $row[3] == null ? '' : $row[3],
+            'no_un'         => $row[1] ?? '',
+            'no_rangka'     => $row[2] ?? '',
+            'no_mesin'      => $row[3] ?? '',
             'kategori'      => $kategori->id ?? 0,
-            'subkategori'   => $subkategori ? $subkategori->id : 0, // Ensure null if not found
+            'subkategori'   => $subkategori->id ?? 0,
             'jenis'         => $jenis->id ?? 0,
             'merk'          => $merk->id ?? 0,
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
             'kondisi'       => 1,
-            'lokasi'        => $lokasi->id ?? $lokasiType->id,
-            'remark'        => auth()->user()->name. ' telah menambahkan asset'
+            'lokasi'        => $lokasi->id ?? ($lokasiType->id ?? 0), // Jika lokasi tidak ada, cek lokasiType
+            'remark'        => auth()->user()->name . ' telah menambahkan asset'
         ]);
-
+    
         return new Asset([
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
-            'no_un'         => $row[1] == null ? '' : $row[1],
-            'no_rangka'     => $row[2] == null ? '' : $row[2],
-            'no_mesin'      => $row[3] == null ? '' : $row[3],
+            'no_un'         => $row[1] ?? '',
+            'no_rangka'     => $row[2] ?? '',
+            'no_mesin'      => $row[3] ?? '',
             'kategori'      => $kategori->id ?? 0,
-            'subkategori'   => $subkategori ? $subkategori->id : 0, // Ensure null if not found
+            'subkategori'   => $subkategori->id ?? 0,
             'jenis'         => $jenis->id ?? 0,
             'merk'          => $merk->id ?? 0,
             'user_id'       => auth()->user()->id ?? 0,
@@ -84,6 +83,7 @@ class AssetsImport implements ToModel, WithStartRow
             'lokasi'        => $lokasi->id ?? 0,
         ]);
     }
+    
 
     /**
      * Transform Excel serialized date into Y-m-d format with timezone adjustment and append time.
