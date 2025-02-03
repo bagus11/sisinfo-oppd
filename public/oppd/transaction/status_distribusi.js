@@ -516,7 +516,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                             name: 'merk_relation.name', 
                             render: function(data, type, row) {
                                 console.log("Merk Data:", data); // Debugging
-                                return data && data.name ? data.name : '-'; // Cek apakah data dan data.name ada
+                                return data !== null ? data.name : '-'; // Cek apakah data dan data.name ada
                             }
                         },                        
                         { data: 'no_mesin', name: 'no_mesin' },
