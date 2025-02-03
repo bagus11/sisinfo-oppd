@@ -49,8 +49,8 @@ class AssetsImport implements ToModel, WithStartRow
         $jenis = Inventory_type::where('name', $row[6])->first();
         $merk = InventoryBrand::where('name', $row[7])->first();
         $lokasi = MasterSatgas::where('name', $row[8])->first();
-        $lokasiType = MasterSatgas::where('type', $row[8]);
-
+        $lokasiType = MasterSatgas::where('type', $row[8])->first();
+        
         AssetLog::create([
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
