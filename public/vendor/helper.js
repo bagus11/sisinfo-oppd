@@ -486,9 +486,9 @@ function getHorizontalBar(response) {
             },
             colors: [
                 "var(--bs-primary)",
-                "var(--bs-secondary)",
+                "var(--bs-danger)",
                 "#ffae1f",
-                "#fa896b",
+                "#499F85",
                 "#39b69a",
             ],
             stroke: {
@@ -531,7 +531,7 @@ function getHorizontalBar(response) {
                 opacity: 1, // Keep bars fully opaque
             },
             legend: {
-                position: "top",
+                position: "bottom",
                 horizontalAlign: "left",
                 offsetX: 10,
                 labels: {
@@ -539,7 +539,7 @@ function getHorizontalBar(response) {
                 },
             },
             title: {
-                text: "Jumlah Aset per Kategori dan Satgas", // Chart title
+                text: "", // Chart title
                 align: "center",
                 style: {
                     color: "#a1aab2", // Styling title

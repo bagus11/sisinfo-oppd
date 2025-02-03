@@ -8,7 +8,7 @@
   width: 100%; /* Ensure full width */
   height: 300px; /* Default height for mobile */
   min-height: 200px; /* Prevent collapse */
-  max-height: 700px;
+  max-height: 570px;
   border-radius: 10px !important;
   z-index: 1 !important;
   padding-bottom: 30px !important;
@@ -71,24 +71,27 @@
       }
 
       .header-info {
-        background-color: #B2D2DD;
+        background-color: #7298AD;
         color: white;
         font-weight: bold;
         text-align: center;
       }
 
 </style>
-    <div class="row">
+    <div class="row mb-0">
       <div class="col-12">
         <div class="card">
-          <div class="card-body p-4 bg-opacity-8 rounded-top">
+          <div class="card-body pb-0 px-4 py-2  bg-opacity-8 rounded-top">
+            
             <div class="d-md-flex align-items-center justify-content-between mb-3">
               <div>
-                <h5 class="card-title">Summary Asset</h5>
-                <p class="card-subtitle mb-0">Summary Asset OPPD</p>
+                <span class="badge badge-primary w-15 mx-1" style="background-color:#7298AD;color:white;border-radius:5px !important;font-size:16px !important; font-weight:bold;">ASSET INFOGRAFIS</span>
+                {{-- <h5 class="card-title">ASSET INFOGRAFIS</h5> --}}
+                {{-- <p class="card-subtitle mb-0">Summary Asset OPPD</p> --}}
               </div>
             </div>
-            <div class="row">
+
+            <div class="row mb-0">
               <div class="col-12 col-sm-12 col-md-9">
                 <div id="asset_map_track"></div>
               </div>
@@ -103,11 +106,11 @@
                                       <strong style="font-size:14px;"><i class="fa-solid fa-bullhorn"></i></strong>
                                   </div>
                                   <div class="col-8">
-                                    <strong style="font-size:14px;font-weight:bold;text-algin:left">Hot News</strong>
+                                    <strong style="font-size:16;font-weight:bold;text-algin:left">HOT NEWS</strong>
                                   </div>
                               </div>
                           </div>
-                          <div class="card-body rounded-2 p-0 bg-opacity-10" style="overflow-y: auto; height: 200px;">
+                          <div class="card-body rounded-2 p-0 bg-opacity-10" style="overflow-y: auto; height: 150px;">
                             <a href="javascript:void(0)" class="d-flex align-items-center dropdown-item gap-2 py-1">
                                 <span class="flex-shrink-0 bg-danger-subtle rounded-circle d-flex align-items-center justify-content-center p-1"
                                     style="width: 30px; height: 30px; font-size: 14px;margin-left:10px">
@@ -206,7 +209,7 @@
                                       <strong style="font-size:14px;"><i class="fas fa-list"></i></strong>
                                   </div>
                                   <div class="col-8">
-                                      <strong style="font-size:14px;font-weight:bold">Summary OPPD</strong>
+                                      <strong style="font-size:16px;font-weight:bold">SUMMARY OPPD</strong>
                                   </div>
                               </div>
                           </div>
@@ -215,20 +218,13 @@
                           </div>
                       </div>
                   </div>
-                 
-                  </div>
               </div>
-
             </div>
+
           </div>
         </div>
       </div>
       <div class="col-12">
-        {{-- <div class="card">
-            <div class="card-body p-4 pb-0">
-              
-            </div>
-        </div> --}}
         <div class="row overflow-auto flex-nowrap" id="satgas_type_container" style="white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch;">
       </div>
     </div>
@@ -236,6 +232,9 @@
   <div class="row mt-2">
     <div class="col-lg-6">
       <div class="card">
+        <div class="card-header header-info py-1">
+          <strong style="font-size:14px;font-weight:bold;text-algin:left">SUMMARY ASSET BY CATEGORY</strong>
+        </div>
         <div class="card-body p-0 mx-1">
           <div id="horizontalBarChart"></div>  
         </div>
@@ -243,6 +242,9 @@
     </div>
     <div class="col-lg-6">
       <div class="card">
+        <div class="card-header header-info py-1">
+          <strong style="font-size:14px;font-weight:bold;text-algin:left">SUMMARY ASSET BY SATGAS</strong>
+        </div>
         <div class="card-body p-0 mx-1">
           <div id="verticalBarChart"></div>  
         </div>
@@ -318,7 +320,7 @@
 
     // Dynamically generate colors for each satgas_name (you can customize the colors as needed)
     var colors = [
-        "#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33A6", // You can add more colors as per your requirement
+        "#4BA4B1", "#33FF57", "#3357FF", "#F3FF33", "#FF33A6", // You can add more colors as per your requirement
         "#FF8C00", "#A52A2A", "#6A5ACD", "#20B2AA", "#D2691E"
     ];
 
@@ -385,7 +387,8 @@
             theme: "dark",
         },
         title: {
-            text: 'Jumlah Aset per Satgas',  // Chart title
+            enable: false,
+            text: '',  // Chart title
             align: 'center',
             style: {
                 color: '#a1aab2',

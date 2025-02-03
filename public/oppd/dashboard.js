@@ -1,4 +1,3 @@
-alert('testing dashboard')
 getCallbackNoSwal('getCountingAsset', null, function(response) {
    
     $('#select_asset_type').empty();
@@ -44,7 +43,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                     <strong style="font-size:14px;"><i class="fas fa-list"></i> </strong>
                                 </div>
                                 <div class="col-8">
-                                    <strong style="font-size:14px;font-weight:bold">${satgas.type}</strong>
+                                    <strong style="font-size:16px;font-weight:bold">${satgas.type}</strong>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +100,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                         height: 280,
                         toolbar: { show: false },
                         dropShadow: {
-                            enabled: true,
+                            enabled: false,
                             top: 5,
                             left: 0,
                             blur: 5,
@@ -218,7 +217,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                             colors: ['#fff']
                         },
                         dropShadow: {
-                            enabled: true,
+                            enabled: false,
                             top: 1,
                             left: 1,
                             blur: 2,
@@ -226,7 +225,12 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                         }
                     },
                     tooltip: {
-                        enabled: true,
+                        enabled: true, // Enable tooltips
+                        theme: "light", // Use dark theme (white font by default)
+                        style: {
+                            fontSize: '12px', // Adjust font size
+                            color: '#fff', // Force white font color
+                        },
                         y: {
                             formatter: function(value) {
                                 return value + " Assets";
@@ -386,8 +390,6 @@ function getRadialBar(response) {
         sumOfArray += parseInt(response.data[i], 10);
     }
     const percentageData = response.data.map(value => ((value / sumOfArray) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
-    console.log('total : ' + sumOfArray)
-    console.log(response.data)
     const options = {
         series: percentageData, // Use percentage data for radial bars
         chart: {
@@ -404,7 +406,7 @@ function getRadialBar(response) {
                 endAngle: 270,
                 hollow: {
                     margin: 1,
-                    size: "40%",
+                    size: "20%",
                 },
                 track: {
                     background: '#e7e7e7', // Track background color
@@ -442,7 +444,7 @@ function getRadialBar(response) {
         colors: ["var(--bs-primary)", "var(--bs-secondary)", "var(--bs-danger)", "var(--bs-success)"], // Custom colors
         tooltip: {
             enabled: true, // Enable tooltips
-            theme: "dark", // Use dark theme (white font by default)
+            theme: "light", // Use dark theme (white font by default)
             style: {
                 fontSize: '12px', // Adjust font size
                 color: '#fff', // Force white font color
