@@ -284,6 +284,7 @@ class AssetInventarisController extends Controller
                         'pic' => auth()->user()->id,
                         'kondisi' => $status,
                         'lokasi' => $satgas,
+                        'remark' => auth()->user()->name . 'telah update kondisi aset',
                     ]);
                 }
             });
