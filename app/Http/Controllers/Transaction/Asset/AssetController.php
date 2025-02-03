@@ -42,44 +42,34 @@ class AssetController extends Controller
     public function getAssetFilter(Request $request)
     {
         if ($request->ajax()) {
-            $kondisi = 0;
-            switch ($request->kondisi) {
-                case "BAIK":
-                    $kondisi = 1;
-                    break;
-                case 'RR OPS':
-                    $kondisi = 2;
-                    break;
-                case 'RB':
-                    $kondisi = 3;
-                    break;
-                case 'RR TDK OPS':
-                    $kondisi = 4;
-                    break;
-                case 'M':
-                    $kondisi = 5;
-                    break;
-                case 'D':
-                    $kondisi = 6;
-                    break;
-            }
-            $data = Asset::leftJoin([
-                'categoryRelation',
-                'subCategoryRelation',
-                'typeRelation',
-                'merkRelation',
-                'satgasRelation',
-            ])
-            ->whereHas('satgasRelation', function ($query) use ($request) {
-                $query->where('type', $request->type);
-            })->where('kondisi', $kondisi)
-            ->get();
+            // Convert kondisi to its corresponding integer value
+            $kondisi = match ($request->kondisi) {
+                "BAIK" => 1,
+                "RR OPS" => 2,
+                "RB" => 3,
+                "RR TDK OPS" => 4,
+                "M" => 5,
+                "D" => 6,
+                default => 0,
+            };
+    
+            // Fetch assets with relationships
+            $data = Asset::leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+            ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
+            ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
+            ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
+            ->where('master_satgas.type', 'like', '%' . $request->type . '%')
+            ->where('assets.kondisi', $kondisi)
+            ->select('assets.*') // Make sure to select the necessary fields
+            ->get();        
     
             return DataTables::of($data)->make(true);
         }
     
         return abort(403, 'Unauthorized action.');
     }
+    
     function getMasterSatgas() {
         $data = MasterSatgas::all();
         return response()->json([
