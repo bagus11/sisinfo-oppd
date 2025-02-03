@@ -206,20 +206,27 @@ $('#btn_add_asset').on('click', function(){
                             return `<input type="checkbox" class="row-checkbox" value="${row.asset_code}">`;
                         }
                     },
-                    {
-                        data: 'kondisi',
+                    { 
+                        data: 'kondisi', 
                         name: 'kondisi',
-                        render: function (data) {
-                            console.log(data);
-                            switch (data) {
-                                case 0: return '-';
-                                case 1: return 'BAIK';
-                                case 2: return 'RR OPS';
-                                case 3: return 'RB';
-                                case 4: return 'RR TDK OPS';
-                                case 5: return 'M';
-                                case 6: return 'D';
-                                default: return 'Unknown';
+                        render: function(data, type, row) {
+                            switch(data) {
+                                case 0:
+                                    return '-';
+                                case 1:
+                                    return 'BAIK';
+                                case 2:
+                                    return 'RR OPS';
+                                case 3:
+                                    return 'RB';
+                                case 4:
+                                    return 'RR TDK OPS';
+                                case 5:
+                                    return 'M';
+                                case 6:
+                                    return 'D';
+                                default:
+                                    return 'Unknown';
                             }
                         }
                     },
