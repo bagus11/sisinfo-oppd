@@ -69,7 +69,8 @@ class AssetsImport implements ToModel, WithStartRow
             'kondisi'       => 1,
             'lokasi'        => $lokasi_id,
         ];
-        if ($lokasi_id == 0) {
+        if ($lokasi == null && $lokasiType == null) {
+            
             Log::warning("Asset dengan lokasi kosong: " . $ticket_code. " , Lokasi : " . json_encode($lokasi). " : Type ". json_encode($lokasiType));
         }
         

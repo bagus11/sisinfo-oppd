@@ -255,8 +255,10 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
         
 // Calculate total and percentages
 
-const total = response.data.reduce((a, b) => a + b, 0); // Sum of original data
-const percentageData = response.data.map(value => ((value / total) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
+const sum = Array.isArray(response.data) ? response.data.reduce((a, b) => a + b, 0) : 0;
+console.log(sum);
+
+const percentageData = response.data.map(value => ((value / sum) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
 const options = {
     series: percentageData, // Use percentage data for radial bars
     chart: {
@@ -301,7 +303,7 @@ const options = {
                     color: '#000',
                     fontSize: '12px',
                     formatter: function (w) {
-                        return total; // Display total sum in the center
+                        return sum; // Display total sum in the center
                     },
                 },
             },

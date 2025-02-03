@@ -348,7 +348,7 @@ class MasterAssetController extends Controller
             $assetsWithNoLocation = Asset::where('lokasi', 0)->get(['asset_code', 'no_un', 'no_rangka', 'no_mesin']);
     
             return response()->json([
-                'success' => true,
+                'success' => true,  
                 'message' => 'Assets imported successfully!',
                 'assets_no_location' => $assetsWithNoLocation, // Tampilkan asset tanpa lokasi
             ]);
