@@ -210,6 +210,7 @@ $('#btn_add_asset').on('click', function(){
                         data: 'kondisi',
                         name: 'kondisi',
                         render: function (data) {
+                            console.log(data);
                             switch (data) {
                                 case 0: return '-';
                                 case 1: return 'BAIK';
@@ -222,12 +223,43 @@ $('#btn_add_asset').on('click', function(){
                             }
                         }
                     },
-                    { data: 'satgas_relation.name', name: 'satgas_relation.name' }, // Pastikan akses yang benar
+                    { 
+                        data: 'satgas_relation', 
+                        name: 'satgas_relation.name', 
+                        render: function (data) {
+                            return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                        }
+                    },
                     { data: 'no_un', name: 'no_un' },
-                    { data: 'category_relation.name', name: 'category_relation.name' },
-                    { data: 'sub_category_relation.name', name: 'sub_category_relation.name' },
-                    { data: 'type_relation.name', name: 'type_relation.name' },
-                    { data: 'merk_relation.name', name: 'merk_relation.name' },
+                    { 
+                        data: 'category_relation', 
+                        name: 'category_relation.name', 
+                        render: function (data) {
+                            return data ? data.name : '-'; // Safely check for null/undefined
+                        }
+                    },
+                    { 
+                        data: 'sub_category_relation', // Check if sub_category_relation exists
+                        name: 'sub_category_relation.name', 
+                        render: function (data) {
+                            return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                        }
+                    },
+                    { 
+                        data: 'type_relation', 
+                        name: 'type_relation.name', 
+                        render: function (data) {
+                            return data ? data.name : '-'; // Safely check for null/undefined
+                        }
+                    },
+                    { 
+                        data: 'merk_relation', 
+                        name: 'merk_relation.name', 
+                        render: function (data) {
+                            console.log(data ? data.name : 'test again')
+                            return data ? data.name : '-'; // Safely check for null/undefined
+                        }
+                    },
                     { data: 'no_mesin', name: 'no_mesin' },
                     { data: 'no_rangka', name: 'no_rangka' },
                 ]
