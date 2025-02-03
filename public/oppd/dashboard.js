@@ -386,7 +386,12 @@ function getRadialBar(response) {
         console.warn("No data available for radial chart.");
         return;
     }
-    console.log(response.data)
+    let sumOfArray = 0;
+
+    // iterate over each item in the array
+    for (let i = 0; i < response.data.length; i++ ) {
+        sumOfArray += response.data[i];
+    }
     const percentageData = response.data.map(value => ((value / sum) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
 
     const options = {
@@ -433,7 +438,7 @@ function getRadialBar(response) {
                         color: '#000',
                         fontSize: '12px',
                         formatter: function () {
-                            return sum; // Display total sum in the center
+                            return sumOfArray; // Display total sum in the center
                         },
                     },
                 },
