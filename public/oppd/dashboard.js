@@ -143,7 +143,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                             }
                                         },
                                         { 
-                                            data: 'category_relation.name', 
+                                            data: 'category_relation', 
                                             name: 'category_relation.name', 
                                             render: function (data) {
                                                 return data ? data : '-'; // Safely check for null/undefined
@@ -157,14 +157,14 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                             }
                                         },
                                         { 
-                                            data: 'type_relation.name', 
+                                            data: 'type_relation', 
                                             name: 'type_relation.name', 
                                             render: function (data) {
                                                 return data ? data : '-'; // Safely check for null/undefined
                                             }
                                         },
                                         { 
-                                            data: 'merk_relation.name', 
+                                            data: 'merk_relation', 
                                             name: 'merk_relation.name', 
                                             render: function (data) {
                                                 console.log(data)
