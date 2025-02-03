@@ -216,16 +216,17 @@ class AssetInventarisController extends Controller
                 // dd($request->data);
                 foreach ($assets as $key => $asset) {
                     // Determine asset condition status
-                    $status = match ($asset['kondisi']) {
-                        'BAIK' => 1,
-                        'RR OPS' => 2,
-                        'RB' => 3,
-                        'RR TDK OPS' => 4,
-                        'M' => 5,
-                        'D' => 6,
-                        default => 0,
-                    };
-                    dd((int)$asset['kondisi']);
+                    $status = (int)$asset['kondisi'];
+                    // {
+                    //     'BAIK' => 1,
+                    //     'RR OPS' => 2,
+                    //     'RB' => 3,
+                    //     'RR TDK OPS' => 4,
+                    //     'M' => 5,
+                    //     'D' => 6,
+                    //     default => 0,
+                    // };
+                    // dd((int)$asset['kondisi']);
                     // Prepare attachment path
                     $attachmentPath = null;
                     if (array_key_exists($key, $files) && $status != 1) {
