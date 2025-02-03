@@ -53,11 +53,8 @@ class AssetsImport implements ToModel, WithStartRow
         $lokasiType = MasterSatgas::where('type', $row[8])->first();
         $lokasi_id = $lokasi->id ?? ($lokasiType->id ?? 0);
     
-        if ($lokasi_id == 0) {
-            Log::warning("Asset dengan lokasi kosong: " . json_encode($row));
-        }
-    
-        return new Asset([
+       
+        $post = [
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
             'no_un'         => $row[1] ?? '',
@@ -71,7 +68,11 @@ class AssetsImport implements ToModel, WithStartRow
             'pic'           => 0,
             'kondisi'       => 1,
             'lokasi'        => $lokasi_id,
-        ]);
+        ];
+        if ($lokasi_id == 0) {
+            Log::warning("Asset dengan lokasi kosong: " . json_encode($row));
+        }
+        return new Asset($post);
     
         return new Asset([
             'asset_code'    => $ticket_code,
