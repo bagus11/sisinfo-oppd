@@ -208,31 +208,37 @@ $('#btn_add_asset').on('click', function(){
                         data: 'kondisi', 
                         name: 'kondisi',
                         render: function(data, type, row) {
-                            var kondisi  = ''
-                            switch(data) {
-                                case 0:
-                                    kondisi = '-';
+                            let kondisi = '-'; // Default value
+                            
+                            switch (data) {
                                 case 1:
                                     kondisi = 'BAIK';
+                                    break;
                                 case 2:
                                     kondisi = 'RR OPS';
+                                    break;
                                 case 3:
                                     kondisi = 'RB';
+                                    break;
                                 case 4:
                                     kondisi = 'RR TDK OPS';
+                                    break;
                                 case 5:
                                     kondisi = 'M';
+                                    break;
                                 case 6:
                                     kondisi = 'D';
+                                    break;
                             }
-                            return kondisi
+                            
+                            return kondisi;
                         }
                     },
                     { 
                         data: 'satgas_relation', 
                         name: 'satgas_relation.name', 
                         render: function (data) {
-                            return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                            return data && data.name ? data.name : '-';
                         }
                     },
                     { data: 'no_un', name: 'no_un' },
@@ -240,34 +246,35 @@ $('#btn_add_asset').on('click', function(){
                         data: 'category_relation', 
                         name: 'category_relation.name', 
                         render: function (data) {
-                            return data ? data.name : '-'; // Safely check for null/undefined
+                            return data ? data.name : '-';
                         }
                     },
                     { 
-                        data: 'sub_category_relation', // Check if sub_category_relation exists
+                        data: 'sub_category_relation', 
                         name: 'sub_category_relation.name', 
                         render: function (data) {
-                            return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                            return data && data.name ? data.name : '-';
                         }
                     },
                     { 
                         data: 'type_relation', 
                         name: 'type_relation.name', 
                         render: function (data) {
-                            return data ? data.name : '-'; // Safely check for null/undefined
+                            return data ? data.name : '-';
                         }
                     },
                     { 
                         data: 'merk_relation', 
                         name: 'merk_relation.name', 
                         render: function (data) {
-                            return data ? data.name : '-'; // Safely check for null/undefined
+                            return data ? data.name : '-';
                         }
                     },
                     { data: 'no_mesin', name: 'no_mesin' },
                     { data: 'no_rangka', name: 'no_rangka' },
                 ]
             });
+            
             
             const selectedAssetCodes = new Set();
             $(document).on('change', '#check-all', function () {
@@ -364,22 +371,22 @@ $('#btn_add_asset').on('click', function(){
             
                     let kodisi = $('#select_kondisi').val();
                     switch (kodisi) {
-                        case '1':
+                        case 1:
                             kodisi = 'BAIK';
                             break;
-                        case '2':
+                        case 2:
                             kodisi = 'RR OPS';
                             break;
-                        case '3':
+                        case 3:
                             kodisi = 'RB';
                             break;
-                        case '4':
+                        case 4:
                             kodisi = 'RR TDK OPS';
                             break;
-                        case '5':
+                        case 5:
                             kodisi = 'M';
                             break;
-                        case '6':
+                        case 6:
                             kodisi = 'D';
                             break;
                     }
