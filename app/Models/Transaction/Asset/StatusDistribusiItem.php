@@ -14,5 +14,8 @@ class StatusDistribusiItem extends Model
     function assetRelation(){
         return $this->hasOne(Asset::class, 'asset_code', 'asset_code');
     }
+    function headRelation() {
+        return $this->belongsTo(StatusDistribusi::class,'distribution_code','distribution_code');
+    }
     
 }

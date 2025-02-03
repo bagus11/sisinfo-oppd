@@ -92,9 +92,15 @@ class StatusDistribusiController extends Controller
             'typeRelation',
             'merkRelation',
             'satgasRelation',
+            'distribusiRelation',
+            'distribusiRelation.headRelation',
         ])
-        // ->where('lokasi', auth()->user()->satgas)
+        ->whereDoesntHave('distribusiRelation.headRelation', function ($query) {
+            $query->whereIn('status', [0, 1]); // Hanya ambil status 1 & 2
+        })
         ->get();
+    
+        // ->where('lokasi', auth()->user()->satgas)
         if ($request->ajax()) {
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {

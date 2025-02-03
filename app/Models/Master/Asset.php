@@ -8,6 +8,7 @@ use App\Models\Setting\InventorySubCategory;
 use App\Models\Setting\MasterSatgas;
 use App\Models\Transaction\Asset\Inventaris;
 use App\Models\Transaction\Asset\InventarisDetail;
+use App\Models\Transaction\Asset\StatusDistribusiItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -38,5 +39,8 @@ class Asset extends Model
     }
     function detailInventarisRelation() {
         return $this->hasOne(InventarisDetail::class,'asset_code','asset_code');
+    }
+    function distribusiRelation() {
+        return $this->hasOne(StatusDistribusiItem::class,'asset_code', 'asset_code');
     }
 }
