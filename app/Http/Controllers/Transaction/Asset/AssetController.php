@@ -54,18 +54,23 @@ class AssetController extends Controller
             };
     
             // Fetch assets with relationships
-            $data = Asset::with([
-                    'categoryRelation',
-                    'subCategoryRelation',
-                    'typeRelation',
-                    'merkRelation',
-                    'satgasRelation',
-                ])
-                ->whereHas('satgasRelation', function ($query) use ($request) {
-                    $query->where('type', 'like', '%' . $request->type . '%');
-                })
-                ->where('kondisi', $kondisi)
-                ->get();
+            $data = Asset::query()
+                    ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                    ->with([
+                        'categoryRelation',
+                        'subCategoryRelation',
+                        'typeRelation',
+                        'merkRelation',
+                        'satgasRelation'
+                    ])
+                    ->where(function ($q) use ($request) {
+                        if (!empty($request->type)) {
+                            $q->where('master_satgas.type', $request->type);
+                        }
+                    })
+                    ->where('assets.kondisi', 'like', '%' . $kondisi . '%')
+                    ->select('assets.*')
+                    ->get();
     
             return DataTables::of($data)->make(true);
         }
