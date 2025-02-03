@@ -164,7 +164,7 @@ class HomeController extends Controller
     function getSatgasPie(Request $request) {
         
         $data = DB::table('assets as a')
-        ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+        ->leftJoin('master_satgas as b', 'a.lokasi', '=', 'b.id')
         ->select(DB::raw('COUNT(a.id) as total'),'kondisi')
         ->where('b.type',$request->type)
         ->groupBy('a.kondisi')
