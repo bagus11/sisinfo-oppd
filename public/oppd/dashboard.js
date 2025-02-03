@@ -1,11 +1,5 @@
 getCallbackNoSwal('getCountingAsset', null, function(response) {
-    // Populate asset counts
-    $('#counting_unifil').html(response.unifil[0]?.total || '0');
-    $('#counting_kizi_minusca').html(response.minusca[0]?.total || '0');
-    $('#counting_kizi_monusco').html(response.monusca[0]?.total || '0');
-    $('#counting_bgc_monusco').html(response.bgc_monusca[0]?.total || '0');
-
-    // Populate asset type dropdown
+   
     $('#select_asset_type').empty();
     $('#select_asset_type').append('<option value="">OPPD</option>');
     response.group.forEach(group => {
@@ -256,7 +250,6 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
 // Calculate total and percentages
 
 const sum = Array.isArray(response.data) ? response.data.reduce((a, b) => a + b, 0) : 0;
-console.log(sum);
 
 const percentageData = response.data.map(value => ((value / sum) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
 const options = {
@@ -322,7 +315,7 @@ const options = {
         y: {
             formatter: function (val, opts) {
                 // Get original count value from the `response.data` array
-                const count = response.data[opts.seriesIndex];
+                const count = response.allAsset;
                 return `Total: ${count}`; // Show count value
             },
         },

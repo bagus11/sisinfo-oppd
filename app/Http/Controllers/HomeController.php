@@ -37,34 +37,6 @@ class HomeController extends Controller
         $data = $countOppd->pluck('total');    // Extract 'total' values
         $satgas_type = $countOppd->pluck('type');    // Extract 'total' values
     
-        $unifil = DB::table('assets as a')
-            ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
-            ->select(DB::raw('COUNT(a.id) as total, b.type'))
-            ->where('b.type', 'UNIFIL')
-            ->groupBy('b.type')
-            ->get();
-    
-        $minusca = DB::table('assets as a')
-            ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
-            ->select(DB::raw('COUNT(a.id) as total, b.type'))
-            ->where('b.type', 'KIZI MINUSCA')
-            ->groupBy('b.type')
-            ->get();
-    
-        $monusca = DB::table('assets as a')
-            ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
-            ->select(DB::raw('COUNT(a.id) as total, b.type'))
-            ->where('b.type', 'KIZI MONUSCO')
-            ->groupBy('b.type')
-            ->get();
-    
-        $bgc_monusca = DB::table('assets as a')
-            ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
-            ->select(DB::raw('COUNT(a.id) as total, b.type'))
-            ->where('b.type', 'BGC MONUSCO')
-            ->groupBy('b.type')
-            ->get();
-    
         $group = MasterSatgas::select('type', DB::raw('COUNT(*) as total'))
             ->groupBy('type')
             ->orderBy('id', 'asc')
@@ -96,17 +68,19 @@ class HomeController extends Controller
             // }
      
         
-    
+            $allAsset = DB::table('master_satgas as a')
+            ->leftJoin('assets as b', 'a.id', '=', 'b.lokasi')
+            ->whereNot('a.type', 'OPPD')
+            ->select(DB::raw('COUNT(b.id) AS total'))
+            ->first(); // Gunakan first() agar hanya mengambil satu nilai total
+        
         return response()->json([
             'oppd' => $oppd,
             'countOppd' => $countOppd,
             'data' => $data,       // Add data for the radial chart
             'type' => $satgas_type,       // Add data for the radial chart
-            'unifil' => $unifil,
-            'minusca' => $minusca,
-            'monusca' => $monusca,
             'group' => $group,
-            'bgc_monusca' => $bgc_monusca,
+            'allAsset' => $allAsset,
             'country' => $country,
             'countingSatgasAsset' => $countingSatgasAsset,
         ]);
