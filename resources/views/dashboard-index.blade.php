@@ -316,13 +316,6 @@
 @push('js')
     <script src="{{ asset('oppd/dashboard.js') }}"></script>
     <script>
-      window.addEventListener("resize", function () {
-        setTimeout(() => {
-          if (map) {
-            map.invalidateSize(); // Leaflet
-            google.maps.event.trigger(map, "resize"); // Google Maps
-          }
-        }, 300);
-      });
+     
     </script>
 @endpush
