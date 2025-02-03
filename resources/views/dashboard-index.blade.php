@@ -334,7 +334,7 @@
     var options = {
         chart: {
             type: 'bar',  // Set the chart type to vertical bar
-            height: 350,
+            height: 400,
             toolbar: {
                 show: false
             },
