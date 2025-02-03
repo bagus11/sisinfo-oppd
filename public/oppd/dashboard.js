@@ -378,14 +378,6 @@ $('.pengajuan_filter').on('click', function(){
 
 
 function getRadialBar(response) {
-    // Check if response data exists and is an array
-    const sum = Array.isArray(response.data) ? response.data.reduce((a, b) => a + b, 0) : 0;
-
-    // If sum is 0, handle the case gracefully (e.g., display 'No data')
-    if (sum === 0) {
-        console.warn("No data available for radial chart.");
-        return;
-    }
     let sumOfArray = 0;
 
     // iterate over each item in the array
@@ -438,7 +430,7 @@ function getRadialBar(response) {
                         color: '#000',
                         fontSize: '12px',
                         formatter: function () {
-                            return 'test'; // Display total sum in the center
+                            return sumOfArray
                         },
                     },
                 },
