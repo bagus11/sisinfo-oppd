@@ -49,6 +49,7 @@ class AssetsImport implements ToModel, WithStartRow
         $jenis = Inventory_type::where('name', $row[6])->first();
         $merk = InventoryBrand::where('name', $row[7])->first();
         $lokasi = MasterSatgas::where('name', $row[8])->first();
+        $lokasiType = MasterSatgas::where('type', $row[8]);
 
         AssetLog::create([
             'asset_code'    => $ticket_code,
@@ -63,8 +64,8 @@ class AssetsImport implements ToModel, WithStartRow
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
             'kondisi'       => 1,
-            'lokasi'        => $lokasi->id ?? 0,
-              'remark'        => auth()->user()->name. ' telah menambahkan asset'
+            'lokasi'        => $lokasi->id ?? $lokasiType->id,
+            'remark'        => auth()->user()->name. ' telah menambahkan asset'
         ]);
 
         return new Asset([
