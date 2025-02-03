@@ -209,30 +209,33 @@ $('#btn_add_asset').on('click', function(){
                         name: 'kondisi',
                         render: function(data, type, row) {
                             let kondisi = '-'; // Default value
-                            console.log(data)
-                            switch (data) {
-                                case parseInt(1):
+                        
+                            console.log("Kondisi Data:", data, "Type:", typeof data); // Debugging
+                        
+                            switch (parseInt(data)) {  // Konversi data ke integer sekali di awal
+                                case 1:
                                     kondisi = 'BAIK';
                                     break;
-                                case parseInt(2):
+                                case 2:
                                     kondisi = 'RR OPS';
                                     break;
-                                case parseInt(3):
+                                case 3:
                                     kondisi = 'RB';
                                     break;
-                                case parseInt(4):
+                                case 4:
                                     kondisi = 'RR TDK OPS';
                                     break;
-                                case parseInt(5):
+                                case 5:
                                     kondisi = 'M';
                                     break;
-                                case parseInt(6):
+                                case 6:
                                     kondisi = 'D';
                                     break;
                             }
-                            
+                        
                             return kondisi;
                         }
+                        
                     },
                     { 
                         data: 'satgas_relation', 
