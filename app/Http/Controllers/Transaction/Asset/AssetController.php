@@ -61,14 +61,16 @@ class AssetController extends Controller
             ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
             ->where('master_satgas.type', 'like', '%' . $request->type . '%')
             ->where('assets.kondisi', $kondisi)
-            ->select('assets.*') // Make sure to select the necessary fields
-            ->get();        
+            ->select('*') // Make sure to select the necessary fields
+            ->get();
+        
     
             return DataTables::of($data)->make(true);
         }
     
         return abort(403, 'Unauthorized action.');
     }
+    
     
     function getMasterSatgas() {
         $data = MasterSatgas::all();
