@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use NumConvert;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class AssetsImport implements ToModel, WithStartRow
@@ -49,8 +50,14 @@ class AssetsImport implements ToModel, WithStartRow
         $jenis = Inventory_type::where('name', $row[6])->first();
         $merk = InventoryBrand::where('name', $row[7])->first();
         $lokasi = MasterSatgas::where('name', $row[8])->first();
-        $lokasiType = MasterSatgas::where('type', $row[8])->first();    
-        AssetLog::create([
+        $lokasiType = MasterSatgas::where('type', $row[8])->first();
+        $lokasi_id = $lokasi->id ?? ($lokasiType->id ?? 0);
+    
+        if ($lokasi_id == 0) {
+            Log::warning("Asset dengan lokasi kosong: " . json_encode($row));
+        }
+    
+        return new Asset([
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
             'no_un'         => $row[1] ?? '',
@@ -63,8 +70,7 @@ class AssetsImport implements ToModel, WithStartRow
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
             'kondisi'       => 1,
-            'lokasi'        => $lokasi->id ?? ($lokasiType->id ?? 0), // Jika lokasi tidak ada, cek lokasiType
-            'remark'        => auth()->user()->name . ' telah menambahkan asset'
+            'lokasi'        => $lokasi_id,
         ]);
     
         return new Asset([

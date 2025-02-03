@@ -333,7 +333,7 @@ class MasterAssetController extends Controller
              'Asset berhasil dihapus'
          );
     }
-    function uploadAsset(Request $request) {
+    public function uploadAsset(Request $request) {
         $request->validate([
             'file_upload_asset' => 'required|mimes:xlsx,xls,csv|max:2048',
         ]);
@@ -344,9 +344,13 @@ class MasterAssetController extends Controller
             // Import file data
             Excel::import(new AssetsImport, $file);
     
+            // Ambil data yang memiliki lokasi = 0
+            $assetsWithNoLocation = Asset::where('lokasi', 0)->get(['asset_code', 'no_un', 'no_rangka', 'no_mesin']);
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Assets imported successfully!',
+                'assets_no_location' => $assetsWithNoLocation, // Tampilkan asset tanpa lokasi
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -355,4 +359,5 @@ class MasterAssetController extends Controller
             ], 500);
         }
     }
+    
 }
