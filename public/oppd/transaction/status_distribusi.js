@@ -638,22 +638,22 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                 selectedAssets.forEach(asset => {
                     var kondisi = ''
                     switch (asset.kondisi) {
-                        case 1:
+                        case "1":
                             kondisi = 'BAIK';
                             break;
-                        case 2:
+                        case "2":
                             kondisi = 'RR OPS';
                             break;
-                        case 3:
+                        case "3":
                             kondisi = 'RB';
                             break;
-                        case 4:
+                        case "4":
                             kondisi = 'RR TDK OPS';
                             break;
-                        case 5:
+                        case "5":
                             kondisi = 'M';
                             break;
-                        case 6:
+                        case "6":
                             kondisi = 'D';
                             break;
                     }
