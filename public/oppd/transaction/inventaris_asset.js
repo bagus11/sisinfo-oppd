@@ -209,7 +209,7 @@ $('#btn_add_asset').on('click', function(){
                         name: 'kondisi',
                         render: function(data, type, row) {
                             let kondisi = '-'; // Default value
-                            
+                            console.log(data)
                             switch (data) {
                                 case parseInt(1):
                                     kondisi = 'BAIK';
