@@ -52,7 +52,28 @@ class AssetsImport implements ToModel, WithStartRow
         $lokasi = MasterSatgas::where('name', $row[8])->first();
         $lokasiType = MasterSatgas::where('type', $row[8])->first();
         $lokasi_id = $lokasi->id ?? ($lokasiType->id ?? 0);
-    
+
+        $kondisi = 0;
+        switch ($row[9]) {
+            case 'BAIK':
+                $kondisi = 1;
+                break;
+            case 'RR OPS':
+                $kondisi = 2;
+                break;
+            case 'RB':
+                $kondisi = 3;
+                break;
+            case 'RR TDK OPS':
+                $kondisi = 4;
+                break;
+            case 'M':
+                $kondisi = 5;
+                break;
+            case 'D':
+                $kondisi = 6;
+                break;
+        }
        
         $post = [
             'asset_code'    => $ticket_code,
@@ -66,7 +87,7 @@ class AssetsImport implements ToModel, WithStartRow
             'merk'          => $merk->id ?? 0,
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
-            'kondisi'       => 1,
+            'kondisi'       => $kondisi,
             'lokasi'        => $lokasi_id,
         ];
         if ($lokasi == null && $lokasiType == null) {
@@ -74,22 +95,23 @@ class AssetsImport implements ToModel, WithStartRow
             Log::warning("Asset dengan lokasi kosong: " . $ticket_code. " , Lokasi : " . json_encode($lokasi). " : Type ". json_encode($lokasiType));
         }
         
-        return new Asset($post);
+        Asset::create($post);
     
-        return new Asset([
+        return new AssetLog([
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
-            'no_un'         => $row[1] ?? '',
-            'no_rangka'     => $row[2] ?? '',
-            'no_mesin'      => $row[3] ?? '',
+            'no_un'         => $row[1] == null ? '' : $row[1],
+            'no_rangka'     => $row[2] == null ? '' : $row[2],
+            'no_mesin'      => $row[3] == null ? '' : $row[3],
             'kategori'      => $kategori->id ?? 0,
-            'subkategori'   => $subkategori->id ?? 0,
+            'subkategori'   => $subkategori ? $subkategori->id : 0, // Ensure null if not found
             'jenis'         => $jenis->id ?? 0,
             'merk'          => $merk->id ?? 0,
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
-            'kondisi'       => 1,
-            'lokasi'        => $lokasi_id,
+            'kondisi'       => $kondisi,
+            'lokasi'        => $lokasi->id ?? 0,
+            'remark'        => auth()->user()->name. ' telah menambahkan asset'
         ]);
     }
     
