@@ -1,3 +1,4 @@
+alert('testing dashboard')
 getCallbackNoSwal('getCountingAsset', null, function(response) {
    
     $('#select_asset_type').empty();
