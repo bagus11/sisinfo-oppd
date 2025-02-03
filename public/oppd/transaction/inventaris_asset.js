@@ -211,22 +211,22 @@ $('#btn_add_asset').on('click', function(){
                             let kondisi = '-'; // Default value
                             
                             switch (data) {
-                                case 1:
+                                case parseInt(1):
                                     kondisi = 'BAIK';
                                     break;
-                                case 2:
+                                case parseInt(2):
                                     kondisi = 'RR OPS';
                                     break;
-                                case 3:
+                                case parseInt(3):
                                     kondisi = 'RB';
                                     break;
-                                case 4:
+                                case parseInt(4):
                                     kondisi = 'RR TDK OPS';
                                     break;
-                                case 5:
+                                case parseInt(5):
                                     kondisi = 'M';
                                     break;
-                                case 6:
+                                case parseInt(6):
                                     kondisi = 'D';
                                     break;
                             }
