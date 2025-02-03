@@ -84,7 +84,7 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                     name: 'kondisi',
                     render: function (data) {
 
-                        switch (data) {
+                        switch (parseInt(data)) {
                             case 0: return '-';
                             case 1: return `<span class="badge badge-primary w-15 mx-1" style="background-color:#16C47F;color:white;border-radius:10px !important;font-size:12px !important; font-weight:bold;">BAIK</span>`;
                             case 2: return `<span class="badge badge-primary w-15 mx-1" style="background-color:#40A2E3;color:white;border-radius:10px !important;font-size:12px !important; font-weight:bold;">RR OPS</span>`;
