@@ -335,14 +335,14 @@ chart.render();
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    window.addEventListener("resize", function () {
-        setTimeout(() => {
-          if (map) {
-            map.invalidateSize(); // Leaflet
-            google.maps.event.trigger(map, "resize"); // Google Maps
-          }
-        }, 300);
-      });
+    // window.addEventListener("resize", function () {
+    //     setTimeout(() => {
+    //       if (map) {
+    //         map.invalidateSize(); // Leaflet
+    //         google.maps.event.trigger(map, "resize"); // Google Maps
+    //       }
+    //     }, 300);
+    //   });
     // Add markers to the map
     const bounds = [];
     response.country.forEach(country => {
