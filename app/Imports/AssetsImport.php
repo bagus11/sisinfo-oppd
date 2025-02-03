@@ -88,7 +88,7 @@ class AssetsImport implements ToModel, WithStartRow
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
             'kondisi'       => 1,
-            'lokasi'        => $lokasi->id ?? 0,
+            'lokasi'        => $lokasi_id,
         ]);
     }
     
