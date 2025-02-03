@@ -54,23 +54,24 @@ class AssetController extends Controller
             };
     
             // Fetch assets with relationships
-            $data = Asset::leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-            ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
-            ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
-            ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
-            ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
-            ->where('master_satgas.type', 'like', '%' . $request->type . '%')
-            ->where('assets.kondisi', $kondisi)
-            ->select('*') // Make sure to select the necessary fields
-            ->get();
-        
+            $data = Asset::with([
+                    'categoryRelation',
+                    'subCategoryRelation',
+                    'typeRelation',
+                    'merkRelation',
+                    'satgasRelation',
+                ])
+                ->whereHas('satgasRelation', function ($query) use ($request) {
+                    $query->where('type', 'like', '%' . $request->type . '%');
+                })
+                ->where('kondisi', $kondisi)
+                ->get();
     
             return DataTables::of($data)->make(true);
         }
     
         return abort(403, 'Unauthorized action.');
     }
-    
     
     function getMasterSatgas() {
         $data = MasterSatgas::all();
