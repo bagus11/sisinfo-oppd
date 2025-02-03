@@ -146,7 +146,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                             data: 'category_relation', 
                                             name: 'category_relation.name', 
                                             render: function (data) {
-                                                return data ? data : '-'; // Safely check for null/undefined
+                                                return data ? data.name : '-'; // Safely check for null/undefined
                                             }
                                         },
                                         { 
@@ -160,7 +160,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                             data: 'type_relation', 
                                             name: 'type_relation.name', 
                                             render: function (data) {
-                                                return data ? data : '-'; // Safely check for null/undefined
+                                                return data ? data.name : '-'; // Safely check for null/undefined
                                             }
                                         },
                                         { 
