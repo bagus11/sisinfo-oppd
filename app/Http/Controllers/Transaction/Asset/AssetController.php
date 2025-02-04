@@ -141,7 +141,6 @@ class AssetController extends Controller
         }
     }
     function getPengajuanAssetFilter(Request $request)  {
-        // dd($request->pengajuan);
         if ($request->ajax()) {
             $data = Maintenance::where('type',$request->pengajuan)->get();
             return DataTables::of($data)

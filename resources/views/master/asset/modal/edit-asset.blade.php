@@ -135,6 +135,7 @@
                                                 <th>No Mesin</th>
                                                 <th>No Rangka</th>
                                                 <th>Kondisi</th>
+                                                <th>Remark</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

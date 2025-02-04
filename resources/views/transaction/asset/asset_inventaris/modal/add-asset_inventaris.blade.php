@@ -14,7 +14,7 @@
                                 
                                 @can('get-except_satgas-asset_inventaris')
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-12  col-sm-12 col-md-6">
                                             <fieldset class="mt-4 mx-2">
                                                 <legend class="bg-danger">Filter </legend>
                                                 <div class="row mt-2">
@@ -28,7 +28,7 @@
                                                         <span class="message_error satgas_error text-red d-block"></span>
                                                     </div>
                                                     @endcan
-                                                    <div class="col-4 col-sm-4 col-md-1">
+                                                    <div class="col-4 col-sm-4 col-md-1 mt-2">
                                                         <label for=""> Kondisi</label>
                                                     </div>
                                                     <div class="col-8 col-sm-8 col-md-5">

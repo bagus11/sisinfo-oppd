@@ -74,8 +74,11 @@
                                   <li>
                                     <div class="row mx-2 mt-2">
                                         <div class="col-12">
-                                            <button class="btn btn-danger btn-sm" id="filterAsset" style="float: right">
+                                            <button class="btn btn-danger btn-sm" id="filterAsset" style="float: right;margin-left:5px">
                                                 <i class="fas fa-filter"></i> Filter
+                                            </button>
+                                            <button class="btn btn-success btn-sm" id="exportAsset"style="float: right;margin-left:5px">
+                                                <i class="fas fa-file-excel"></i> Export 
                                             </button>
                                         </div>
                                     </div>

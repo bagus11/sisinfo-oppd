@@ -257,6 +257,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
                     }
                 }
             },
+            { data: 'remark', name: 'remark' },
         ],
         order: [[0, 'asc']],
         createdRow: function (row, data, dataIndex) {
@@ -443,4 +444,15 @@ $('#btn_print_pdf').on('click', function(){
     var final = detail.replaceAll('/','_')
     console.log(final)
     window.open(`printDetailAsset/${final}`,'_blank');
+})
+
+$('#exportAsset').on('click', function(){
+    SwalLoading('Please wait ...');
+    var type = $('#select_satgas').val()
+    var kondisi = $('#select_filter_kondisi').val()
+    let url = '/export-asset?';
+    if (type) url += 'type=' + type + '&';
+    if (kondisi) url += 'kondisi=' + kondisi;
+    window.location.href = url;
+    swal.close()
 })

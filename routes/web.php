@@ -170,6 +170,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/laporan_asset', 'App\Http\Controllers\Report\ReportAssetController@index')->name('laporan_asset');
     Route::get('/printInventarisDetail/{id}', 'App\Http\Controllers\Report\ReportAssetController@printInventarisDetail');
     Route::get('/printDetailAsset/{id}', 'App\Http\Controllers\Report\ReportAssetController@printDetailAsset');
+    Route::get('/export-asset', 'App\Http\Controllers\Report\ReportAssetController@exportAsset');
     
     // Report   
 
