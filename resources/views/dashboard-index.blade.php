@@ -82,7 +82,7 @@
         font-weight: bold;
         text-align: center;
       }
-      #horizontalBarChart, #verticalBarChart {
+      /* #horizontalBarChart, #verticalBarChart {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch !important;
         width: 100%; 
@@ -93,7 +93,7 @@
         overflow-x: auto;
         -webkit-overflow-scrolling: touch !important;
         white-space: nowrap !important;
-      }
+      } */
 
 </style>
     <div class="row mb-0">
