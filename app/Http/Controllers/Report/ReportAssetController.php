@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Master\Asset;
 use App\Models\Master\AssetLog;
 use App\Models\Master\MasterAsset;
+use App\Models\Setting\MasterSatgas;
 use App\Models\Transaction\Asset\Inventaris;
 use App\Models\Transaction\Asset\InventarisDetail;
 use Illuminate\Http\Request;
@@ -183,22 +184,44 @@ class ReportAssetController extends Controller
     $kondisi = $request->query('kondisi');
 
     // Build the query
-    $query = Asset::query()
-            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-            ->with([
-                'categoryRelation',
-                'subCategoryRelation',
-                'typeRelation',
-                'merkRelation',
-                'satgasRelation'
-            ])
-            ->where(function ($q) use ($type) {
-                if (!empty($type)) {
-                    $q->where('master_satgas.type', 'like', '%' . $type . '%');
-                }
-            })
-            ->where('assets.kondisi', 'like', '%' . $kondisi . '%')
-            ->select('assets.*');
+    if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
+        $query = Asset::query()
+        ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+        ->with([
+            'categoryRelation',
+            'subCategoryRelation',
+            'typeRelation',
+            'merkRelation',
+            'satgasRelation'
+        ])
+        ->where(function ($q) use ($type) {
+            if (!empty($type)) {
+                $q->where('master_satgas.type', 'like', '%' . $type . '%');
+            }
+        })
+        ->where('assets.kondisi', 'like', '%' . $kondisi . '%')
+        ->select('assets.*');
+    }else{
+        $type = MasterSatgas::find(auth()->user()->lokasi);
+        $query = Asset::query()
+        ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+        ->with([
+            'categoryRelation',
+            'subCategoryRelation',
+            'typeRelation',
+            'merkRelation',
+            'satgasRelation'
+        ])
+        ->where(function ($q) use ($type) {
+
+            if (!empty($type)) {
+                $q->where('master_satgas.type', $type->type);
+            }
+        })
+        ->where('assets.kondisi', 'like', '%' . $kondisi . '%')
+        ->select('assets.*');
+    }
+   
     // Get the filtered assets
     $assets = $query->get();
     // Return the export (replace AssetsExport with your export class)
