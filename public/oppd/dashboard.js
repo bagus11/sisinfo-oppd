@@ -390,7 +390,7 @@ function getRadialBar(response) {
     }
     const percentageData = response.data.map(value => ((value / sumOfArray) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
     
-    const options = {
+    const radialBarOption = {
         series: percentageData, // Use percentage data for radial bars
         chart: {
             type: "radialBar",
@@ -467,19 +467,19 @@ function getRadialBar(response) {
             offsetX: 5, // Adjust position if needed
             offsetY: 10, // Adjust vertical alignment
             markers: {
-                width: 10,
-                height: 10,
+                width: 5,
+                height: 5,
                 radius: 2,
             },
             labels: {
                 colors: "#333",
-                fontSize: "8px",  // Corrected font size format
+                fontSize: "2px !important",  // Corrected font size format
                 fontWeight: "bold",
                 useSeriesColors: false, // Match legend colors with series
             },
         },
     };
 
-    const chart = new ApexCharts(document.querySelector("#radialChart"), options);
+    const chart = new ApexCharts(document.querySelector("#radialChart"), radialBarOption);
     chart.render();
 }
