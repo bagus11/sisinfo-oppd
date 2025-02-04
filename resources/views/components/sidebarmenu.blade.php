@@ -1,3 +1,17 @@
+<style>
+    .sidebarmenu {
+    z-index: 1050; /* Adjust value as needed */
+    opacity: 1 !important;
+    transition: opacity 0.3s ease-in-out;
+    }
+    @media (min-width: 992px) { 
+        .sidebarmenu {
+            z-index: 1050;
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+</style>
 <div class="mini-nav">
     <div class="brand-logo d-flex align-items-center justify-content-center">
         <a class="nav-link sidebartoggler" id="headerCollapse" href="javascript:void(0)">

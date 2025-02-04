@@ -22,13 +22,13 @@
                                                     <div class="col-4 col-sm-4 col-md-1 mt-2">
                                                         <label for="select_satgas">Satgas</label>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-8 col-sm-8 col-md-5">
                                                         <select name="select_satgas" class="select2" id="select_satgas"></select>
                                                         <input type="hidden" class="form-control" id="satgas">
                                                         <span class="message_error satgas_error text-red d-block"></span>
                                                     </div>
                                                     @endcan
-                                                    <div class="col-4 col-sm-4 col-md-1 mt-2">
+                                                    <div class="col-4 col-sm-4 col-md-1">
                                                         <label for=""> Kondisi</label>
                                                     </div>
                                                     <div class="col-8 col-sm-8 col-md-5">

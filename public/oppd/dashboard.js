@@ -381,15 +381,15 @@ $('.pengajuan_filter').on('click', function(){
     });
 })
 
-
 function getRadialBar(response) {
     let sumOfArray = 0;
 
-    // iterate over each item in the array
-    for (let i = 0; i < response.data.length; i++ ) {
+    // Iterate over each item in the array
+    for (let i = 0; i < response.data.length; i++) {
         sumOfArray += parseInt(response.data[i], 10);
     }
     const percentageData = response.data.map(value => ((value / sumOfArray) * 100).toFixed(2)); // Convert to percentage and round to 2 decimals
+    
     const options = {
         series: percentageData, // Use percentage data for radial bars
         chart: {
@@ -415,14 +415,14 @@ function getRadialBar(response) {
                 dataLabels: {
                     name: {
                         show: true,
-                        fontSize: '20px',
-                        color: '#333',
+                        fontSize: "16px",  // Adjusted font size
+                        color: "#333",
                         offsetY: -10,
                     },
                     value: {
                         show: true,
-                        fontSize: '14px',
-                        color: '#111',
+                        fontSize: "12px",  // Adjusted font size
+                        color: "#111",
                         offsetY: 5,
                         formatter: function (val) {
                             return `${val}%`; // Display percentage for radial bars
@@ -430,11 +430,11 @@ function getRadialBar(response) {
                     },
                     total: {
                         show: true,
-                        label: 'Total',
-                        color: '#000',
+                        label: "Total",
+                        color: "#000",
                         style: {
-                            fontSize: '20px',  // Set font size to 20px
-                            fontWeight: 'bold', // Set font weight to bold
+                            fontSize: "18px",  // Adjusted font size
+                            fontWeight: "bold",
                         },
                         formatter: function () {
                             return sumOfArray;
@@ -449,8 +449,8 @@ function getRadialBar(response) {
             enabled: true, // Enable tooltips
             theme: "light", // Use dark theme (white font by default)
             style: {
-                fontSize: '12px', // Adjust font size
-                color: '#fff', // Force white font color
+                fontSize: "12px", // Adjust font size
+                color: "#fff", // Force white font color
             },
             y: {
                 formatter: function (val, opts) {
@@ -465,15 +465,16 @@ function getRadialBar(response) {
             position: "left", // Place legend on the left
             floating: true, // Float the legend to the blank space
             offsetX: 5, // Adjust position if needed
-            offsetY: 30, // Adjust vertical alignment
+            offsetY: 10, // Adjust vertical alignment
             markers: {
-                width: 12,
-                height: 12,
+                width: 10,
+                height: 10,
                 radius: 2,
             },
             labels: {
                 colors: "#333",
-                fontWeight:'bold',
+                fontSize: "8px",  // Corrected font size format
+                fontWeight: "bold",
                 useSeriesColors: false, // Match legend colors with series
             },
         },
