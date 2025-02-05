@@ -11,6 +11,7 @@
             width: 50%; /* Setiap tab mengambil 50% layar */
         }
     }
+   
     #assetsChart {
         width: 100% !important;
         height: auto !important;
@@ -25,6 +26,15 @@
         width: 100%;
         overflow-x: auto;  /* Aktifkan scroll horizontal */
         white-space: nowrap; /* Mencegah wrapping */
+    } 
+    #tab_summary_category .nav-link.active {
+        background-color: #179BAE !important;
+        color: white !important;
+        border-color: #179BAE !important;
+    }
+    #tab_summary_category .nav-link {
+        color: white !important; 
+        background-color: #BCCCDC !important;
     }
 </style>
     <div class="row">
@@ -41,18 +51,18 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="row mt-2 mx-2">
-                        <div class="col-12">
-                            <ul class="nav nav-pills d-flex flex-sm-row flex-wrap justify-content-center" id="tablist" role="tablist">
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <ul class="nav nav-pills d-flex flex-sm-row flex-wrap justify-content-center" id="tab_summary_category" role="tab_summary_category">
                                 <li class="nav-item flex-fill text-center tab-item">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-chart-view" role="tab">
                                         <i class="fa-solid fa-chart-simple"></i>
-                                        <span>Chart View</span>
+                                        <span style="font-size: 12px !important; margin-left:10px">Chart View</span>
                                     </a>
                                 </li>
-                                <li class="nav-item flex-fill text-center tab-item">
+                                <li class="nav-item flex-fill text-center tab-item" style="margin-left: 10px">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab-table-view" role="tab">
                                         <i class="fa-solid fa-table"></i>
-                                        <span>Table View</span>
+                                        <span style="font-size: 12px !important; margin-left:10px">Table View</span>
                                     </a>
                                 </li>
                             </ul>
