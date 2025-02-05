@@ -135,4 +135,11 @@ $(document).ready(function() {
         }
     });
     
+    $('#btn_export_excel').on('click', function(){
+        SwalLoading('Please wait ...');
+        let url = '/exportAssetCategory?';
+        window.location.href = url;
+        swal.close()
+    })
 });
+

@@ -173,6 +173,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/export-asset', 'App\Http\Controllers\Report\ReportAssetController@exportAsset');
     Route::get('assets-pivot', 'App\Http\Controllers\Report\ReportAssetController@getAssetPivot');
     Route::get('exportAssetCategoryPDF', 'App\Http\Controllers\Report\ReportAssetController@exportAssetCategoryPDF');
+    Route::get('/exportAssetCategory', 'App\Http\Controllers\Report\ReportAssetController@exportAssetCategory');
     
     // Report   
 

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-md modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Report Opsional</h5>
+                <h5 class="modal-title">Report Asset By Category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" data-simplebar="">
@@ -11,7 +11,7 @@
                         <button class="btn btn-danger" id="btn_print_pdf">
                             <i class="fas fa-file-pdf"></i> Export To PDF
                         </button>
-                        <button class="btn btn-success">
+                        <button class="btn btn-success" id="btn_export_excel">
                             <i class="fas fa-file-excel"></i> Export To Excel
                         </button>
                     </div>

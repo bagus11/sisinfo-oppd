@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Report;
 
+use App\Exports\AssetCategoryExport;
 use App\Exports\AssetExport;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Asset;
@@ -400,11 +401,67 @@ class ReportAssetController extends Controller
             5
         ); // margin footer
         $mpdf->WriteHTML($html);
-        $pdfOutput = $mpdf->Output('', 'S'); // Output as string
-    
+        $pdfOutput = $mpdf->Output('Report Kategori Aset'.'('.date('Y-m-d').').pdf', 'I');
+        ob_clean();
+       
         return response($pdfOutput, 200)
             ->header('Content-Type', 'application/pdf');
     }
+    function exportAssetCategory() {
+        if (auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
+            $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->pluck('master_satgas.type')
+                ->unique()
+                ->values();
+        
+            // Fetch asset data grouped by category and satgas type
+            $asset_category = Asset::selectRaw('
+                COALESCE(inventory_categories.name, "Unknown") as category_name, 
+                COALESCE(COUNT(*), 0) as total, 
+                master_satgas.type as satgas_type
+            ')
+            ->join('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+            ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->groupBy('inventory_categories.name', 'master_satgas.type')
+            ->get()
+            ->groupBy(fn($asset) => $asset->category_name ?? 'Unknown');
+        } else {
+            $type = MasterSatgas::find(auth()->user()->satgas);
+            $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->where('master_satgas.type', $type->type)
+                ->pluck('master_satgas.type')
+                ->unique()
+                ->values();
+        
+            // Fetch asset data for a specific satgas type
+            $asset_category = Asset::selectRaw("
+                COALESCE(inventory_categories.name, 'Unknown') as category_name, 
+                COALESCE(COUNT(*), 0) as total, 
+                master_satgas.type as satgas_type
+            ")
+            ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+            ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->where('master_satgas.type', $type->type)
+            ->groupBy('category_name', 'master_satgas.type')
+            ->get()
+            ->groupBy('category_name');
+        }
+        
+        // After fetching the data, process it like this:
+        $pivotData = [];
+        foreach ($asset_category as $categoryName => $assets) {
+            $row = ['category' => $categoryName];
+            foreach ($categories as $satgas) {
+                $row[$satgas] = 0; // Initialize with 0
+            }
+            foreach ($assets as $asset) {
+                $row[$asset->satgas_type] = $asset->total ?? 0; // Replace null with 0
+            }
+            $pivotData[] = $row;
+        }
     
+        // Trigger the Excel export
+        return Excel::download(new AssetCategoryExport($categories, $asset_category), 'asset_category_report.xlsx');
+    }
     
 }
