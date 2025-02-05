@@ -20,7 +20,7 @@ class ReportAssetController extends Controller
         return view('report.asset.report_asset-index');
     }
     function getAssetPivot() {
-         // Get unique satgas types for dynamic columns
+        if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
             $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
             ->pluck('master_satgas.type')
             ->unique()
@@ -46,6 +46,41 @@ class ReportAssetController extends Controller
                 }
                 $pivotData[] = $row;
             }
+        }else{
+            $type = MasterSatgas::find(auth()->user()->satgas);
+            $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')->where('master_satgas.type', $type->type)
+            ->pluck('master_satgas.type')
+            ->unique()
+            ->values();
+
+            // Fetch asset data grouped by category and satgas type
+            $data = Asset::selectRaw("
+                            COALESCE(inventory_categories.name, 'Unknown') as category_name, 
+                            COUNT(*) as total, 
+                            master_satgas.type as satgas_type
+                        ")
+                        ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+                        ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                        ->where('master_satgas.type', $type->type)
+                        ->groupBy('category_name', 'master_satgas.type')
+                        ->get()
+                        ->groupBy('category_name'); // Sudah pasti tidak ada null
+    
+
+            // Transform the grouped data into a pivot format
+            $pivotData = [];
+            foreach ($data as $categoryName => $assets) {
+                $row = ['category' => $categoryName]; // Row title
+                foreach ($categories as $satgas) {
+                    $row[$satgas] = 0; // Initialize all category columns with 0
+                }
+                foreach ($assets as $asset) {
+                    $row[$asset->satgas_type] = $asset->total; // Fill total count
+                }
+                $pivotData[] = $row;
+            }
+        }
+           
 
             return response()->json([
                 'columns' => $categories,
