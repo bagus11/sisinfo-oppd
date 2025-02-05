@@ -7,8 +7,14 @@
         .title { text-align: center; font-size: 16px; font-weight: bold; }
         .date { text-align: right; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-      
-        .chart { text-align: center; margin-top: 20px; }
+        .image {
+            max-width: 85mm !important;
+            min-height: 85mm !important;
+            max-height: 85mm !important;
+            display: block;
+            text-align: left; /* Pastikan teks di kiri */
+        }
+        .chart { text-align: left; margin-top: 10px; }
         .table-stepper {
             font-family: Arial, Helvetica, sans-serif;
             border-collapse: collapse;
@@ -43,7 +49,8 @@
 
     <!-- Chart -->
     <div class="chart">
-        <img src="{{ $chartBase64 }}" width="800">
+        <img class="image" src="{{ $chartBase64 }}">
+
     </div>
 
     <!-- Data Table -->

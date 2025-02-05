@@ -296,11 +296,17 @@ class ReportAssetController extends Controller
         // Return the export (replace AssetsExport with your export class)
         return Excel::download(new AssetExport($assets), 'ReportMasterAsset '.date('d F Y').'.xlsx');
     }
-    function exportAssetCategoryPDF(Request $request)
+    public function exportAssetCategoryPDF(Request $request)
     {
-        $chartBase64 = $request->input('chart'); // Base64 Horizontal Bar Chart
+        // Ambil chart dalam format Base64 dari request
+        $chartBase64 = $request->input('chart'); 
     
-        // Check if the user has permission
+        // 1️⃣ **Validasi Base64 Chart**
+        if (empty($chartBase64) || !preg_match('/^data:image\/(png|jpeg|jpg);base64,/', $chartBase64)) {
+            return response()->json(['error' => 'Invalid or missing chart image'], 400);
+        }
+    
+        // 2️⃣ **Cek Permission User**
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
             $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
                 ->pluck('master_satgas.type')
@@ -336,7 +342,7 @@ class ReportAssetController extends Controller
                             ->groupBy('category_name');
         }
     
-        // Transform data to pivot format
+        // 3️⃣ **Transform Data untuk Tabel Pivot**
         $pivotData = [];
         foreach ($asset_category as $categoryName => $assets) {
             $row = ['category' => $categoryName]; // Row title
@@ -349,64 +355,93 @@ class ReportAssetController extends Controller
             $pivotData[] = $row;
         }
     
-        // Prepare data for the view
+        // 4️⃣ **Siapkan Data untuk PDF**
         $data = [
             'title' => 'Report Asset by Category',
-            'data'  => $pivotData, // Pass pivotData instead of asset_category
+            'data'  => $pivotData,
             'date' => now()->format('d F Y'),
-            'chartBase64' => $chartBase64, // Pass base64 chart to the view
+            'chartBase64' => $chartBase64, // Kirim base64 chart ke Blade
         ];
-        $imageLogo          = '<img src="'.public_path('logo.png').'" width="50px" style="float: right;"/>';
-        $header             = '';
-        $header             .= '<table width="100%">
-                                    <tr>
-                                        <td style="padding-left:10px;">
-                                            <span style="font-size: 16px; font-weight: bold;"> SYSINFO OPPD</span>
-                                            <br>
-                                            <span style="font-size:9px;">Mako PMPP Sentul, FV8J+XCP, Tangkil, Kec. Citeureup, Kabupaten Bogor, Jawa Barat 16810</span>
-                                        </td>
-                                        <td style="width:33%"></td>
-                                            <td style="width: 50px; text-align:right;">'.$imageLogo.'
-                                        </td>
-                                    </tr>
-                                </table>
-                                <hr>';
-        
-        $footer             = '<hr>
-                                <table width="100%" style="font-size: 10px;">
-                                    <tr>
-                                        <td width="90%" align="left"><b>Disclaimer</b><br>this document is strictly private, confidential and personal to recipients and should not be copied, distributed or reproduced in whole or in part, not passed to any third party.</td>
-                                        <td width="10%" style="text-align: right;"> {PAGENO}</td>
-                                    </tr>
-                                </table>';
-
-        // Render the HTML for the PDF
+    
+        // 5️⃣ **Header & Footer PDF**
+        $imageLogo = '<img src="'.public_path('logo.png').'" width="50px" style="float: right;"/>';
+        $header = '<table width="100%">
+                        <tr>
+                            <td style="padding-left:10px;">
+                                <span style="font-size: 16px; font-weight: bold;"> SYSINFO OPPD</span>
+                                <br>
+                                <span style="font-size:9px;">Mako PMPP Sentul, FV8J+XCP, Tangkil, Kec. Citeureup, Kabupaten Bogor, Jawa Barat 16810</span>
+                            </td>
+                            <td style="width:33%"></td>
+                                <td style="width: 50px; text-align:right;">'.$imageLogo.'
+                            </td>
+                        </tr>
+                    </table>
+                    <hr>';
+    
+        $footer = '<hr>
+                    <table width="100%" style="font-size: 10px;">
+                        <tr>
+                            <td width="90%" align="left"><b>Disclaimer</b><br>this document is strictly private, confidential and personal to recipients and should not be copied, distributed or reproduced in whole or in part, not passed to any third party.</td>
+                            <td width="10%" style="text-align: right;"> {PAGENO}</td>
+                        </tr>
+                    </table>';
+    
+        // 6️⃣ **Render View Blade**
         $html = view('report.asset.master_asset.asset_category-report', $data)->render();
     
-        // Generate PDF using mPDF
-        $mpdf = new \Mpdf\Mpdf();
+        // 7️⃣ **Konfigurasi mPDF**
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'tempDir' => storage_path('app/mpdf_temp'), // Direktori sementara
+            'setAutoTopMargin' => 'stretch',
+            'setAutoBottomMargin' => 'stretch',
+        ]);
+    
+        // Buat folder temp jika belum ada
+        if (!file_exists(storage_path('app/mpdf_temp'))) {
+            mkdir(storage_path('app/mpdf_temp'), 0777, true);
+        }
+    
+        // 8️⃣ **Set Header & Footer**
         $mpdf->SetHTMLHeader($header);
         $mpdf->SetHTMLFooter($footer);
+        
+        // 9️⃣ **Set Halaman & Tulis HTML**
         $mpdf->AddPage(
-            'L', // L - landscape, P - portrait 
+            'L', // Landscape
             '',
             '',
             '',
             '',
-            5, // margin_left
-            5, // margin right
-            25, // margin top
-            20, // margin bottom
-            5, // margin header
-            5
-        ); // margin footer
+            5, // Margin kiri
+            5, // Margin kanan
+            25, // Margin atas
+            20, // Margin bawah
+            5, // Margin header
+            5  // Margin footer
+        );
+    
+        // 10️⃣ **Cegah Output Buffer Bermasalah**
+        ob_clean(); 
+    
+        // 11️⃣ **Tulis HTML ke PDF**
         $mpdf->WriteHTML($html);
-        $pdfOutput = $mpdf->Output('Report Kategori Aset'.'('.date('Y-m-d').').pdf', 'I');
-        ob_clean();
-       
-        return response($pdfOutput, 200)
-            ->header('Content-Type', 'application/pdf');
+    
+        // 12️⃣ **Output PDF ke Browser**
+        return response()->stream(
+            function () use ($mpdf) {
+                $mpdf->Output('Report_Kategori_Aset_'.date('Y-m-d').'.pdf', 'I');
+            },
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="Report_Kategori_Aset_'.date('Y-m-d').'.pdf"',
+            ]
+        );
     }
+    
     function exportAssetCategory() {
         if (auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
             $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
