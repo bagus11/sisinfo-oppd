@@ -304,21 +304,42 @@ class ReportAssetController extends Controller
     {
         ini_set('max_execution_time', 720);
         $chartBase64 = $request->input('chart'); // Base64 Horizontal Bar Chart
-    
+       
         // Check if the user has permission
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
             $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-                ->pluck('master_satgas.type')
-                ->unique()
-                ->values();
+                                    ->when(!empty($request->type), function ($q) use ($request) {
+                                        $q->where('master_satgas.type', $request->type);
+                                    })
+                                    ->pluck('master_satgas.type')
+                                    ->unique()
+                                    ->values();
     
             // Fetch asset data grouped by category and satgas type
             $asset_category = Asset::selectRaw('inventory_categories.name as category_name, COUNT(*) as total, master_satgas.type as satgas_type')
                 ->join('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
                 ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->when(!empty($request->type), function ($q) use ($request) {
+                    $q->where('master_satgas.type', $request->type);
+                })
                 ->groupBy('inventory_categories.name', 'master_satgas.type')
                 ->get()
                 ->groupBy(fn($asset) => $asset->category_name ?? 'Unknown');
+            $child = Asset::query()
+                ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->with([
+                    'categoryRelation',
+                    'subCategoryRelation',
+                    'typeRelation',
+                    'merkRelation',
+                    'satgasRelation'
+                ])
+                ->when(!empty($request->type), function ($q) use ($request) {
+                    $q->where('master_satgas.type', $request->type);
+                })
+                ->select('assets.*')
+                ->get();
+                // dd(count($child));
         } else {
             $type = MasterSatgas::find(auth()->user()->satgas);
             $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
@@ -339,6 +360,16 @@ class ReportAssetController extends Controller
                             ->groupBy('category_name', 'master_satgas.type')
                             ->get()
                             ->groupBy('category_name');
+            $child = Asset::query()
+                            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                            ->with([
+                                'categoryRelation',
+                                'subCategoryRelation',
+                                'typeRelation',
+                                'merkRelation',
+                                'satgasRelation'
+                            ])->where('master_satgas.type', $type->type)
+                            ->select('assets.*')->get();
         }
     
         // Transform data to pivot format
@@ -359,7 +390,8 @@ class ReportAssetController extends Controller
             'title' => 'Report Asset by Category',
             'data'  => $pivotData, // Pass pivotData instead of asset_category
             'date' => now()->format('d F Y'),
-            'chartBase64' => $chartBase64, // Pass base64 chart to the view
+            'chartBase64' => $chartBase64, 
+            'child' => $child, 
         ];
         $imageLogo          = '<img src="'.public_path('logo.png').'" width="50px" style="float: right;"/>';
         $header             = '';
@@ -469,12 +501,15 @@ class ReportAssetController extends Controller
         return Excel::download(new AssetCategoryExport($categories, $asset_category), 'asset_category_report.xlsx');
     }
     
-    public function getAssetKondisi()
+    public function getAssetKondisi(Request $request)
     {
         // Ambil data dengan query yang telah disesuaikan
         $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->when(!empty($request->type), function ($q) use ($request) {
+                    $q->where('b.type', $request->type);
+                })
                 ->groupBy('b.type', 'a.kondisi')
                 ->get();
     
@@ -538,7 +573,24 @@ class ReportAssetController extends Controller
             $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->when(!empty($request->type), function ($q) use ($request) {
+                    $q->where('b.type', $request->type);
+                })
                 ->groupBy('b.type', 'a.kondisi')
+                ->get();
+            $child = Asset::query()
+                ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->with([
+                    'categoryRelation',
+                    'subCategoryRelation',
+                    'typeRelation',
+                    'merkRelation',
+                    'satgasRelation'
+                ])
+                ->when(!empty($request->type), function ($q) use ($request) {
+                    $q->where('master_satgas.type', $request->type);
+                })
+                ->select('assets.*')
                 ->get();
         } else {
             $type = MasterSatgas::find(auth()->user()->satgas);
@@ -547,6 +599,18 @@ class ReportAssetController extends Controller
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
                 ->where('master_satgas.type', $type->type)
                 ->groupBy('b.type', 'a.kondisi')
+                ->get();
+            $child = Asset::query()
+                ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->with([
+                    'categoryRelation',
+                    'subCategoryRelation',
+                    'typeRelation',
+                    'merkRelation',
+                    'satgasRelation'
+                ])
+                ->where('master_satgas.type', $type->type)
+                ->select('assets.*')
                 ->get();
         }
     
@@ -567,7 +631,8 @@ class ReportAssetController extends Controller
         $response = [
             'columns' => $columns,
             'data' => [],
-            'chart' => $data
+            'chart' => $data,
+           
         ];
     
         // Membuat data baris berdasarkan kondisi
@@ -585,6 +650,7 @@ class ReportAssetController extends Controller
             'data'  => $response['data'], // Pass data for asset category table
             'date' => now()->format('d F Y'),
             'chartBase64' => $chartBase64, // Pass base64 chart to the view
+            'child' => $child,
         ];
     
         $imageLogo = '<img src="' . public_path('logo.png') . '" width="50px" style="float: right;"/>';

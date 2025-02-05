@@ -14,7 +14,7 @@
     </div>
 
     <!-- Tabel Data -->
-    <table class="table-stepper">
+    <table class="table-stepper" style="margin-top: 10px">
         <thead>
             <tr>
                 <th>Kondisi</th>
@@ -36,6 +36,54 @@
                     @endforeach
                 </tr>
             @endforeach
+        </tbody>
+    </table>
+     {{-- Ganti Baris --}}
+     <pagebreak>
+        <p style="font-size: 10px">Berikut Merupakan detail item dari asset sebagai berikut : </p>
+    <table class="table-stepper" style="margin-top: 10px">
+        <thead>
+            <tr>
+                <th>Asset Code</th>
+                <th>Satgas</th>
+                {{-- <th>Lokasi</th> --}}
+                <th>No UN</th>
+                <th>Kategori</th>
+                <th>Sub Kategori</th>
+                <th>Jenis</th>
+                <th>Merk</th>
+                <th>No Mesin</th>
+                <th>No Rangka</th>
+                <th>Kondisi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($child as $item)
+            @php
+                switch ($item->kondisi) {
+                    case 1: $kondisi = "BAIK"; break;
+                    case 2: $kondisi = "RR OPS"; break;
+                    case 3: $kondisi = "RB"; break;
+                    case 4: $kondisi = "RR TDK OPS"; break;
+                    case 5: $kondisi = "M"; break;
+                    case 6: $kondisi = "D"; break;
+                    default: $kondisi = "TIDAK DIKETAHUI";
+                }
+            @endphp
+            <tr>
+                <td>{{$item->asset_code}}</td>
+                <td>{{$item->satgasRelation == null ?'-' :  $item->satgasRelation->type}}</td>
+                {{-- <td>{{$item->satgasRelation == null ?'-' :  $item->satgasRelation->name}}</td> --}}
+                <td>{{$item->no_un}}</td>
+                <td>{{$item->categoryRelation == null ?'-' :  $item->categoryRelation->name}}</td>
+                <td>{{$item->subCategoryRelation == null ?'-' :  $item->subCategoryRelation->name}}</td>
+                <td>{{$item->typeRelation == null ?'-' :  $item->typeRelation->name}}</td>
+                <td>{{$item->merkRelation == null ?'-' :  $item->merkRelation->name}}</td>
+                <td>{{$item->no_mesin}}</td>
+                <td>{{$item->noRangka}}</td>
+                <td>{{$kondisi}}</td>
+            </tr>  
+        @endforeach
         </tbody>
     </table>
 </body>

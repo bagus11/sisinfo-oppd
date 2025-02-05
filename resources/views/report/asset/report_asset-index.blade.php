@@ -135,7 +135,8 @@
                             </div>
                         </div>
                     </div>
-
+                    <input type="hidden" id="type_render">
+                    <input type="hidden" id="kondisi_render">
                     <!-- Tab Summary Asset By Kondisi -->
                     <div class="tab-pane p-3" id="tab_chart_2">
                         <div class="row mt-2 mx-2">
@@ -167,6 +168,15 @@
                             </div>
 
                             <div class="tab-pane active p-3" id="tab_chart_kondisi">
+                                <div class="row mt-2">
+                                    <div class="col-12 col-sm-12 col-md-8">
+                                        <fieldset>
+                                            <legend class="bg-danger">   <i class="fas fa-filter"></i>Filter</legend>
+                                            <div id="kondisi_button" class="row d-flex justify-content-between">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
                                 <div class="chart-container">
                                     <div id="assetsChartKondisi"></div>
                                     <input type="hidden" id="chartImageInputKondisi">

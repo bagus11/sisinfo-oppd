@@ -28,7 +28,7 @@ $(document).ready(function() {
     $(document).on("click", ".satgasRender", function() {
         // Mengambil type dari tombol yang diklik
         var type = $(this).data('type');
-        
+        $('#type_render').val(type)
         // Mengubah semua tombol menjadi btn-secondary
         $(".satgasRender").removeClass("btn-info").addClass("btn-secondary");
     
@@ -74,6 +74,48 @@ $(document).ready(function() {
             }
         });
     });
+
+    $(document).on("click", ".kondisiRender", function() {
+        var type = $(this).data('type');
+        $('#kondisi_render').val(type)
+        $(".kondisiRender").removeClass("btn-info").addClass("btn-secondary");
+        $(this).removeClass("btn-secondary").addClass("btn-info");
+
+        $('#assetsChartKondisi').empty()
+   
+        getCallback('getAssetKondisi', {'type' : type}, function(response) {
+            // Tutup swal loading
+            swal.close();
+            if (response && response.chart) {
+              kondisiChart(response)
+    
+                        // Inisialisasi array kolom
+                let columns = [
+                    { data: 'category', title: 'Category' } // Kolom pertama, kategori
+                ];
+    
+                // Loop untuk menambahkan kolom lainnya dari response.columns
+                response.columns.forEach(column => {
+                    columns.push({ data: column, title: column });  // Menambahkan kolom baru
+                });
+    
+                // Generate table headers secara dinamis
+                $('#dynamic-header_kondisi').html(columns.map(col => `<th>${col.title}</th>`).join(''));
+    
+                // Initialize DataTables
+                $('#assetsTableKondisi').DataTable().clear().destroy();
+                $('#assetsTableKondisi').DataTable({
+                    processing: true,
+                    serverSide: false, // Client-side processing
+                    data: response.data,
+                    columns: columns
+                });
+    
+            }
+            
+        });
+     
+    });
     
     getCallbackNoSwal('getSatgasType', null, function(response) {
         $('#satgas_button').empty();
@@ -84,8 +126,18 @@ $(document).ready(function() {
                 </button>
             </div>
         `);
+
+        $('#kondisi_button').empty();
+        $('#kondisi_button').append(`
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
+                <button class="btn kondisiRender btn-sm btn-info w-100" style="font-size:9px !important" data-type="">
+                    <strong>ALL</strong>
+                </button>
+            </div>
+        `);
     
         var data = '';
+        var data_kondisi = '';
         for (let i = 0; i < response.data.length; i++) {
             data += `
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
@@ -94,9 +146,17 @@ $(document).ready(function() {
                     </button>
                 </div>
             `;
+            data_kondisi += `
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
+                    <button class="btn kondisiRender btn-sm btn-secondary w-100" style="font-size:9px !important" data-type="${response.data[i].type}">
+                        <strong>${response.data[i].type}</strong>
+                    </button>
+                </div>
+            `;
         }
     
         $('#satgas_button').append(data);
+        $('#kondisi_button').append(data_kondisi);
     });
     
 
@@ -291,7 +351,7 @@ $(document).ready(function() {
                 $.ajax({
                     url: "/exportAssetCategoryPDF",
                     type: "post",
-                    data: { chart: chartBase64 },
+                    data: { chart: chartBase64,'type' : $('#type_render').val() },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
@@ -552,7 +612,7 @@ $('#btn_print_kondisi_pdf').on('click', function () {
             $.ajax({
                 url: "/exportAssetKondisiPDF",
                 type: "post",
-                data: { chart: chartBase64 },
+                data: { chart: chartBase64,'type' : $('#kondisi_render').val() },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
