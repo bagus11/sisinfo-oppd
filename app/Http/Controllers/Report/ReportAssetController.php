@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Report;
 
 use App\Exports\AssetCategoryExport;
 use App\Exports\AssetExport;
+use App\Exports\AssetKondisiExport;
 use App\Http\Controllers\Controller;
 use App\Models\Master\Asset;
 use App\Models\Master\AssetLog;
@@ -463,6 +464,241 @@ class ReportAssetController extends Controller
     
         // Trigger the Excel export
         return Excel::download(new AssetCategoryExport($categories, $asset_category), 'asset_category_report.xlsx');
+    }
+    
+    public function getAssetKondisi()
+    {
+        // Ambil data dengan query yang telah disesuaikan
+        $data = DB::table('assets as a')
+                ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
+                ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->groupBy('b.type', 'a.kondisi')
+                ->get();
+    
+        // Struktur data yang akan dikirimkan
+        $kondisiMapping = [
+            1 => 'BAIK',
+            2 => 'RR OPS',
+            3 => 'RB',
+            4 => 'RR TDK OPS',
+            5 => 'M',
+            6 => 'D'
+        ];
+    
+        // Memetakan data berdasarkan kondisi
+        $responseData = [];
+    
+        foreach ($data as $item) {
+            $kondisi = $kondisiMapping[$item->kondisi] ?? 'Unknown';  // Mapping kondisi
+            if (!isset($responseData[$kondisi])) {
+                $responseData[$kondisi] = [];
+            }
+            $responseData[$kondisi][$item->satgas] = $item->total;
+        }
+    
+        // Format data untuk dikirimkan ke frontend
+        $columns = array_keys($responseData[array_key_first($responseData)]);  // Mengambil satgas yang ada
+    
+        // Menyusun data dan kolom untuk respons JSON
+        $response = [
+            'columns' => $columns,
+            'data' => [],
+            'chart'=> $data
+        ];
+    
+        // Membuat data baris berdasarkan kondisi
+        foreach ($responseData as $kondisi => $satgasData) {
+            $row = ['category' => $kondisi];  // Menyimpan kategori berdasarkan kondisi
+            foreach ($columns as $satgas) {
+                $row[$satgas] = $satgasData[$satgas] ?? 0;  // Mengisi nilai berdasarkan satgas, default 0
+            }
+            $response['data'][] = $row;
+        }
+    
+        return response()->json($response);  // Mengirimkan response dalam format JSON
+    }
+
+    function exportAssetKondisiPDF(Request $request) {
+        ini_set('max_execution_time', 720);
+        $chartBase64 = $request->input('chart'); // Base64 Horizontal Bar Chart
+        $kondisiMapping = [
+            1 => 'BAIK',
+            2 => 'RR OPS',
+            3 => 'RB',
+            4 => 'RR TDK OPS',
+            5 => 'M',
+            6 => 'D'
+        ];
+    
+        // Check if the user has permission
+        if (auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
+            $data = DB::table('assets as a')
+                ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
+                ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->groupBy('b.type', 'a.kondisi')
+                ->get();
+        } else {
+            $type = MasterSatgas::find(auth()->user()->satgas);
+            $data = DB::table('assets as a')
+                ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
+                ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->where('master_satgas.type', $type->type)
+                ->groupBy('b.type', 'a.kondisi')
+                ->get();
+        }
+    
+        $responseData = [];
+        // Transform data to pivot format
+        foreach ($data as $item) {
+            $kondisi = $kondisiMapping[$item->kondisi] ?? 'Unknown';  // Mapping kondisi
+            if (!isset($responseData[$kondisi])) {
+                $responseData[$kondisi] = [];
+            }
+            $responseData[$kondisi][$item->satgas] = $item->total;
+        }
+    
+        // Format data untuk dikirimkan ke frontend
+        $columns = array_keys($responseData[array_key_first($responseData)]);  // Mengambil satgas yang ada
+    
+        // Menyusun data dan kolom untuk respons JSON
+        $response = [
+            'columns' => $columns,
+            'data' => [],
+            'chart' => $data
+        ];
+    
+        // Membuat data baris berdasarkan kondisi
+        foreach ($responseData as $kondisi => $satgasData) {
+            $row = ['category' => $kondisi];  // Menyimpan kategori berdasarkan kondisi
+            foreach ($columns as $satgas) {
+                $row[$satgas] = $satgasData[$satgas] ?? 0;  // Mengisi nilai berdasarkan satgas, default 0
+            }
+            $response['data'][] = $row;
+        }
+    
+        // Prepare data for the view
+        $data = [
+            'title' => 'Report Asset by Category',
+            'data'  => $response['data'], // Pass data for asset category table
+            'date' => now()->format('d F Y'),
+            'chartBase64' => $chartBase64, // Pass base64 chart to the view
+        ];
+    
+        $imageLogo = '<img src="' . public_path('logo.png') . '" width="50px" style="float: right;"/>';
+        $header = '';
+        $header .= '<table width="100%">
+                        <tr>
+                            <td style="padding-left:10px;">
+                                <span style="font-size: 16px; font-weight: bold;"> SYSINFO OPPD</span>
+                                <br>
+                                <span style="font-size:9px;">Mako PMPP Sentul, FV8J+XCP, Tangkil, Kec. Citeureup, Kabupaten Bogor, Jawa Barat 16810</span>
+                            </td>
+                            <td style="width:33%"></td>
+                            <td style="width: 50px; text-align:right;">' . $imageLogo . '</td>
+                        </tr>
+                    </table>
+                    <hr>';
+    
+        $footer = '<hr>
+                    <table width="100%" style="font-size: 10px;">
+                        <tr>
+                            <td width="90%" align="left"><b>Disclaimer</b><br>this document is strictly private, confidential and personal to recipients and should not be copied, distributed or reproduced in whole or in part, not passed to any third party.</td>
+                            <td width="10%" style="text-align: right;">{PAGENO}</td>
+                        </tr>
+                    </table>';
+    
+        // Render the HTML for the PDF
+        $html = view('report.asset.master_asset.asset_kondisi-report', $data)->render();
+    
+        // Generate PDF using mPDF
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->SetHTMLHeader($header);
+        $mpdf->SetHTMLFooter($footer);
+        $mpdf->AddPage(
+            'L', // L - landscape, P - portrait 
+            '',
+            '',
+            '',
+            '',
+            5, // margin_left
+            5, // margin right
+            25, // margin top
+            20, // margin bottom
+            5, // margin header
+            5 // margin footer
+        ); // margin footer
+    
+        // Menambahkan chart yang dikirim dalam format base64
+        $chartImage = '<img src="' . $chartBase64 . '" style="width:100%; height:auto; margin-top:20px;"/>';
+    
+        // Menambahkan chart ke dalam PDF
+        $mpdf->WriteHTML($html);
+        // $mpdf->WriteHTML($chartImage); // Menambahkan chart
+    
+        // Output the generated PDF
+        $pdfOutput = $mpdf->Output('Report Kategori Aset' . '(' . date('Y-m-d') . ').pdf', 'I');
+        ob_clean();
+    
+        return response($pdfOutput, 200)
+            ->header('Content-Type', 'application/pdf');
+    }
+
+    function exportAssetKondisi() {
+        $kondisiMapping = [
+            1 => 'BAIK',
+            2 => 'RR OPS',
+            3 => 'RB',
+            4 => 'RR TDK OPS',
+            5 => 'M',
+            6 => 'D'
+        ];
+    
+        // Fetch data from the database
+        if (auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
+            $data = DB::table('assets as a')
+                ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
+                ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->groupBy('b.type', 'a.kondisi')
+                ->get();
+        } else {
+            $type = MasterSatgas::find(auth()->user()->satgas);
+            $data = DB::table('assets as a')
+                ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
+                ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->where('master_satgas.type', $type->type)
+                ->groupBy('b.type', 'a.kondisi')
+                ->get();
+        }
+    
+        $responseData = [];
+        // Transform data to pivot format
+        foreach ($data as $item) {
+            $kondisi = $kondisiMapping[$item->kondisi] ?? 'Unknown';  // Mapping kondisi
+            if (!isset($responseData[$kondisi])) {
+                $responseData[$kondisi] = [];
+            }
+            $responseData[$kondisi][$item->satgas] = $item->total;
+        }
+    
+        // Menyusun data dan kolom untuk respons JSON
+        $columns = array_keys($responseData[array_key_first($responseData)]);  // Mengambil satgas yang ada
+    
+        // Membuat data baris berdasarkan kondisi
+        $response = [
+            'columns' => $columns,
+            'data' => [],
+        ];
+    
+        foreach ($responseData as $kondisi => $satgasData) {
+            $row = ['category' => $kondisi];  // Menyimpan kategori berdasarkan kondisi
+            foreach ($columns as $satgas) {
+                $row[$satgas] = $satgasData[$satgas] ?? 0;  // Mengisi nilai berdasarkan satgas, default 0
+            }
+            $response['data'][] = $row;
+        }
+    
+        // Ekspor ke Excel
+        return Excel::download(new AssetKondisiExport($response), 'Asset_Kondisi_Report.xlsx');
     }
     
 }

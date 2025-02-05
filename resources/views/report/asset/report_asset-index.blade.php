@@ -64,7 +64,7 @@
                                 </a>
                             </li>
                             <li class="nav-item tab-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab_chart_2">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab_chart_2" id="tab_2">
                                     <i class="fa-solid fa-table"></i>
                                     <span style="font-size: 12px;">Summary Asset By Kondisi</span>
                                 </a>
@@ -149,7 +149,7 @@
                         <div class="tab-content">
                             <div class="row mx-2">
                                 <div class="col-12">
-                                    <button class="btn btn-sm btn-warning float-end" id="btn_add_asset_kondisi" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                    <button class="btn btn-sm btn-warning float-end" id="btn_add_asset_kondisi" data-bs-toggle="modal" data-bs-target="#reportKondisiModal">
                                         <i class="fas fa-print"></i> Export Data
                                     </button>
                                 </div>
@@ -158,6 +158,7 @@
                             <div class="tab-pane active p-3" id="tab_chart_kondisi">
                                 <div class="chart-container">
                                     <div id="assetsChartKondisi"></div>
+                                    <input type="text" id="chartImageInputKondisi">
                                 </div>
                             </div>
                     
@@ -179,6 +180,7 @@
     </div>
 </div>
 
+@include('report.asset.modal.option_kondisi-report')
 @include('report.asset.modal.option-report')
 
 @endsection
