@@ -45,7 +45,7 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="row mt-2 mx-2">
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-12 col-sm-12 col-md-3">
                             <ul class="nav nav-pills flex-column flex-sm-row mt-4" id="tablist" role="tablist">
                                 <li class="nav-item flex-sm-fill text-sm-center">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-chart-view" role="tab">
