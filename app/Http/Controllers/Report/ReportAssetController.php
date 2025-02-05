@@ -19,6 +19,39 @@ class ReportAssetController extends Controller
     function index() {
         return view('report.asset.report_asset-index');
     }
+    function getAssetPivot() {
+         // Get unique satgas types for dynamic columns
+            $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->pluck('master_satgas.type')
+            ->unique()
+            ->values();
+
+            // Fetch asset data grouped by category and satgas type
+            $data = Asset::selectRaw('inventory_categories.name as category_name, COUNT(*) as total, master_satgas.type as satgas_type')
+                ->join('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+                ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->groupBy('inventory_categories.name', 'master_satgas.type')
+                ->get()
+                ->groupBy(fn($asset) => $asset->category_name ?? 'Unknown'); // Fix grouping key
+
+            // Transform the grouped data into a pivot format
+            $pivotData = [];
+            foreach ($data as $categoryName => $assets) {
+                $row = ['category' => $categoryName]; // Row title
+                foreach ($categories as $satgas) {
+                    $row[$satgas] = 0; // Initialize all category columns with 0
+                }
+                foreach ($assets as $asset) {
+                    $row[$asset->satgas_type] = $asset->total; // Fill total count
+                }
+                $pivotData[] = $row;
+            }
+
+            return response()->json([
+                'columns' => $categories,
+                'data' => $pivotData
+            ]);
+    }
     function printInventarisDetail($id) {
         try {
             ini_set('memory_limit', '1024M');
