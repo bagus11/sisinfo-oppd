@@ -32,10 +32,21 @@ $(document).ready(function() {
             var options = {
                 chart: {
                     type: 'bar',
-                    height: 400,
-                    width: '120%', // Lebarkan sedikit agar bisa di-scroll
-                    toolbar: { show: false }
+                    height: '200%', // Biarkan tinggi otomatis
+                    width: '200%',  // Biarkan lebar otomatis
+                    toolbar: { show: false } // Hilangkan toolbar di mobile
                 },
+                responsive: [
+                    {
+                        breakpoint: 768,
+                        options: {
+                            chart: {
+                                height: 400 // Tambah tinggi di mobile
+                            },
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                ],
                 series: seriesData,
                 xaxis: {
                     categories: categories,
@@ -47,15 +58,24 @@ $(document).ready(function() {
                 plotOptions: {
                     bar: {
                         horizontal: true,
-                        barHeight: '80%', // Biarkan lebih lebar agar mudah dibaca
                         dataLabels: { position: 'right' }
+                    }
+                }, dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val; // Menampilkan nilai
+                    },
+                    textAnchor: 'start', // Memastikan teks sejajar ke kiri
+                    offsetX: 10, // Geser ke kanan
+                    style: {
+                        colors: ['#000'],
+                        fontSize: '10px'
                     }
                 },
                 legend: {
                     position: 'bottom'
                 }
             };
-            
             
             
             var chart = new ApexCharts(document.querySelector("#assetsChart"), options);
