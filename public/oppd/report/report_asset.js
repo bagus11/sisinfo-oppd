@@ -33,7 +33,7 @@ $(document).ready(function() {
                 chart: {
                     type: 'bar',
                     height: '200%', // Biarkan tinggi otomatis
-                    width: '200%',  // Biarkan lebar otomatis
+                    width: '150%',  // Biarkan lebar otomatis
                     toolbar: { show: false } // Hilangkan toolbar di mobile
                 },
                 responsive: [
