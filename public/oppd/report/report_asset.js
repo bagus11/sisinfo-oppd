@@ -9,7 +9,7 @@ $(document).ready(function() {
 
             // Dynamically add category columns
             response.columns.forEach(category => {
-                console.log(category)
+            
                 columns.push({ data: category, title: category });
             });
 
