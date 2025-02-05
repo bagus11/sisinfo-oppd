@@ -226,26 +226,56 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
                     return date.toISOString().replace('T', ' ').substring(0, 19);
                 }
             },
-            { data: 'pic_relation.name', name: 'pic_relation.name' },
             { 
-                data: 'satgas_relation.name', 
+                data: 'pic_relation', 
+                name: 'pic_relation.name',
+                render: function(data) {
+                    return data ? data.name : '-';
+                }
+            },
+            { 
+                data: 'satgas_relation', 
                 name: 'satgas_relation.name',
                 render: function(data) {
-                    return data ? data : '-';
+                    return data ? data.name : '-';
                 }
             },
             { data: 'no_un', name: 'no_un' },
-            { data: 'category_relation.name', name: 'category_relation.name' },
-            { data: 'sub_category_relation.name', name: 'sub_category_relation.name' },
-            { data: 'type_relation.name', name: 'type_relation.name' },
-            { data: 'merk_relation.name', name: 'merk_relation.name' },
+            { 
+                data: 'category_relation', 
+                name: 'category_relation.name',
+                render: function(data) {
+                    return data ? data.name : '-';
+                }
+            },
+            { 
+                data: 'sub_category_relation', 
+                name: 'sub_category_relation.name',
+                render: function(data) {
+                    return data ? data.name : '-';
+                }
+            },
+            { 
+                data: 'type_relation', 
+                name: 'type_relation.name',
+                render: function(data) {
+                    return data ? data.name : '-';
+                }
+            },
+            { 
+                data: 'merk_relation', 
+                name: 'merk_relation.name',
+                render: function(data) {
+                    return data ? data.name : '-';
+                }
+            },
             { data: 'no_mesin', name: 'no_mesin' },
             { data: 'no_rangka', name: 'no_rangka' },
             {
                 data: 'kondisi',
                 name: 'kondisi',
                 render: function (data) {
-                    switch (data) {
+                    switch (parseInt(data)) {
                         case 0: return '-';
                         case 1: return 'BAIK';
                         case 2: return 'RR OPS';

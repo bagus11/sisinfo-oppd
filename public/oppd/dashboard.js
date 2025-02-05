@@ -463,21 +463,29 @@ function getRadialBar(response) {
         legend: {
             show: true,
             position: "left", // Place legend on the left
-            floating: true, // Float the legend to the blank space
-            offsetX: 5, // Adjust position if needed
-            offsetY: 10, // Adjust vertical alignment
+            floating: true,
+            offsetX: 0, // Adjust horizontal position
+            offsetY: 10, // Adjust vertical position
             markers: {
-                width: 5,
-                height: 5,
-                radius: 2,
+                width: 10,  // Increase marker size
+                height: 10,
+                radius: 5,
             },
             labels: {
                 colors: "#333",
-                fontSize: "2px !important",  // Corrected font size format
-                fontWeight: "bold",
-                useSeriesColors: false, // Match legend colors with series
+                style: { 
+                    fontSize: "10px", // Adjust legend font size
+                    fontWeight: "bold",
+                },
+                useSeriesColors: false,
             },
-        },
+            itemMargin: {
+                horizontal: 5, // Adjust horizontal spacing between items
+                vertical: 5,   // Adjust vertical spacing between items
+            },
+        }
+        
+        
     };
 
     const chart = new ApexCharts(document.querySelector("#radialChart"), radialBarOption);
