@@ -16,14 +16,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use \Mpdf\Mpdf as PDF;
+use Yajra\DataTables\Facades\DataTables;
+
 class ReportAssetController extends Controller
 {
     function index() {
         return view('report.asset.report_asset-index');
     }
-    function getAssetPivot() {
+    function getAssetPivot(Request $request) {
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
-            $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            $categories = Asset::join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')->where('master_satgas.type','like', '%'.$request->type.'%')
             ->pluck('master_satgas.type')
             ->unique()
             ->values();
@@ -32,6 +34,7 @@ class ReportAssetController extends Controller
             $data = Asset::selectRaw('inventory_categories.name as category_name, COUNT(*) as total, master_satgas.type as satgas_type')
                 ->join('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
                 ->join('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->where('master_satgas.type','like', '%'.$request->type.'%')
                 ->groupBy('inventory_categories.name', 'master_satgas.type')
                 ->get()
                 ->groupBy(fn($asset) => $asset->category_name ?? 'Unknown'); // Fix grouping key
@@ -701,4 +704,49 @@ class ReportAssetController extends Controller
         return Excel::download(new AssetKondisiExport($response), 'Asset_Kondisi_Report.xlsx');
     }
     
+    function getCategoryFilter(Request $request) {
+        if ($request->ajax()) {
+            // dd($request);
+            $kondisi = match ($request->kondisi) {
+                "BAIK" => 1,
+                "RR OPS" => 2,
+                "RB" => 3,
+                "RR TDK OPS" => 4,
+                "M" => 5,
+                "D" => 6,
+                default => 0,
+            };
+           
+            // Fetch assets with relationships
+            $data = Asset::query()
+            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->with([
+                'categoryRelation',
+                'subCategoryRelation',
+                'typeRelation',
+                'merkRelation',
+                'satgasRelation'
+            ])
+            ->where(function ($q) use ($request) {
+                if (!empty($request->type)) {
+                    $q->where('master_satgas.type', $request->type);
+                }
+            })
+            ->whereHas('categoryRelation', function ($query) use ($request) {
+                if (!empty($request->category)) {
+                    $query->where('name', $request->category);
+                }
+            })
+            ->where(function ($q) use ($kondisi) {
+                if ($kondisi !== 0) {
+                    $q->where('assets.kondisi', $kondisi);
+                }
+            })
+            ->select('assets.*')
+            ->get();
+            return DataTables::of($data)->make(true);
+        }
+    
+        return abort(403, 'Unauthorized action.');
+    }
 }

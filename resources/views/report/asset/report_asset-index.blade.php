@@ -99,18 +99,29 @@
                         </div>
 
                         <div class="tab-content">
-                            <div class="row mx-2">
+                          
+                            <div class="row mx-2 mt-2">
+                               
                                 <div class="col-12">
                                     <button class="btn btn-sm btn-warning float-end" id="btn_add_asset" data-bs-toggle="modal" data-bs-target="#reportModal">
                                         <i class="fas fa-print"></i> Export Data
                                     </button>
                                 </div>
                             </div>
-
                             <div class="tab-pane active p-3" id="tab-chart-view">
+                                <div class="row mt-2">
+                                    <div class="col-12 col-sm-12 col-md-8">
+                                        <fieldset>
+                                            <legend class="bg-danger">   <i class="fas fa-filter"></i>Filter</legend>
+                                            <div id="satgas_button" class="row d-flex justify-content-between">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
                                 <div class="chart-container">
                                     <div id="assetsChart"></div>
                                 </div>
+                              
                             </div>
                     
                             <div class="tab-pane p-3" id="tab-table-view">
@@ -180,6 +191,7 @@
     </div>
 </div>
 
+@include('report.asset.modal.detail-master_asset')
 @include('report.asset.modal.option_kondisi-report')
 @include('report.asset.modal.option-report')
 

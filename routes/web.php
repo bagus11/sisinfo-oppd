@@ -177,6 +177,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/getAssetKondisi', 'App\Http\Controllers\Report\ReportAssetController@getAssetKondisi');
     Route::post('exportAssetKondisiPDF', 'App\Http\Controllers\Report\ReportAssetController@exportAssetKondisiPDF');
     Route::get('exportAssetKondisi', 'App\Http\Controllers\Report\ReportAssetController@exportAssetKondisi');
+    Route::get('getCategoryFilter', 'App\Http\Controllers\Report\ReportAssetController@getCategoryFilter');
     
     // Report   
 

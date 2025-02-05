@@ -87,7 +87,7 @@ class AssetController extends Controller
     
     }
     function getSatgasType() {
-        $data = MasterSatgas::select('type', DB::raw('COUNT(*) as total'))
+        $data = MasterSatgas::select('type', DB::raw('COUNT(*) as total'))->whereNot('type','OPPD')
         ->groupBy('type')
         ->get();
     

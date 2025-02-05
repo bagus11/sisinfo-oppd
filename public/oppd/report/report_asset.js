@@ -6,7 +6,6 @@ $(document).ready(function() {
             let columns = [
                 { data: "category", title: "Category" } // First column
             ];
-
             // Dynamically add category columns
             response.columns.forEach(category => {
             
@@ -15,7 +14,6 @@ $(document).ready(function() {
 
             // Generate table headers dynamically
             $('#dynamic-header').html(columns.map(col => `<th>${col.title}</th>`).join(""));
-
             // Initialize DataTables
             $('#assetsTable').DataTable({
                 processing: true,
@@ -26,8 +24,84 @@ $(document).ready(function() {
             horizontalBarChart(response,'assetsChart')
         }
     });
+ 
+    $(document).on("click", ".satgasRender", function() {
+        // Mengambil type dari tombol yang diklik
+        var type = $(this).data('type');
+        
+        // Mengubah semua tombol menjadi btn-secondary
+        $(".satgasRender").removeClass("btn-info").addClass("btn-secondary");
+    
+        // Mengubah tombol yang diklik menjadi btn-info (active)
+        $(this).removeClass("btn-secondary").addClass("btn-info");
+    
+        // Clear dan destroy DataTable yang lama
+        $('#assetsTable').DataTable().clear().destroy();
+        
+        // Mengambil data berdasarkan type yang diklik
+        $.ajax({
+            url: "/assets-pivot", // Adjust to match your route
+            type: "GET",
+            data: {'type': type},
+            beforeSend: function() {
+                SwalLoading('Please wait ...');
+            },
+            success: function(response) {
+                swal.close();
+                
+                let columns = [
+                    { data: "category", title: "Category" } // First column
+                ];
+                
+                // Menambahkan kolom kategori secara dinamis
+                response.columns.forEach(category => {
+                    columns.push({ data: category, title: category });
+                });
+    
+                // Menghasilkan header tabel secara dinamis
+                $('#dynamic-header').html(columns.map(col => `<th>${col.title}</th>`).join(""));
+    
+                // Menginisialisasi DataTables
+                $('#assetsTable').DataTable({
+                    processing: true,
+                    serverSide: false, // Client-side processing
+                    data: response.data,
+                    columns: columns
+                });
+                
+                // Menampilkan chart horizontal bar
+                horizontalBarChart(response, 'assetsChart');
+            }
+        });
+    });
+    
+    getCallbackNoSwal('getSatgasType', null, function(response) {
+        $('#satgas_button').empty();
+        $('#satgas_button').append(`
+            <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
+                <button class="btn satgasRender btn-sm btn-info w-100" style="font-size:9px !important" data-type="">
+                    <strong>ALL</strong>
+                </button>
+            </div>
+        `);
+    
+        var data = '';
+        for (let i = 0; i < response.data.length; i++) {
+            data += `
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-2">
+                    <button class="btn satgasRender btn-sm btn-secondary w-100" style="font-size:9px !important" data-type="${response.data[i].type}">
+                        <strong>${response.data[i].type}</strong>
+                    </button>
+                </div>
+            `;
+        }
+    
+        $('#satgas_button').append(data);
+    });
+    
 
     function horizontalBarChart(response,chart_id){
+        $(`#${chart_id}`).empty()
         var categories = response.data.map(item => item.category); // Extract categories
         var seriesData = response.columns.map(satgas => ({
             name: satgas,
@@ -39,7 +113,109 @@ $(document).ready(function() {
                 type: 'bar',
                 height: '200%', // Biarkan tinggi otomatis
                 width: '150%',  // Biarkan lebar otomatis
-                toolbar: { show: false } // Hilangkan toolbar di mobile
+                toolbar: { show: false }, // Hilangkan toolbar di mobile,
+                events: {
+                    dataPointSelection: function(event, chartContext, config) {
+                        var selectedData = config.w.config.series[config.seriesIndex].data[config.dataPointIndex];
+                        var category = categories[config.dataPointIndex];
+                        var satgas = config.w.config.series[config.seriesIndex].name;
+                        $('#detailAssetModal').modal('show')
+                        $('#modal_title').html(satgas + ' : ' + category )
+                        $('#detailAssetTable').DataTable().clear().destroy();
+                        $('#detailAssetTable').DataTable({
+                            processing: true,
+                            serverSide: true,
+                            ajax: {
+                                url: `getCategoryFilter`,
+                                type: 'GET',
+                                data :{'type' : satgas, category : category}
+                            },
+                            columns: [
+                                { 
+                                    data: 'asset_code', 
+                                    name: 'asset_code',
+                                    render: function (data) {
+                                        return data ? data : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                {
+                                    data: 'kondisi',
+                                    name: 'kondisi',
+                                    render: function (data) {
+                                        return kondisiMapping[data] || '-';
+                                    }
+                                },
+                                { 
+                                    data: 'no_un', 
+                                    name: 'no_un', 
+                                    render: function (data) {
+                                        return data ? data : '-'; // Return '-' if the value is null or undefined
+                                    }
+                                },
+                                { 
+                                    data: 'category_relation', 
+                                    name: 'category_relation.name', 
+                                    render: function (data) {
+                                        return data ? data.name : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                { 
+                                    data: 'sub_category_relation', // Check if sub_category_relation exists
+                                    name: 'sub_category_relation.name', 
+                                    render: function (data) {
+                                        return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                { 
+                                    data: 'type_relation', 
+                                    name: 'type_relation.name', 
+                                    render: function (data) {
+                                        return data ? data.name : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                { 
+                                    data: 'merk_relation', 
+                                    name: 'merk_relation.name', 
+                                    render: function (data) {
+                                        return data ? data.name : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                { 
+                                    data: 'no_mesin', 
+                                    name: 'no_mesin', 
+                                    render: function (data) {
+                                        return data ? data : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                { 
+                                    data: 'no_rangka', 
+                                    name: 'no_rangka',
+                                    render: function (data) {
+                                        return data ? data : '-'; // Safely check for null/undefined
+                                    }
+                                },
+                                { 
+                                    data: 'satgas_relation', 
+                                    name: 'satgas_relation.type', 
+                                    render: function (data) {
+                                        return data && data.name ? data.type : '-'; // Safely check if data and data.name exist
+                                    }
+                                },
+                                { 
+                                    data: 'satgas_relation', 
+                                    name: 'satgas_relation.name', 
+                                    render: function (data) {
+                                        return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                                    }
+                                },
+                              
+                                
+                             
+                              
+                            ]
+                        });
+                    }
+                }
             },
             responsive: [
                 {
@@ -93,6 +269,7 @@ $(document).ready(function() {
         
     }
 
+   
     $('#btn_print_pdf').on('click', function () {
         // Ambil elemen chart
         let chart = document.querySelector("#assetsChart svg");
@@ -138,6 +315,7 @@ $(document).ready(function() {
         }
     });
     
+   
     
     $('#btn_export_excel').on('click', function(){
         SwalLoading('Please wait ...');
@@ -145,6 +323,7 @@ $(document).ready(function() {
         window.location.href = url;
         swal.close()
     })
+   
 });
 var kondisiMapping = {
     1: 'BAIK',
@@ -190,9 +369,10 @@ $('#tab_2').on('click', function() {
     });
 });
 
-function kondisiChart(response){
+function kondisiChart(response) {
     var satgas = [];
     var kondisiData = {};
+
     // Organisir data berdasarkan satgas dan kondisi
     response.chart.forEach(function(item) {
         var kondisiLabel = kondisiMapping[item.kondisi] || 'Unknown';  // Default 'Unknown' jika tidak ada mapping
@@ -222,7 +402,108 @@ function kondisiChart(response){
     var options = {
         chart: {
             type: 'bar',
-            height: 350
+            height: 350,
+            events: {
+                // Event ketika bar diklik
+                dataPointSelection: function(event, chartContext, config) {
+                    var selectedData = config.w.config.series[config.seriesIndex].data[config.dataPointIndex];
+                    var kategoriKondisi = kondisi[config.dataPointIndex];  // Dapatkan kategori kondisi dari index
+                    var satgas = config.w.config.series[config.seriesIndex].name;
+                    // Menampilkan modal dengan informasi kondisi dan satgas
+                    $('#detailAssetModal').modal('show');
+                    $('#modal_title').html(satgas + ' : ' + kategoriKondisi);
+                    // Initialize DataTable with the filtered data
+                    $('#detailAssetTable').DataTable().clear().destroy();
+                    $('#detailAssetTable').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url: `getCategoryFilter`, // Replace with your actual URL
+                            type: 'GET',
+                            data: { 'type': satgas, 'kondisi': kategoriKondisi }
+                        },
+                        columns: [
+                            { 
+                                data: 'asset_code', 
+                                name: 'asset_code',
+                                render: function(data) {
+                                    return data ? data : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            {
+                                data: 'kondisi',
+                                name: 'kondisi',
+                                render: function(data) {
+                                    return kondisiMapping[data] || '-';
+                                }
+                            },
+                            { 
+                                data: 'no_un', 
+                                name: 'no_un', 
+                                render: function(data) {
+                                    return data ? data : '-'; // Return '-' if the value is null or undefined
+                                }
+                            },
+                            { 
+                                data: 'category_relation', 
+                                name: 'category_relation.name', 
+                                render: function(data) {
+                                    return data ? data.name : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            { 
+                                data: 'sub_category_relation', // Check if sub_category_relation exists
+                                name: 'sub_category_relation.name', 
+                                render: function(data) {
+                                    return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            { 
+                                data: 'type_relation', 
+                                name: 'type_relation.name', 
+                                render: function(data) {
+                                    return data ? data.name : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            { 
+                                data: 'merk_relation', 
+                                name: 'merk_relation.name', 
+                                render: function(data) {
+                                    return data ? data.name : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            { 
+                                data: 'no_mesin', 
+                                name: 'no_mesin', 
+                                render: function(data) {
+                                    return data ? data : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            { 
+                                data: 'no_rangka', 
+                                name: 'no_rangka',
+                                render: function(data) {
+                                    return data ? data : '-'; // Safely check for null/undefined
+                                }
+                            },
+                            { 
+                                data: 'satgas_relation', 
+                                name: 'satgas_relation.type', 
+                                render: function(data) {
+                                    return data && data.name ? data.type : '-'; // Safely check if data and data.name exist
+                                }
+                            },
+                            { 
+                                data: 'satgas_relation', 
+                                name: 'satgas_relation.name', 
+                                render: function(data) {
+                                    return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                                }
+                            },
+                        ]
+                    });
+                }
+            }
         },
         plotOptions: {
             bar: {
@@ -237,16 +518,18 @@ function kondisiChart(response){
             categories: kondisi,  // Data kondisi (yang sudah di-mapping) untuk sumbu X
         },
         series: seriesData,  // Data series berdasarkan satgas
+     
     };
+
     // Render chart
     var chart = new ApexCharts(document.querySelector("#assetsChartKondisi"), options);
     chart.render().then(() => {
         chart.dataURI().then(({ imgURI }) => {
-            // document.getElementById("chartImageKondisi").src = imgURI;
             document.getElementById("chartImageInputKondisi").value = imgURI;
         });
     });
 }
+
 
 $('#btn_print_kondisi_pdf').on('click', function () {
     // Ambil elemen chart
@@ -299,3 +582,4 @@ $('#btn_export_kondisi_excel').on('click', function(){
     window.location.href = url;
     swal.close()
 })
+
