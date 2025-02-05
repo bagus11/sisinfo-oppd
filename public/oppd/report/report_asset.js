@@ -109,12 +109,15 @@ $(document).ready(function() {
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
                 let chartBase64 = canvas.toDataURL("image/png"); // Konversi ke Base64
-              
+    
                 // Kirim ke server menggunakan AJAX
                 $.ajax({
                     url: "/exportAssetCategoryPDF",
-                    type: "get",
-                    data: { chart: chartBase64, _token: "{{ csrf_token() }}" },
+                    type: "post",
+                    data: { chart: chartBase64 },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     xhrFields: { responseType: 'blob' },
                     success: function (data) {
                         let blob = new Blob([data], { type: "application/pdf" });
@@ -134,6 +137,7 @@ $(document).ready(function() {
             alert("Chart tidak ditemukan!");
         }
     });
+    
     
     $('#btn_export_excel').on('click', function(){
         SwalLoading('Please wait ...');

@@ -44,6 +44,7 @@
     </style>
 </head>
 <body>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="title">{{ $title }}</div>
     <div class="date">Tanggal: {{ $date }}</div>
 
