@@ -89,7 +89,6 @@ $(document).ready(function() {
                 document.getElementById("chartImageInput").value = imgURI;
             });
         });
-        chart.render();
         
     }
 
