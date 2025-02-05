@@ -15,6 +15,21 @@
         color: white !important; 
         background-color: #BCCCDC !important;
     }
+    #assetsChart {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 300px; /* Ukuran minimum untuk mobile */
+    }
+    @media (max-width: 768px) {
+        #assetsChart {
+            min-height: 400px; /* Tambah tinggi di layar kecil */
+        }
+    }
+    .chart-container {
+        width: 100%;
+        overflow-x: auto;  /* Aktifkan scroll horizontal */
+        white-space: nowrap; /* Mencegah wrapping */
+    }
 </style>
     <div class="row">
         <div class="col-12">
@@ -53,7 +68,9 @@
                         <div class="tab-pane active p-3" id="tab-chart-view" role="tabpanel">
                             <div class="row">
                                 <div class="col-12">
-                                    <div id="assetsChart"></div>
+                                    <div class="chart-container">
+                                        <div id="assetsChart"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -29,11 +29,12 @@ $(document).ready(function() {
                 data: response.data.map(item => item[satgas] || 0) // Fill empty values with 0
             }));
 
-            // Initialize ApexCharts
             var options = {
                 chart: {
                     type: 'bar',
-                    height: 500
+                    height: 400,
+                    width: '120%', // Lebarkan sedikit agar bisa di-scroll
+                    toolbar: { show: false }
                 },
                 series: seriesData,
                 xaxis: {
@@ -46,21 +47,16 @@ $(document).ready(function() {
                 plotOptions: {
                     bar: {
                         horizontal: true,
-                        dataLabels: { position: 'top' } // Positioning inside bars
-                    }
-                },
-                dataLabels: {
-                    enabled: true,
-                    offsetX: 10, 
-                    style: {
-                        colors: ['#000'],
-                        fontSize:8
+                        barHeight: '80%', // Biarkan lebih lebar agar mudah dibaca
+                        dataLabels: { position: 'right' }
                     }
                 },
                 legend: {
                     position: 'bottom'
                 }
             };
+            
+            
             
             var chart = new ApexCharts(document.querySelector("#assetsChart"), options);
             chart.render();
