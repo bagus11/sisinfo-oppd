@@ -1,32 +1,46 @@
 @extends('garage._dashboard')
 @section('content')
 <style>
-   .tab-item {
-        flex: 1; /* Menyesuaikan ukuran otomatis */
+    .chart-container {
+         width: 100%;
+         overflow-x: auto;  /* Aktifkan scroll horizontal */
+         white-space: nowrap; /* Mencegah wrapping */
+     } 
+ 
+     /* Pastikan chart tidak terlalu kecil */
+     #assetsChart {
+         width: 100% !important;
+         min-height: 300px; /* Ukuran minimum */
+     }
+ 
+     @media (max-width: 768px) {
+         #assetsChart {
+             min-height: 400px; /* Tambah tinggi di layar kecil */
+         }
+     }
+     .tab-item {
+        flex: 1; /* Agar ukuran otomatis */
+        min-width: 50%; /* Membuat 2 kolom pada mobile */
+        text-align: center;
+        padding: 5px; /* Tambahkan padding */
     }
 
-    /* Mobile: 2 kolom */
+    /* Beri jarak antar tab di semua ukuran layar */
+    .tab-item .nav-link {
+        padding: 5px 5px; /* Tambahkan padding dalam tombol */
+        margin: 5px; /* Tambahkan margin antar tombol */
+        border-radius: 8px; /* Agar sudut membulat */
+    }
+
+    /* Mobile: Pastikan tab berada dalam satu baris dengan spasi */
     @media (max-width: 767px) {
         .tab-item {
-            width: 50%; /* Setiap tab mengambil 50% layar */
+            display: inline-block;
+            width: 50%;
         }
     }
-   
-    #assetsChart {
-        width: 100% !important;
-        height: auto !important;
-        min-height: 300px; /* Ukuran minimum untuk mobile */
-    }
-    @media (max-width: 768px) {
-        #assetsChart {
-            min-height: 400px; /* Tambah tinggi di layar kecil */
-        }
-    }
-    .chart-container {
-        width: 100%;
-        overflow-x: auto;  /* Aktifkan scroll horizontal */
-        white-space: nowrap; /* Mencegah wrapping */
-    } 
+
+    /* Warna & Styling untuk Tab */
     #tab_summary_category .nav-link.active {
         background-color: #179BAE !important;
         color: white !important;
@@ -36,7 +50,18 @@
         color: white !important; 
         background-color: #BCCCDC !important;
     }
-</style>
+     /* Warna & Styling untuk Tab */
+     #tab_summary_category .nav-link.active {
+         background-color: #179BAE !important;
+         color: white !important;
+         border-color: #179BAE !important;
+     }
+     #tab_summary_category .nav-link {
+         color: white !important; 
+         background-color: #BCCCDC !important;
+     }
+ </style>
+ 
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -51,23 +76,25 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="row mt-2 mx-2">
-                        <div class="col-12 col-sm-12 col-md-3">
-                            <ul class="nav nav-pills d-flex flex-sm-row flex-wrap justify-content-center" id="tab_summary_category" role="tab_summary_category">
-                                <li class="nav-item flex-fill text-center tab-item">
+                        <div class="col-12 col-sm-6 col-md-3">
+                            <ul class="nav nav-pills d-flex flex-wrap justify-content-center" id="tab_summary_category" role="tab_summary_category">
+                                <li class="nav-item tab-item">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-chart-view" role="tab">
                                         <i class="fa-solid fa-chart-simple"></i>
-                                        <span style="font-size: 12px !important; margin-left:10px">Chart View</span>
+                                        <span style="font-size: 12px;">Chart View</span>
                                     </a>
                                 </li>
-                                <li class="nav-item flex-fill text-center tab-item" style="margin-left: 10px">
+                                <li class="nav-item tab-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab-table-view" role="tab">
                                         <i class="fa-solid fa-table"></i>
-                                        <span style="font-size: 12px !important; margin-left:10px">Table View</span>
+                                        <span style="font-size: 12px;">Table View</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
+                        
                     </div>
+                    
                     
                 
                     <div class="tab-content">
