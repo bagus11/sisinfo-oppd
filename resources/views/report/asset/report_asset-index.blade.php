@@ -1,19 +1,15 @@
 @extends('garage._dashboard')
 @section('content')
 <style>
-    #asset_table tbody tr {
-    cursor: pointer;
-    background-color: #B1F0F7 !important; 
-    color: white !important;
-}
-    #tablist .nav-link.active {
-        background-color: #179BAE !important;
-        color: white !important;
-        border-color: #179BAE !important;
+   .tab-item {
+        flex: 1; /* Menyesuaikan ukuran otomatis */
     }
-    #tablist .nav-link {
-        color: white !important; 
-        background-color: #BCCCDC !important;
+
+    /* Mobile: 2 kolom */
+    @media (max-width: 767px) {
+        .tab-item {
+            width: 50%; /* Setiap tab mengambil 50% layar */
+        }
     }
     #assetsChart {
         width: 100% !important;
@@ -45,23 +41,24 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="row mt-2 mx-2">
-                        <div class="col-12 col-sm-12 col-md-3">
-                            <ul class="nav nav-pills flex-column flex-sm-row mt-4" id="tablist" role="tablist">
-                                <li class="nav-item flex-sm-fill text-sm-center">
+                        <div class="col-12">
+                            <ul class="nav nav-pills d-flex flex-sm-row flex-wrap justify-content-center" id="tablist" role="tablist">
+                                <li class="nav-item flex-fill text-center tab-item">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#tab-chart-view" role="tab">
                                         <i class="fa-solid fa-chart-simple"></i>
-                                        <span style="font-size: 12px !important; margin-left:5px !important">Chart View</span>
+                                        <span>Chart View</span>
                                     </a>
                                 </li>
-                                <li class="nav-item flex-sm-fill text-sm-center" style="margin-left: 10px !important">
+                                <li class="nav-item flex-fill text-center tab-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#tab-table-view" role="tab">
                                         <i class="fa-solid fa-table"></i>
-                                        <span style="font-size: 12px !important; margin-left:5px !important">Table View</span>
+                                        <span>Table View</span>
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </div>
+                    
                 
                     <div class="tab-content">
                         <!-- Chart View -->
