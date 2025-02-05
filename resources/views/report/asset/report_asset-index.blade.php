@@ -158,7 +158,7 @@
                             <div class="tab-pane active p-3" id="tab_chart_kondisi">
                                 <div class="chart-container">
                                     <div id="assetsChartKondisi"></div>
-                                    <input type="text" id="chartImageInputKondisi">
+                                    <input type="hidden" id="chartImageInputKondisi">
                                 </div>
                             </div>
                     
