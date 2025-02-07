@@ -97,12 +97,42 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                         }
                     }
                 },
-                { data: 'asset_relation.satgas_relation.type', name: 'asset_relation.satgas_relation.type'},
+                { 
+                    data: 'asset_relation.satgas_relation', 
+                    name: 'asset_relation.satgas_relation.type',
+                    render: function(data) {
+                        return data ? data.name : '-';
+                    }
+                },
                 { data: 'asset_relation.no_un', name: 'asset_relation.no_un' },
-                { data: 'asset_relation.category_relation.name', name: 'asset_relation.category_relation.name' },
-                { data: 'asset_relation.sub_category_relation.name', name: 'asset_relation.sub_category_relation.name' },
-                { data: 'asset_relation.type_relation.name', name: 'asset_relation.type_relation.name' },
-                { data: 'asset_relation.merk_relation.name', name: 'asset_relation.merk_relation.name' },
+                { 
+                    data: 'asset_relation.category_relation', 
+                    name: 'asset_relation.category_relation.name',
+                    render: function(data) {
+                        return data ? data.name : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.sub_category_relation', 
+                    name: 'asset_relation.sub_category_relation.name',
+                    render: function(data) {
+                        return data ? data.name : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.type_relation', 
+                    name: 'asset_relation.type_relation',
+                    render: function(data) {
+                        return data ? data.name : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.merk_relation', 
+                    name: 'asset_relation.merk_relation.type',
+                    render: function(data) {
+                        return data ? data.name : '-';
+                    }
+                },
                 { data: 'asset_relation.no_mesin', name: 'asset_relation.no_mesin' },
                 { data: 'asset_relation.no_rangka', name: 'asset_relation.no_rangka' },
                 { data: 'catatan', name: 'catatan' },

@@ -491,3 +491,19 @@ function getRadialBar(response) {
     const chart = new ApexCharts(document.querySelector("#radialChart"), radialBarOption);
     chart.render();
 }
+function adjustZoomForScreens() {
+    const screenWidth = window.screen.width;
+    console.log(screenWidth)
+    // Check for screen width matching 13", 14", or 15" devices
+    if (screenWidth >= 1240 && screenWidth <= 1600) {
+        document.body.style.zoom = "85%"; // Apply 80% zoom for 13", 14", or 15" screens
+        console.log('your pc width is : ' + screenWidth)
+    } else {
+        document.body.style.zoom = "100%"; // Default zoom for other screen sizes
+    }
+}
+
+// Call this function on page load
+window.onload = function() {
+    adjustZoomForScreens();
+};

@@ -1,5 +1,6 @@
 <?php
 
+use Alexusmai\LaravelFileManager\Controllers\FileManagerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -187,6 +188,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/getFile', 'App\Http\Controllers\FileController@getFile')->name('getFile');
     Route::post('/addFile', 'App\Http\Controllers\FileController@addFile')->name('addFile');
     Route::post('/uploadFile', 'App\Http\Controllers\FileController@uploadFile')->name('uploadFile');
-    
     // File Sharing
+    Route::get('/filemanager', 'App\Http\Controllers\FileManagerController@index')->name('filemanager');
 });

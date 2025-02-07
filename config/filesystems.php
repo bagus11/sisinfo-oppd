@@ -43,7 +43,12 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
-
+        'file_sharing' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/file_sharing'),
+            'url' => env('APP_URL') . '/storage/file_sharing',
+            'visibility' => 'public',
+        ],
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
