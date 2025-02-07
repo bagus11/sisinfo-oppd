@@ -26,6 +26,9 @@
     height: 93vh; /* Larger screens use viewport height */
   }
 }
+.sidebar-nav{
+  height: 100% !important;
+}
 
 .col-12 {
   display: flex;
