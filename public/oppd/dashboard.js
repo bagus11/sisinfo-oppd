@@ -495,8 +495,11 @@ function adjustZoomForScreens() {
     const screenWidth = window.screen.width;
     console.log(screenWidth)
     // Check for screen width matching 13", 14", or 15" devices
-    if (screenWidth >= 1240 && screenWidth <= 1600) {
-        document.body.style.zoom = "75%"; // Apply 80% zoom for 13", 14", or 15" screens
+    if(screenWidth == 1512){
+        document.body.style.zoom = "70%"; // Apply 80% zoom for 13", 14", or 15" screens
+    }
+    else if (screenWidth >= 1240 && screenWidth <= 1600) {
+        document.body.style.zoom = "85%"; // Apply 80% zoom for 13", 14", or 15" screens
         console.log('your pc width is : ' + screenWidth)
     } else {
         document.body.style.zoom = "100%"; // Default zoom for other screen sizes
