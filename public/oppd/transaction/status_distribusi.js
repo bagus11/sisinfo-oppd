@@ -1,6 +1,7 @@
 const table = $('#status_distribusi_table').DataTable({
     processing: true,
     serverSide: true,
+    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
     ajax: {
         url: `getStatusDistribusi`,
         type: 'GET',
@@ -92,6 +93,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
     const tableDetail = $('#asset_table_detail').DataTable({
         processing: true,
         serverSide: false, // Disable server-side processing since we're using local data
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         data: row.item_relation, // Use row.item_relation as the data source
         columns: [
             { data: 'asset_code', name: 'asset_code' },
@@ -312,6 +314,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
         $('#distribusi_log_table').DataTable({
             processing: true,
             serverSide: true,
+            lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
             ajax: {
                 url: `getDistribusiLog`,
                 type: 'GET',
@@ -439,6 +442,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                 const assetTable = $('#asset_table').DataTable({
                     processing: true,
                     serverSide: true,
+                    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
                     ajax: {
                         url: `getMasterAssetDistribusi`,
                         type: 'GET',

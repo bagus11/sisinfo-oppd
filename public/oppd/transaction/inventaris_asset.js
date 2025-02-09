@@ -1,6 +1,7 @@
 const table = $('#inventaris_table').DataTable({
     processing: true,
     serverSide: true,
+    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
     ajax: {
         url: `getInventaris`,
         type: 'GET',
@@ -64,6 +65,7 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
         // Populate the DataTable with the response data
         $('#detailTableAsset').DataTable({
             data: response,
+            lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
             columns: [
                 { 
                         data: 'asset_code',
@@ -217,6 +219,7 @@ $('#btn_add_asset').on('click', function(){
             const assetTable = $('#asset_table').DataTable({
                 processing: true,
                 serverSide: true,
+                lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
                 ajax: {
                     url: `getMasterAssetInventarisTable`,
                     type: 'GET',

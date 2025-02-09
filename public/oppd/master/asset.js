@@ -3,6 +3,7 @@ $(document).ready(function () {
     var table = $('#asset_table').DataTable({
         processing: true,
         serverSide: true,
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         ajax: {
             url: `getMasterAsset`,
             type: 'GET',
@@ -71,6 +72,7 @@ $(document).ready(function () {
     var table = $('#asset_table').DataTable({
         processing: true,
         serverSide: true,
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         ajax: {
             url: `getMasterAsset`,
             type: 'GET',
@@ -208,6 +210,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
     const table_log = $('#asset_table_log').DataTable({
         processing: true,
         serverSide: true,
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         ajax: {
             url: `getLogAsset`,
             type: 'GET',

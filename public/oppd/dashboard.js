@@ -107,6 +107,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                     $('#asset_table').DataTable({
                                         processing: true,
                                         serverSide: true,
+                                        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
                                         ajax: {
                                             url: `getAssetFilter`,
                                             type: 'GET',
@@ -399,6 +400,7 @@ $('#pengajuan_asset_table').DataTable({
     scrollY:200,
     processing: true,
     serverSide: true,
+    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
     ajax: {
         url: `getPengajuanAsset`,
         type: 'GET',
@@ -444,6 +446,7 @@ $('.pengajuan_filter').on('click', function(){
         scrollY:200,
         processing: true,
         serverSide: true,
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         ajax: {
             url: `getPengajuanAssetFilter`,
             type: 'GET',
@@ -554,6 +557,7 @@ function getRadialBar(response) {
                     $('#asset_table').DataTable({
                         processing: true,
                         serverSide: true,
+                        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
                         ajax: {
                             url: `getAssetFilter`,
                             type: 'GET',

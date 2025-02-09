@@ -2,6 +2,7 @@
 const table = $('#laporan_table').DataTable({
     processing: true,
     serverSide: true,
+    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
     ajax: {
         url: 'getMaintenance',
         type: 'GET',
@@ -156,6 +157,7 @@ $('#laporan_table tbody').on('click', 'tr', function () {
     $('#edit_asset_table').DataTable().clear().destroy();
     $('#edit_asset_table').DataTable({
         responsive: true, 
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         scrollX: true,    
         autoWidth: true,
         processing: true,
@@ -246,6 +248,7 @@ $(document).ready(function() {
         $('#asset_table').DataTable({
             processing: true,
             serverSide: true,
+            lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
             ajax: {
                 url: `getAssetMaintenance`,
                 type: 'GET',
@@ -305,6 +308,7 @@ $(document).ready(function() {
 });
 $(document).ready(function () {
     const tableArray = $('#asset_array_table').DataTable({
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         columns: [
             { data: 'asset_code', title: 'Asset Code' },
             { data: 'satgas_name', title: 'Satgas' },

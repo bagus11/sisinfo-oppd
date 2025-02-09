@@ -1,6 +1,7 @@
 $('#asset_table').DataTable({
     processing: true,
     serverSide: true,
+    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
     ajax: {
         url: `getAsset`,
         type: 'GET',
