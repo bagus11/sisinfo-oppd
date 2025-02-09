@@ -499,7 +499,7 @@ function getRadialBar(response) {
 
         switch (parseInt(response.data[i].kondisi)) {
             case 1:
-                labelKondisi = 'Baik';
+                labelKondisi = 'BAIK';
                 break;
             case 2:
                 labelKondisi = 'RR OPS';

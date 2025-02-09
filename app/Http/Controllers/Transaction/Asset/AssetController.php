@@ -41,7 +41,7 @@ class AssetController extends Controller
     }
     public function getAssetFilter(Request $request)
     {
-       
+       dd($request->kondisi);
         if ($request->ajax()) {
             // Convert kondisi to its corresponding integer value
             $kondisi = match ($request->kondisi) {
