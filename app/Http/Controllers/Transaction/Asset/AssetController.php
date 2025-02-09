@@ -41,6 +41,7 @@ class AssetController extends Controller
     }
     public function getAssetFilter(Request $request)
     {
+       
         if ($request->ajax()) {
             // Convert kondisi to its corresponding integer value
             $kondisi = match ($request->kondisi) {
@@ -71,7 +72,6 @@ class AssetController extends Controller
                     ->where('assets.kondisi', 'like', '%' . $kondisi . '%')
                     ->select('assets.*')
                     ->get();
-    
             return DataTables::of($data)->make(true);
         }
     

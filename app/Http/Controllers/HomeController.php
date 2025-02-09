@@ -15,7 +15,8 @@ class HomeController extends Controller
     }
     public function index()
     {
-        return view('dashboard-index');
+        $userHasPermission = auth()->user()->can('get-except_satgas-master_asset');
+        return view('dashboard-index',compact('userHasPermission'));
     }
     public function getCountingAsset()
     {
@@ -33,9 +34,14 @@ class HomeController extends Controller
             ->get();
          
             // Get totals for labels
-            $totals = $countOppd->pluck('total');
-        $data = $countOppd->pluck('total');    // Extract 'total' values
-        $satgas_type = $countOppd->pluck('type');    // Extract 'total' values
+        $totals = $countOppd->pluck('total');
+        $data = DB::table('assets')
+                ->select(DB::raw('COUNT(id) as total'),'kondisi')
+                // ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->groupBy('kondisi')
+                ->orderBy('kondisi', 'desc')
+                ->get();
+        $satgas_type = $countOppd->pluck('type');   
     
         $group = MasterSatgas::select('type', DB::raw('COUNT(*) as total'))
             ->groupBy('type')

@@ -230,6 +230,7 @@
 @push('js')
     <script src="{{ asset('oppd/dashboard.js') }}"></script>
     <script>
+      var userHasPermission = @json($userHasPermission);
       function verticalBarChart(response){
         var summaryChartSatgas = response.summaryChartSatgas;
         // Prepare the data for the chart
