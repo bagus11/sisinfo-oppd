@@ -494,7 +494,7 @@ function getRadialBar(response) {
         sumOfArray += parseInt(response.data[i].total, 10);
         let labelKondisi = '';
 
-        switch (response.data[i].kondisi) {
+        switch (parseInt(response.data[i].kondisi)) {
             case 1:
                 labelKondisi = 'Baik';
                 break;
