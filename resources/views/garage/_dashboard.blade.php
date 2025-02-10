@@ -188,7 +188,7 @@
         font-size: 10px !important;
     }
 
-    .open\:bg-green-200[open] {
+.open\:bg-green-200[open] {
   --tw-bg-opacity: 1;
   background-color: rgb(187 247 208 / var(--tw-bg-opacity));
 }
@@ -273,6 +273,9 @@ tr.shown td.subdetails-click {
 }
 .dataTables_paginate{
     padding-right: 20px
+}
+.simplebar-mask{
+    height: 100% !important;
 }
 
 </style>

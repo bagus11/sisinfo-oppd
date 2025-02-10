@@ -97,7 +97,7 @@
                             <div class="d-flex align-items-center justify-content-center w-100 h-100 flex-column gap-9 text-center">
                               <img src="../assets/images/logos/logo.png" alt="login-side-img" width="150" class="img-fluid mt-4" />
                               <h4 class="mb-0">SISINFO OPPD</h4>
-                              <span class="opacity-75 fs-3 d-block mb-0">Sistem Informasi
+                              <span class="opacity-75 fs-3 d-block mb-0" style="text-align: left">Sistem Informasi
                                 Sistem berbasis teknologi informasi yang dirancang untuk mengelola dan mengintegrasikan berbagai kegiatan logistik, seperti perencanaan, pengadaan, penyimpanan, pendistribusian, pemeliharaan, dan pelaporan aset atau barang dalam suatu organisasi atau perusahaan.
                               </span>
                             </div>

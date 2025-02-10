@@ -150,7 +150,7 @@
 </div>
 
 <!-- Summary Asset by Category and Satgas -->
-<div class="row mx-2 mt-2">
+<div class="row mt-2">
   <div class="col-lg-6">
     <div class="card">
       <div class="card-header header-info py-1">
@@ -174,7 +174,7 @@
 </div>
 
 <!-- Pengajuan Aset Section -->
-<div class="row mx-2 mt-2">
+<div class="row mt-2">
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">

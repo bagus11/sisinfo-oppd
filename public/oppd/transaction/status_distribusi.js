@@ -195,8 +195,9 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
     });
     $(document).on('change', '#asset_table .row-checkbox', function () {
         const assetCode = $(this).val();
-    
+        
         if ($(this).is(':checked')) {
+            console.log(assetCode)
             selectedAssetCodes.add(assetCode);
         } else {
             selectedAssetCodes.delete(assetCode);
