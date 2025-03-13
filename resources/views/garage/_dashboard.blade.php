@@ -284,7 +284,9 @@
     .select2-container .select2-selection--single {
         padding-left: 10px; /* Menambahkan padding kiri pada elemen select2 */
     }
-
+    .modal-xxl {
+        max-width: 95% !important; /* Atur sesuai kebutuhan */
+    }
 </style>
 <body>    
     <div class="preloader">
@@ -380,7 +382,7 @@
                 // });
                 $(".select2").each(function(){
                         $(this).select2({
-                            // 'property': ''
+                           
                      });
                 });
             })

@@ -105,10 +105,22 @@
           transform: none !important;
           width: 100% !important;
           height: 100% !important;
-      }
-      .select2-container--open {
-          width: 100% !important;
-      }
+          .select2-container {
+              width: 100% !important;
+          }
+          .select2-container {
+              z-index: 9999 !important;
+              width: 100% !important;
+          }
+
+          .select2-dropdown {
+              z-index: 9999 !important;
+              position: absolute !important;
+          }
+
+          .modal {
+              overflow: visible !important;
+          }
 
 
 </style>
@@ -258,23 +270,15 @@
 @push('js')
     <script src="{{ asset('oppd/dashboard.js') }}"></script>
     <script>
-       $('#detailAssetModal').on('shown.bs.modal', function () {
-          $('#select_th_operasi').select2({
-              dropdownParent: $('#detailAssetModal'),
-              width: '100%',
-              position: function () {
-                  return 'fixed'; // Paksa agar tetap dalam modal
-              }
-          });
-          $('#select_th_pembuatan').select2({
-              dropdownParent: $('#detailAssetModal'),
-              width: '100%',
-              position: function () {
-                  return 'fixed'; // Paksa agar tetap dalam modal
-              }
-          });
-      });
-
+      $(document).ready(function () {
+        $('#detailAssetModal').on('shown.bs.modal', function () {
+            $('#select_th_operasi, #select_th_pembuatan').select2({
+                dropdownParent: $('#detailAssetModal'),
+                width: '100%'
+            });
+        });
+    });
+    console.log($('#select_th_operasi').select2());
       var userHasPermission = @json($userHasPermission);
       function verticalBarChart(response){
         var summaryChartSatgas = response.summaryChartSatgas;

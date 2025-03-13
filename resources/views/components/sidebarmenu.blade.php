@@ -37,7 +37,7 @@
 <div class="sidebarmenu">
     <div class="brand-logo d-flex align-items-center nav-logo">
         <a href="{{ route('home') }}" class="text-nowrap logo-img">
-            <img src="{{ asset('assets/images/logos/logo.png') }}" style="width:50px" alt="Logo" /> <b>SISINFO OPPD</b>
+            <img src="{{ asset('assets/images/logos/logo.png') }}" style="width:50px" alt="Logo" /> <b>SISINFOLOG OPPD</b>
         </a>
     </div>
 
