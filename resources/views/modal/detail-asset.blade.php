@@ -14,7 +14,7 @@
                         <div class="col-2 mt-2">
                             <label for="">Th Operasi</label>
                         </div>
-                        <div class="col-4 mt-2">
+                        <div class="col-3 mt-2">
                             <select name="select_th_operasi" class="select2" id="select_th_operasi">
                                 <option value="">All Condition</option>
                                 <option value="1">< 5 Tahun</option>
@@ -25,7 +25,7 @@
                         <div class="col-2 mt-2">
                             <label for="">Th Pembuatan</label>
                         </div>
-                        <div class="col-4 mt-2">
+                        <div class="col-3 mt-2">
                             <select name="select_th_pembuatan" class="select2" id="select_th_pembuatan">
                                 <option value="">All Condition</option>
                                 <option value="1">< 5 Tahun</option>
