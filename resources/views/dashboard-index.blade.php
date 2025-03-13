@@ -254,12 +254,23 @@
 @push('js')
     <script src="{{ asset('oppd/dashboard.js') }}"></script>
     <script>
-        $('#detailAssetModal').on('shown.bs.modal', function () {
-                $('#select_umur_asset').select2({
-                    dropdownParent: $('#detailAssetModal'),
-                    width: '100%' // Supaya dropdown tetap dalam modal
-                });
-            });
+       $('#detailAssetModal').on('shown.bs.modal', function () {
+          $('#select_th_operasi').select2({
+              dropdownParent: $('#detailAssetModal'),
+              width: '100%',
+              position: function () {
+                  return 'fixed'; // Paksa agar tetap dalam modal
+              }
+          });
+          $('#select_th_pembuatan').select2({
+              dropdownParent: $('#detailAssetModal'),
+              width: '100%',
+              position: function () {
+                  return 'fixed'; // Paksa agar tetap dalam modal
+              }
+          });
+      });
+
       var userHasPermission = @json($userHasPermission);
       function verticalBarChart(response){
         var summaryChartSatgas = response.summaryChartSatgas;
