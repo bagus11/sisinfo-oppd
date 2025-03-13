@@ -129,15 +129,24 @@ class AssetsImport implements ToModel, WithStartRow
      */
     private function transformDate($dateValue, $time)
     {
-        // Check if the value is numeric (Excel date format)
+        // Jika nilai kosong, kembalikan NULL
+        if (empty($dateValue)) {
+            return null;
+        }
+    
+        // Jika format angka (Excel date format), konversi
         if (is_numeric($dateValue)) {
             $date = Carbon::instance(Date::excelToDateTimeObject($dateValue));
-
-            // Apply the app's timezone and append the time
             return $date->setTimezone(config('app.timezone'))->format('Y-m-d') . ' ' . $time;
         }
-
-        // Return parsed date with the appended time for non-numeric values
-        return Carbon::parse($dateValue)->setTimezone(config('app.timezone'))->format('Y-m-d') . ' ' . $time;
+    
+        // Coba parsing sebagai tanggal, jika gagal kembalikan NULL
+        try {
+            return Carbon::parse($dateValue)->setTimezone(config('app.timezone'))->format('Y-m-d') . ' ' . $time;
+        } catch (\Exception $e) {
+            Log::error("Invalid date format: " . json_encode($dateValue));
+            return null;
+        }
     }
+    
 }
