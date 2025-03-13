@@ -26,7 +26,8 @@ class CategoryAssetController extends Controller
             $post = InventoryCategory::create(
                 [
                     'name'  => $request->name,
-                    'category_code'=>''
+                    'cateogry_code'=>'',
+                    'status' => 1
                 ]
             );
             return ResponseFormatter::success(

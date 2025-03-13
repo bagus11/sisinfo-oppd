@@ -256,7 +256,8 @@
     <script>
         $('#detailAssetModal').on('shown.bs.modal', function () {
                 $('#select_umur_asset').select2({
-                    dropdownParent: $('#detailAssetModal') // Supaya dropdown tetap dalam modal
+                    dropdownParent: $('#detailAssetModal'),
+                    width: '100%' // Supaya dropdown tetap dalam modal
                 });
             });
       var userHasPermission = @json($userHasPermission);

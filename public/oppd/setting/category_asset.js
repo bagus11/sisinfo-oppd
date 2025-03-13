@@ -8,8 +8,9 @@ $('#btn_save_category').click(function(){
     }
     postCallback('addCategoryAsset', data, function(response){
         swal.close()
-        toastr['success'](response.message)
+        toastr['success'](response.meta.message)
         $('#name').val('')
+        $('#addCategoryAssetModal').modal('hide')
         getCallback('getCategoryAsset', null, function(response){
             swal.close()
             mappingTable(response.data)
