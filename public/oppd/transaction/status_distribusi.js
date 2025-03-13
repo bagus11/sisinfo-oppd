@@ -520,7 +520,6 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                             data: 'merk_relation', 
                             name: 'merk_relation.name', 
                             render: function(data, type, row) {
-                                console.log("Merk Data:", data); // Debugging
                                 return data !== null ? data.name : '-'; // Cek apakah data dan data.name ada
                             }
                         },                        

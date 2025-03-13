@@ -18,7 +18,7 @@ class UserAccessController extends Controller
         return view('setting.user_access.user_access-index');
     }
     function getRoleUser() {
-        $roleUser   =   DB::table('model_has_roles')->select('roles.name as rolesName','users.id as user_id', 'users.name as userName','users.employee_id','roles.id as role_id')
+        $roleUser   =   DB::table('model_has_roles')->select('roles.name as rolesName','users.id as user_id', 'users.name as userName','users.nrp','roles.id as role_id')
                             ->join('users', 'users.id','=', 'model_has_roles.model_id')
                             ->join('roles','roles.id','=', 'model_has_roles.role_id')
                             ->get();

@@ -357,6 +357,8 @@ class StatusDistribusiController extends Controller
                             'merk'          =>$asset->merk,
                             'user_id'       =>auth()->user()->id,
                             'pic'           =>$asset->pic,
+                            'th_pembuatan'  => $asset->th_pembuatan,
+                            'th_operasi'    => $asset->th_operasi,
                             'kondisi'       =>$asset->kondisi,
                             'lokasi'        =>$head->des_location,
                             'remark'        =>auth()->user()->name .' telah memindahkan lokasi aset dari : '.$lokasiAsal->name.' ke '.$lokasiTujuan->name

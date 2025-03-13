@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-core">
                     <div class="row">
                         <div class="col-9">
                             <strong>List User</strong>
@@ -23,7 +23,8 @@
                                     <th></th>
                                     <th>Status</th>
                                     <th>Name</th>
-                                    <th>NIK</th>
+                                    <th>Email</th>
+                                    <th>NRP</th>
                                     <th>Posisi</th>
                                     <th>Lokasi</th>
                                     <th>Action</th>

@@ -29,6 +29,7 @@ class MasterAssetController extends Controller
     }
     
     function getMasterAsset(Request $request) {
+        $currentYear = date('Y');
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
             $query = Asset::query()
             ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
@@ -45,8 +46,28 @@ class MasterAssetController extends Controller
                 }
             })
             ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
-            ->select('assets.*')
-            ->get();
+            ->select('assets.*');
+            if (!empty($request->th_operasi)) {
+                if ($request->th_operasi == "1") {
+                    $query->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
+                } elseif ($request->th_operasi == "2") {
+                    $query->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]);
+                } elseif ($request->th_operasi == "3") {
+                    $query->where('assets.th_operasi', '<', $currentYear - 10);
+                }
+            }
+    
+            // **Filter Tahun Pembuatan (th_pembuatan)**
+            if (!empty($request->th_pembuatan)) {
+                if ($request->th_pembuatan == "1") {
+                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
+                } elseif ($request->th_pembuatan == "2") {
+                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]);
+                } elseif ($request->th_pembuatan == "3") {
+                    $query->where('assets.th_pembuatan', '<', $currentYear - 10);
+                }
+            }
+            $query->get();
         
         }else{
             $type = MasterSatgas::find(auth()->user()->satgas);
@@ -65,8 +86,28 @@ class MasterAssetController extends Controller
                 }
             })
             ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
-            ->select('assets.*')
-            ->get();
+            ->select('assets.*');
+            if (!empty($request->th_operasi)) {
+                if ($request->th_operasi == "1") {
+                    $query->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
+                } elseif ($request->th_operasi == "2") {
+                    $query->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]);
+                } elseif ($request->th_operasi == "3") {
+                    $query->where('assets.th_operasi', '<', $currentYear - 10);
+                }
+            }
+    
+            // **Filter Tahun Pembuatan (th_pembuatan)**
+            if (!empty($request->th_pembuatan)) {
+                if ($request->th_pembuatan == "1") {
+                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
+                } elseif ($request->th_pembuatan == "2") {
+                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]);
+                } elseif ($request->th_pembuatan == "3") {
+                    $query->where('assets.th_pembuatan', '<', $currentYear - 10);
+                }
+            }
+            $query->get();
         
 
         }
@@ -215,9 +256,11 @@ class MasterAssetController extends Controller
                 'subkategori'          =>$request->subkategori,
                 'jenis'          =>$request->jenis,
                 'merk'          =>$request->merk,
+                'th_pembuatan'          =>$request->th_pembuatan,
+                'th_operasi'          =>$request->th_operasi,
                 'user_id'       =>auth()->user()->id,
                 'pic'           =>0,
-                'kondisi'           =>0,
+                'kondisi'           =>1,
                 'lokasi'        =>0
             ];
             $postLog=[
@@ -230,8 +273,10 @@ class MasterAssetController extends Controller
                 'jenis'          =>$request->jenis,
                 'merk'          =>$request->merk,
                 'user_id'       =>auth()->user()->id,
+                'th_pembuatan'          =>$request->th_pembuatan,
+                'th_operasi'          =>$request->th_operasi,
                 'pic'           =>0,
-                'kondisi'           =>0,
+                'kondisi'           =>1,
                 'lokasi'        =>0,
                 'remark'        => auth()->user()->name. ' telah menambahkan asset'
             ];
@@ -288,10 +333,12 @@ class MasterAssetController extends Controller
                 'subkategori'       =>$request->edit_subkategori,
                 'jenis'             =>$request->edit_jenis,
                 'merk'              =>$request->edit_merk,
+                'th_pembuatan'      =>$request->edit_th_pembuatan,
+                'th_operasi'        =>$request->edit_th_operasi,
                 'user_id'           =>$detail->user_id,
                 'pic'               =>$detail->pic,
                 'kondisi'           =>$detail->kondisi,
-                'lokasi'            =>$detail->lokasi
+                'lokasi'            =>$detail->lokasi,
             ];
             $post_log =[
                 'asset_code'        => $detail->asset_code,
@@ -302,6 +349,8 @@ class MasterAssetController extends Controller
                 'subkategori'       =>$request->edit_subkategori,
                 'jenis'             =>$request->edit_jenis,
                 'merk'              =>$request->edit_merk,
+                'th_pembuatan'              =>$request->edit_th_pembuatan,
+                'th_operasi'              =>$request->edit_th_operasi,
                 'user_id'           =>auth()->user()->id,
                 'pic'               =>$detail->pic,
                 'kondisi'           =>$detail->kondisi,
@@ -325,7 +374,7 @@ class MasterAssetController extends Controller
  
     function deleteAsset(Request $request)
     {
-        foreach($request->asset_code as $asset_code){
+        foreach($request->asset_code as $asset_code){  
             $data =Asset::where('asset_code', $asset_code)->delete();
         }
         return ResponseFormatter::success(

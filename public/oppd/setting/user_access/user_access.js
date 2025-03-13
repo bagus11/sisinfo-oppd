@@ -234,7 +234,7 @@ function mappingRoleUser(response){
     for(i =0; i < response.length; i++){
         data += `
             <tr>
-                <td>${response[i].employee_id}</td>
+                <td>${response[i].nrp}</td>
                 <td>${response[i].userName}</td>
                 <td>${response[i].rolesName}</td>
                 <td style="text-align:center">

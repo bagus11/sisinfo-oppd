@@ -110,7 +110,7 @@
                             </div>
                             <div class="tab-pane active p-3" id="tab-chart-view">
                                 <div class="row mt-2">
-                                    <div class="col-12 col-sm-12 col-md-8">
+                                    <div class="col-12 col-sm-12 col-md-12">
                                         <fieldset>
                                             <legend class="bg-danger">   <i class="fas fa-filter"></i>Filter</legend>
                                             <div id="satgas_button" class="row d-flex justify-content-between">
@@ -169,7 +169,7 @@
 
                             <div class="tab-pane active p-3" id="tab_chart_kondisi">
                                 <div class="row mt-2">
-                                    <div class="col-12 col-sm-12 col-md-8">
+                                    <div class="col-12 col-sm-12 col-md-12">
                                         <fieldset>
                                             <legend class="bg-danger">   <i class="fas fa-filter"></i>Filter</legend>
                                             <div id="kondisi_button" class="row d-flex justify-content-between">

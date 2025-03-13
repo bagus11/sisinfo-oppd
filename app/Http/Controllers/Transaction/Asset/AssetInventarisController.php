@@ -281,6 +281,8 @@ class AssetInventarisController extends Controller
                         'subkategori' => $assetDetail->subkategori ?? '',
                         'jenis' => $assetDetail->jenis ?? '',
                         'merk' => $assetDetail->merk ?? '',
+                        'th_pembuatan'  => $assetDetail->th_pembuatan,
+                        'th_operasi'    => $assetDetail->th_operasi,
                         'user_id' => auth()->user()->id,
                         'pic' => auth()->user()->id,
                         'kondisi' => $status,

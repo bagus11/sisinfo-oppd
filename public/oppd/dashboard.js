@@ -15,10 +15,18 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
         'bg-warning',
         'bg-dark',
         'bg-secondary'
-    ];
-    
-    getRadialBar(response)
+    ];  
 
+    // Fungsi untuk membuat regex pencarian
+    function getUmurAssetRegex(value) {
+        let currentYear = new Date().getFullYear();
+        if (value == 1) return `^(${currentYear - 4}|${currentYear - 3}|${currentYear - 2}|${currentYear - 1}|${currentYear})$`; // < 5 Tahun
+        if (value == 2) return `^(${currentYear - 9}|${currentYear - 8}|${currentYear - 7}|${currentYear - 6}|${currentYear - 5})$`; // 5 - 10 Tahun
+        if (value == 3) return `^([0-9]{1,3})$`; // > 10 Tahun
+        return ''; // Jika tidak ada filter
+    }
+    getRadialBar(response)
+    assetChart(response.countingAssetYear)
         for (let i = 0; i < response.countingSatgasAsset.length; i++) {
             let satgas = response.countingSatgasAsset[i];
     
@@ -102,7 +110,14 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                 dataPointSelection: function(event, chartContext, config) {
                                     let selectedKondisi = labelsData[config.dataPointIndex]; 
                                     $('#detailAssetModal').modal('show');
+                                    $('#satgasTypeFilter').val('');
+                                    $('#selectedKondisi').val('');
+                                    $('#select_th_pembuatan').val('')
+                                    $('#select_th_pembuatan').select2().trigger('change');
+                                    $('#select_th_operasi').select2().trigger('change');
+                                    $('#satgasTypeFilter').val(satgasType);
                                     $('#modal_title').html(satgasType + " : " + selectedKondisi);
+                                    console.log(satgasType + ' : ' + selectedKondisi)
                                     $('#asset_table').DataTable().clear().destroy();
                                     $('#asset_table').DataTable({
                                         processing: true,
@@ -111,66 +126,86 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                         ajax: {
                                             url: `getAssetFilter`,
                                             type: 'GET',
-                                            data :{'type' : satgasType, kondisi : selectedKondisi}
+                                            data :
+                                            { 
+                                                    'type' : $('#satgasTypeFilter').val(),
+                                                    'kondisi' : $('#selectedKondisi').val(), 
+                                                    'th_operasi' : $('#select_th_operasi').val(), 
+                                                    'th_pembuatan' : $('#select_th_pembuatan').val()
+                                            }   
                                         },
                                         columns: [
                                             { 
                                                 data: 'satgas_relation', 
                                                 name: 'satgas_relation.name', 
                                                 render: function (data) {
-                                                    return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                                                    return data?.name || '-';
                                                 }
                                             },
                                             { 
                                                 data: 'no_un', 
                                                 name: 'no_un', 
                                                 render: function (data) {
-                                                    return data ? data : '-'; // Return '-' if the value is null or undefined
+                                                    return data || '-';
                                                 }
                                             },
                                             { 
                                                 data: 'category_relation', 
                                                 name: 'category_relation.name', 
                                                 render: function (data) {
-                                                    return data ? data.name : '-'; // Safely check for null/undefined
+                                                    return data?.name || '-';
                                                 }
                                             },
                                             { 
-                                                data: 'sub_category_relation', // Check if sub_category_relation exists
+                                                data: 'sub_category_relation',
                                                 name: 'sub_category_relation.name', 
                                                 render: function (data) {
-                                                    return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                                                    return data?.name || '-';
                                                 }
                                             },
                                             { 
                                                 data: 'type_relation', 
                                                 name: 'type_relation.name', 
                                                 render: function (data) {
-                                                    return data ? data.name : '-'; // Safely check for null/undefined
+                                                    return data?.name || '-';
                                                 }
                                             },
                                             { 
                                                 data: 'merk_relation', 
                                                 name: 'merk_relation.name', 
                                                 render: function (data) {
-                                                    console.log(data ? data.name : 'test again')
-                                                    return data ? data.name : '-'; // Safely check for null/undefined
+                                                    return data?.name || '-';
                                                 }
                                             },
                                             { 
                                                 data: 'no_mesin', 
                                                 name: 'no_mesin', 
                                                 render: function (data) {
-                                                    return data ? data : '-'; // Safely check for null/undefined
+                                                    return data || '-';
                                                 }
                                             },
                                             { 
                                                 data: 'no_rangka', 
                                                 name: 'no_rangka',
                                                 render: function (data) {
-                                                    return data ? data : '-'; // Safely check for null/undefined
+                                                    return data || '-';
                                                 }
                                             },
+                                            { 
+                                                data: 'th_pembuatan', 
+                                                name: 'th_pembuatan', 
+                                                render: function (data) {
+                                                    return data || '-';
+                                                }
+                                            },
+                                            { 
+                                                data: 'th_operasi', 
+                                                name: 'th_operasi', 
+                                                render: function (data) {
+                                                    return data || '-';
+                                                }
+                                            },
+                                          
                                             {
                                                 data: 'kondisi',
                                                 name: 'kondisi',
@@ -527,6 +562,7 @@ function getRadialBar(response) {
             chart: {
                 type: "radialBar",
                 height: 600,
+                width :'100%',
                 fontFamily: "inherit",
                 foreColor: "#c6d1e9",
                 events: {
@@ -537,7 +573,15 @@ function getRadialBar(response) {
                         // Tampilkan modal dengan kondisi yang dipilih
                         $('#detailAssetModal').modal('show');
                         $('#modal_title').html(selectedKondisi + " : " + selectedValue);
+                        $('#selectedKondisi').val('');
+                        $('#select_th_operasi').val('')
+                        $('#select_th_pembuatan').val('')
+                        $('#select_th_pembuatan').select2().trigger('change');
+                        $('#select_th_operasi').select2().trigger('change');
+                        $('#satgasTypeFilter').val('');
+                        $('#selectedKondisi').val(selectedKondisi);
                         $('#asset_table').DataTable().clear().destroy();
+                        
                         var kondisiMapping = {
                             1: 'BAIK',
                             2: 'RR OPS',
@@ -553,7 +597,11 @@ function getRadialBar(response) {
                             ajax: {
                                 url: `getAssetFilter`,
                                 type: 'GET',
-                                data: { kondisi: selectedKondisi }
+                                data :{ 'type' : $('#satgasTypeFilter').val(),
+                                    'kondisi' : $('#selectedKondisi').val(), 
+                                    'th_operasi' : $('#select_th_operasi').val(), 
+                                    'th_pembuatan' : $('#select_th_pembuatan').val()
+                                }   
                             },
                             columns: [
                                 { 
@@ -612,6 +660,21 @@ function getRadialBar(response) {
                                         return data || '-';
                                     }
                                 },
+                                { 
+                                    data: 'th_pembuatan', 
+                                    name: 'th_pembuatan', 
+                                    render: function (data) {
+                                        return data || '-';
+                                    }
+                                },
+                                { 
+                                    data: 'th_operasi', 
+                                    name: 'th_operasi', 
+                                    render: function (data) {
+                                        return data || '-';
+                                    }
+                                },
+                              
                                 {
                                     data: 'kondisi',
                                     name: 'kondisi',
@@ -777,10 +840,10 @@ function getRadialBar(response) {
                 position: "left",
                 floating: true,
                 offsetX: 0,
-                offsetY: 10,
+                offsetY: 5,
                 markers: {
                     width: 10,
-                    height: 10,
+                    height: 5,
                     radius: 5,
                 },
                 labels: {
@@ -806,10 +869,11 @@ function getRadialBar(response) {
 function adjustZoomForScreens() {
     const screenWidth = window.screen.width;
     // Check for screen width matching 13", 14", or 15" devices
-    if(screenWidth == 1512){
+    if(screenWidth == 1512 ||screenWidth === 1366){
+        
         document.body.style.zoom = "70%"; // Apply 80% zoom for 13", 14", or 15" screens
     }
-    else if (screenWidth >= 1240 && screenWidth <= 1600) {
+    else if (screenWidth >= 1240 && screenWidth <= 1367) {
         document.body.style.zoom = "85%"; // Apply 80% zoom for 13", 14", or 15" screens
         console.log('your pc width is : ' + screenWidth)
     } else {
@@ -821,3 +885,161 @@ function adjustZoomForScreens() {
 window.onload = function() {
     adjustZoomForScreens();
 };
+
+function assetChart(response) {
+    var options = {
+        series: [
+            {
+                name: "< 5 Tahun",
+                data: [
+                    response.pembuatan_kurang_5,
+                    response.operasi_kurang_5
+                ]
+            },
+            {
+                name: "5 - 10 Tahun",
+                data: [
+                    response.pembuatan_5_10,
+                    response.operasi_5_10
+                ]
+            },
+            {
+                name: "> 10 Tahun",
+                data: [
+                    response.pembuatan_lebih_10,
+                    response.operasi_lebih_10
+                ]
+            }
+        ],
+        chart: {
+            type: "bar",
+            height: 200,
+            width: '100%',
+            stacked: true
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
+        xaxis: {
+            categories: ["Th Pembuatan", "Th Operasi"]
+        },
+        yaxis: {
+            // title: {
+            //     text: "Jumlah Aset"
+            // }
+        },
+        colors: ["#008FFB", "#00E396", "#FF4560"]
+    };
+
+    var chart = new ApexCharts(document.querySelector("#asset_bar_chart"), options);
+    chart.render();
+}
+$('#btn_filter_asset').on('click', function () {
+    const kondisiMapping = {
+        1: 'BAIK',
+        2: 'RR OPS',
+        3: 'RB',
+        4: 'RR TDK OPS',
+        5: 'M',
+        6: 'D'
+    };
+    let thOperasi = $('#select_th_operasi').val();
+    let thPembuatan = $('#select_th_pembuatan').val();
+    $('#asset_table').DataTable().clear().destroy();
+    let table = $('#asset_table').DataTable({
+        processing: true,
+        serverSide: true,
+        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
+        ajax: {
+            url: `getAssetFilter`,
+            type: 'GET',
+            data :{ 'type' : $('#satgasTypeFilter').val(),
+                    'kondisi' : $('#selectedKondisi').val(), 
+                    'th_operasi' : $('#select_th_operasi').val(), 
+                    'th_pembuatan' : $('#select_th_pembuatan').val()
+                }   
+        },
+        columns: [
+            { 
+                data: 'satgas_relation', 
+                name: 'satgas_relation.name', 
+                render: function (data) {
+                    return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                }
+            },
+            { 
+                data: 'no_un', 
+                name: 'no_un', 
+                render: function (data) {
+                    return data ? data : '-'; // Return '-' if the value is null or undefined
+                }
+            },
+            { 
+                data: 'category_relation', 
+                name: 'category_relation.name', 
+                render: function (data) {
+                    return data ? data.name : '-'; // Safely check for null/undefined
+                }
+            },
+            { 
+                data: 'sub_category_relation', // Check if sub_category_relation exists
+                name: 'sub_category_relation.name', 
+                render: function (data) {
+                    return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                }
+            },
+            { 
+                data: 'type_relation', 
+                name: 'type_relation.name', 
+                render: function (data) {
+                    return data ? data.name : '-'; // Safely check for null/undefined
+                }
+            },
+            { 
+                data: 'merk_relation', 
+                name: 'merk_relation.name', 
+                render: function (data) {
+                    return data ? data.name : '-'; // Safely check for null/undefined
+                }
+            },
+            { 
+                data: 'no_mesin', 
+                name: 'no_mesin', 
+                render: function (data) {
+                    return data ? data : '-'; // Safely check for null/undefined
+                }
+            },
+            { 
+                data: 'no_rangka', 
+                name: 'no_rangka',
+                render: function (data) {
+                    return data ? data : '-'; // Safely check for null/undefined
+                }
+            },
+            { 
+                data: 'th_pembuatan', 
+                name: 'th_pembuatan', 
+                render: function (data) {
+                    return data || '-';
+                }
+            },
+            { 
+                data: 'th_operasi', 
+                name: 'th_operasi', 
+                render: function (data) {
+                    return data || '-';
+                }
+            },
+            {
+                data: 'kondisi',
+                name: 'kondisi',
+                render: function (data) {
+                    return kondisiMapping[data] || '-';
+                }
+            }
+        ]
+    });
+  
+});

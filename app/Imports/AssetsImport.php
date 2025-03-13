@@ -88,6 +88,8 @@ class AssetsImport implements ToModel, WithStartRow
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
             'kondisi'       => $kondisi,
+            'th_pembuatan'  => $row[10],
+            'th_operasi'    => $row[11],
             'lokasi'        => $lokasi_id,
         ];
         if ($lokasi == null && $lokasiType == null) {
@@ -110,6 +112,8 @@ class AssetsImport implements ToModel, WithStartRow
             'user_id'       => auth()->user()->id ?? 0,
             'pic'           => 0,
             'kondisi'       => $kondisi,
+            'th_pembuatan'  => $row[10],
+            'th_operasi'    => $row[11],
             'lokasi'        => $lokasi->id ?? 0,
             'remark'        => auth()->user()->name. ' telah menambahkan asset'
         ]);

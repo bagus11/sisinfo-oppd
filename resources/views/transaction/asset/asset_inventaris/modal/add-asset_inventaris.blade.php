@@ -14,7 +14,7 @@
                                 
                                 @can('get-except_satgas-asset_inventaris')
                                     <div class="row">
-                                        <div class="col-12  col-sm-12 col-md-6">
+                                        <div class="col-12  col-sm-12 col-md-8">
                                             <fieldset class="mt-4 mx-2">
                                                 <legend class="bg-danger">Filter </legend>
                                                 <div class="row mt-2">
@@ -32,7 +32,7 @@
                                                         <label for=""> Kondisi</label>
                                                     </div>
                                                     <div class="col-8 col-sm-8 col-md-5">
-                                                        <select name="select_kondisi_filter" class="select2" id="select_kondisi_filter">
+                                                        <select name="select_kondisi_filter" class="select2 " id="select_kondisi_filter">
                                                             <option value="">Pilih Kondisi</option>
                                                             <option value="1">BAIK</option>
                                                             <option value="2">RR OPS</option>

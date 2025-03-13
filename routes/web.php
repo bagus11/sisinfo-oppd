@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('addSubMenus', 'App\Http\Controllers\Setting\MenusController@addSubMenus')->name('addSubMenus');
             Route::post('updateStatusSubMenu', 'App\Http\Controllers\Setting\MenusController@updateStatusSubMenu')->name('updateStatusSubMenu');
             Route::post('updateSubMenus', 'App\Http\Controllers\Setting\MenusController@updateSubMenus')->name('updateSubMenus');
+            Route::get('getPosition', 'App\Http\Controllers\Setting\MenusController@getPosition')->name('getPosition');
         // Menus
 
         // Role & Permission
@@ -77,7 +78,14 @@ Route::group(['middleware' => 'auth'], function () {
         // Employee
         Route::get('/master_user', 'App\Http\Controllers\Setting\UserController@index')->name('master_user');
         Route::get('/getUser', 'App\Http\Controllers\Setting\UserController@getUser')->name('getUser');
+        Route::post('/addUser', 'App\Http\Controllers\Setting\UserController@addUser')->name('addUser');
+        Route::get('/detailUser', 'App\Http\Controllers\Setting\UserController@detailUser')->name('detailUser');
         // Employee
+
+        // CategoryAsset
+        Route::get('/setting_category_asset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@index')->name('setting_category_asset');
+        
+        // CategoryAsset
     // Setting
 
     // Dashboard

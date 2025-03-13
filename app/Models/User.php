@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Setting\Location;
+use App\Models\Setting\MasterSatgas;
 use App\Models\Setting\Position;
 use App\Models\Setting\Postion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,6 +26,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'nrp',
+        'satgas',
+        'location',
+        'position',
         'password',
     ];
 
@@ -52,6 +57,6 @@ class User extends Authenticatable
         return $this->hasOne(Position::class,'id','position');
     }
     function locationRelation() {
-        return $this->hasOne(Location::class,'id','location');
+        return $this->hasOne(MasterSatgas::class,'id','location');
     }
 }

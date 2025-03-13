@@ -35,7 +35,8 @@ class Asset extends Model
         return $this->hasOne(InventoryBrand::class, 'id', 'merk');
     }
     function satgasRelation() {
-        return $this->hasOne(MasterSatgas::class,'id','lokasi');
+        // return $this->hasOne(MasterSatgas::class,'id','lokasi');
+         return $this->belongsTo(MasterSatgas::class, 'lokasi', 'id');
     }
     function detailInventarisRelation() {
         return $this->hasOne(InventarisDetail::class,'asset_code','asset_code');

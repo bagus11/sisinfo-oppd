@@ -332,6 +332,7 @@ $(document).ready(function() {
    
     $('#btn_print_pdf').on('click', function () {
         // Ambil elemen chart
+        SwalLoading('pelase wait, system still gerenate your report')
         let chart = document.querySelector("#assetsChart svg");
     
         if (chart) {
@@ -362,14 +363,16 @@ $(document).ready(function() {
                         link.href = window.URL.createObjectURL(blob);
                         link.download = "Report.pdf";
                         link.click();
+                        swal.close()
+                        toastr['success']('your report is successfully generated')
                     },
                     error: function (xhr, status, error) {
                         console.error("Error generating PDF:", error);
                     }
                 });
             };
-    
             img.src = "data:image/svg+xml;base64," + btoa(svgData);
+           
         } else {
             alert("Chart tidak ditemukan!");
         }
@@ -380,8 +383,11 @@ $(document).ready(function() {
     $('#btn_export_excel').on('click', function(){
         SwalLoading('Please wait ...');
         let url = '/exportAssetCategory?';
-        window.location.href = url;
-        swal.close()
+        var loading = window.location.href = url;
+        if(loading){
+            swal.close()
+            toastr['success']('report successfully generated to excel')
+        }
     })
    
 });

@@ -11,9 +11,18 @@
                         <label for="menus_name">Name</label>
                     </div>
                     <div class="col-8 mb-2">
-                        <input type="text" class="form-control" id="menus_name" aria-describedby="nameHelp">
-                        <span class="message_error menus_name_error text-red d-block"></span>
+                        <input type="text" class="form-control" id="name" aria-describedby="nameHelp">
+                        <span class="message_error name_error text-red d-block"></span>
                     </div>
+                    
+                    <div class="col-4 mt-2">
+                        <label for="menus_name">Email</label>
+                    </div>
+                    <div class="col-8 mb-2">
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                        <span class="message_error email_error text-red d-block"></span>
+                    </div>
+
                     <div class="col-4 mt-2">
                         <label for="">Lokasi</label>
                     </div>
@@ -34,9 +43,19 @@
                         <span class="message_error position_error text-red d-block"></span>
                     </div>
                 </div>
+                <div class="row mx-2 mt-2">
+                    <div class="col-4 mt-2">
+                        <label for="">NRP</label>
+                    </div>
+                    <div class="col-8">
+                        <input type="text" class="form-control" id="nrp">
+                        <span class="message_error nrp_error text-red d-block"></span>
+
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-sm btn-success" id="btn_save_menus">
+                <button class="btn btn-sm btn-success" id="btn_save_user">
                     <i class="fas fa-check"></i> Save
                 </button>
             </div>

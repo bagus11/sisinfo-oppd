@@ -10,6 +10,8 @@ $(document).ready(function () {
             data: function (d) {
                 d.satgas_type = $('#select_satgas').val();
                 d.kondisi = $('#select_filter_kondisi').val();
+                d.th_pembuatan = $('#select_th_pembuatan').val();
+                d.th_operasi = $('#select_th_operasi').val();
             }
         },
         columns: [
@@ -66,6 +68,8 @@ $(document).ready(function () {
                     return data ? data : '-';
                 }
             },
+            { data: 'th_pembuatan', name: 'th_pembuatan' },
+            { data: 'th_operasi', name: 'th_operasi' },
         ]
     });
    }else{
@@ -128,6 +132,8 @@ $(document).ready(function () {
                     return data ? data : '-';
                 }
             },
+            { data: 'th_pembuatan', name: 'th_pembuatan' },
+            { data: 'th_operasi', name: 'th_operasi' },
         ]
     });
    }
@@ -178,7 +184,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
     $("#btn_cancel_edit_asset, #btn_update_asset").prop('hidden', true);
 
     // Disable Fields
-    $('#edit_no_un, #edit_no_rangka, #edit_no_mesin').prop('readOnly', true);
+    $('#edit_no_un, #edit_no_rangka, #edit_no_mesin, #edit_th_pembuatan, #edit_th_operasi').prop('readOnly', true);
     $('#edit_select_kategori, #edit_select_subkategori, #edit_select_brand, #edit_select_jenis').prop('disabled', true);
 
     // Populate Form Fields
@@ -187,10 +193,12 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
     $('#edit_select_subkategori').val(row.subkategori || '').trigger('change');
     $('#edit_select_brand').val(row.merk || '').trigger('change');
     $('#edit_select_jenis').val(row.jenis || '').trigger('change');
-
+    console.log(row.th_pembuatan)
     $('#edit_no_un').val(row.no_un || '');
     $('#edit_no_rangka').val(row.no_rangka || '');
     $('#edit_no_mesin').val(row.no_mesin || '');
+    $('#edit_th_pembuatan').val(row.th_pembuatan)
+    $('#edit_th_operasi').val(row.th_operasi)
 
     // Show Modal
     $('#editAssetModal').modal('show');
@@ -329,6 +337,8 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         $("#btn_update_asset").prop('hidden', false)
         $('#edit_no_un').prop('readOnly' ,false);
         $('#edit_no_rangka').prop('readOnly' ,false);
+        $('#edit_th_pembuatan').prop('readOnly' ,false);
+        $('#edit_th_operasi').prop('readOnly' ,false);
         $('#edit_no_mesin').prop('readOnly' ,false);
         $('#edit_select_kategori, #edit_select_subkategori, #edit_select_brand, #edit_select_jenis').prop('disabled', false);
     })
@@ -338,6 +348,8 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         $("#btn_update_asset").prop('hidden', true)
         $('#edit_no_un').prop('readOnly' ,true);
         $('#edit_no_rangka').prop('readOnly' ,true);
+        $('#edit_th_pembuatan').prop('readOnly' ,true);
+        $('#edit_th_operasi').prop('readOnly' ,true);
         $('#edit_no_mesin').prop('readOnly' ,true);
         $('#edit_select_kategori, #edit_select_subkategori, #edit_select_brand, #edit_select_jenis').prop('disabled', true);
     })
@@ -351,6 +363,8 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         $('#subkategori').val('')
         $('#jenis').val('')
         $('#brand').val('')
+        $('#th_pembuatan').val('')
+        $('#th_operasi').val('')
         resetSelect2('select_kategori');
         resetSelect2('select_subkategori');
         resetSelect2('select_jenis');
@@ -375,6 +389,8 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
             subkategori:$('#subkategori').val(),
             jenis:$('#jenis').val(),
             merk:$('#merk').val(),
+            th_operasi:$('#th_operasi').val(),
+            th_pembuatan:$('#th_pembuatan').val(),
         }
         postCallback('addMasterAsset', data, function(response){
             swal.close()
@@ -400,11 +416,14 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
             'edit_subkategori':$('#edit_subkategori').val(),
             'edit_jenis':$('#edit_jenis').val(),
             'edit_merk':$('#edit_merk').val(),
+            'edit_th_operasi':$('#edit_th_operasi').val(),
+            'edit_th_pembuatan':$('#edit_th_pembuatan').val(),
         }
         postCallback('updateAsset', data, function(response){
             swal.close()
             toastr['success'](response.meta.message)
             $('#asset_table_log').DataTable().ajax.reload();
+            $('#asset_table').DataTable().ajax.reload();
             
         })
     })

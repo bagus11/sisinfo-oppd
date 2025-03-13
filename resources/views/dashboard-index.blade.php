@@ -6,9 +6,9 @@
 }
 #asset_map_track {
   width: 100%; /* Ensure full width */
-  height: 300px; /* Default height for mobile */
+  height: 200px; /* Default height for mobile */
   min-height: 200px; /* Prevent collapse */
-  max-height: 370px;
+  max-height: 800px;
   /* border-radius: 10px !important; */
   z-index: 1 !important;
   padding-bottom: 30px !important;
@@ -17,13 +17,13 @@
 /* Adjust for tablets and larger screens */
 @media (min-width: 768px) {
   #asset_map_track {
-    height: 300px; /* Medium screens */
+    height: 800px; /* Medium screens */
   }
 }
 
 @media (min-width: 1024px) {
   #asset_map_track {
-    height: 93vh; /* Larger screens use viewport height */
+    height: 93vh;
   }
 }
 .sidebar-nav{
@@ -124,23 +124,47 @@
 
   <!-- Summary OPPD Section -->
   <div class="col-12 col-sm-12 col-md-3">
-    <div class="card">
-      <div class="card-header header-info p-2 bg-opacity-8 rounded-top">
-        <div class="row">
-          <div class="col-2">
-            <strong style="font-size:14px;"><i class="fas fa-list"></i></strong>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header header-info p-2 bg-opacity-8 rounded-top">
+            <div class="row">
+              <div class="col-2">
+                <strong style="font-size:14px;"><i class="fas fa-list"></i></strong>
+              </div>
+              <div class="col-8">
+                <strong style="font-size:16px;font-weight:bold">SUMMARY OPPD</strong>
+              </div>
+            </div>
           </div>
-          <div class="col-8">
-            <strong style="font-size:16px;font-weight:bold">SUMMARY OPPD</strong>
+          <div class="card-body rounded-2 p-0">
+            <div class="p-0" style="padding:0 !important" id="radialChart"></div>
           </div>
         </div>
       </div>
-      <div class="card-body rounded-2 p-0">
-        <div class="p-0" style="padding:0 !important" id="radialChart"></div>
+      <div class="col-12">
+      
+          <div class="card">
+            <div class="card-header header-info p-2 bg-opacity-8 rounded-top">
+              <div class="row">
+                <div class="col-2">
+                  <strong style="font-size:14px;"><i class="fas fa-list"></i></strong>
+                </div>
+                <div class="col-8">
+                  <strong style="font-size:16px;font-weight:bold">UMUR ASET</strong>
+                </div>
+              </div>
+            </div>
+            <div class="card-body rounded-2 p-0">
+              <div class="p-0" style="padding:0 !important" id="asset_bar_chart"></div>
+            </div>
+          </div>
+
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Satgas Type Container -->
 <div class="col-12">
@@ -230,6 +254,11 @@
 @push('js')
     <script src="{{ asset('oppd/dashboard.js') }}"></script>
     <script>
+        $('#detailAssetModal').on('shown.bs.modal', function () {
+                $('#select_umur_asset').select2({
+                    dropdownParent: $('#detailAssetModal') // Supaya dropdown tetap dalam modal
+                });
+            });
       var userHasPermission = @json($userHasPermission);
       function verticalBarChart(response){
         var summaryChartSatgas = response.summaryChartSatgas;
@@ -330,7 +359,7 @@
 
     // Create the chart
     var chart = new ApexCharts(document.querySelector("#verticalBarChart"), options);
-    chart.render();
-      }
+        chart.render();
+          }
     </script>
 @endpush

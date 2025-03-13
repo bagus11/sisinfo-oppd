@@ -9,6 +9,7 @@ use App\Http\Requests\Setting\Menus\AddSubmenusRequest;
 use App\Http\Requests\Setting\Menus\UpdateMenusRequest;
 use App\Http\Requests\Setting\Menus\UpdateSubMenusRequest;
 use App\Models\Setting\Menu;
+use App\Models\Setting\Position;
 use App\Models\Setting\Submenu;
 use Illuminate\Http\Request;
 
@@ -172,5 +173,11 @@ class MenusController extends Controller
                 500
             );
         }
+    }
+    function getPosition() {
+        $data = Position::all();
+        return response()->json([
+            'data'=>$data,
+        ]);
     }
 }

@@ -108,6 +108,20 @@
                               <input type="hidden" id="edit_merk">
                               <span class="message_error edit_merk_error text-red d-block"></span>
                           </div>
+                          <div class="col-md-2 mt-2">
+                              <label for="edit_select_brand">Th Pembuatan</label>
+                          </div>
+                          <div class="col-md-4 mb-2">
+                              <input type="text" class="form-control" id="edit_th_pembuatan">
+                              <span class="message_error edit_th_pembuatan_error text-red d-block"></span>
+                          </div>
+                          <div class="col-md-2 mt-2">
+                              <label for="edit_select_brand">Th Operasi</label>
+                          </div>
+                          <div class="col-md-4 mb-2">
+                              <input type="text" class="form-control" id="edit_th_operasi">
+                              <span class="message_error edit_th_operasi_error text-red d-block"></span>
+                          </div>
                       </div>
                       <div class="row d-flex justify-content-end">
                        <div class="col-1 offset-11">

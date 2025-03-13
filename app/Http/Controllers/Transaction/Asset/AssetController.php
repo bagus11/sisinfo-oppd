@@ -42,7 +42,9 @@ class AssetController extends Controller
     public function getAssetFilter(Request $request)
     {
         if ($request->ajax()) {
-            // Convert kondisi to its corresponding integer value
+            $currentYear = date('Y');
+    
+            // Konversi kondisi ke angka
             $kondisi = match ($request->kondisi) {
                 "BAIK" => 1,
                 "RR OPS" => 2,
@@ -53,29 +55,64 @@ class AssetController extends Controller
                 default => 0,
             };
     
-            // Fetch assets with relationships
+            // Query utama
             $data = Asset::query()
-                    ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-                    ->with([
-                        'categoryRelation',
-                        'subCategoryRelation',
-                        'typeRelation',
-                        'merkRelation',
-                        'satgasRelation'
-                    ])
-                    ->where(function ($q) use ($request) {
-                        if (!empty($request->type)) {
-                            $q->where('master_satgas.type', $request->type);
-                        }
-                    })
-                    ->where('assets.kondisi', 'like', '%' . $kondisi . '%')
-                    ->select('assets.*')
-                    ->get();
-            return DataTables::of($data)->make(true);
+                ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->with([
+                    'categoryRelation',
+                    'subCategoryRelation',
+                    'typeRelation',
+                    'merkRelation',
+                    'satgasRelation'
+                ]);
+            if($kondisi != 0){
+                $data->where('assets.kondisi', $kondisi);
+                // ->where('assets.kondisi', 'like', '%' . $kondisi . '%');
+            }
+    
+            // **Filter berdasarkan SatgasRelation**
+            if (!empty($request->type)) {
+                $data->where(function ($q) use ($request) {
+                    $q->whereRaw('master_satgas.type = ?', [$request->type]);
+                });
+            }
+                        
+    
+            // **Filter Tahun Operasi (th_operasi)**
+            if (!empty($request->th_operasi)) {
+                if ($request->th_operasi == "1") {
+                    $data->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
+                } elseif ($request->th_operasi == "2") {
+                    $data->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]);
+                } elseif ($request->th_operasi == "3") {
+                    $data->where('assets.th_operasi', '<', $currentYear - 10);
+                }
+            }
+    
+            // **Filter Tahun Pembuatan (th_pembuatan)**
+            if (!empty($request->th_pembuatan)) {
+                if ($request->th_pembuatan == "1") {
+                    $data->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
+                } elseif ($request->th_pembuatan == "2") {
+                    $data->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]);
+                } elseif ($request->th_pembuatan == "3") {
+                    $data->where('assets.th_pembuatan', '<', $currentYear - 10);
+                }
+            }
+    
+            // **Hapus ORDER BY satgasRelation.name di Query Langsung**
+            return DataTables::of($data)
+                ->order(function ($query) {
+                    // Sorting setelah data diambil
+                    $query->get()->sortBy('satgasRelation.name');
+                })
+                ->make(true);
         }
     
         return abort(403, 'Unauthorized action.');
     }
+    
+    
     
     function getMasterSatgas() {
         $data = MasterSatgas::all();

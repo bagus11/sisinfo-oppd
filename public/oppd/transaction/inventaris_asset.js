@@ -1,3 +1,5 @@
+
+
 const table = $('#inventaris_table').DataTable({
     processing: true,
     serverSide: true,

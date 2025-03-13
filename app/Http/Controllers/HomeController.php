@@ -55,7 +55,7 @@ class HomeController extends Controller
             ->where('a.kondisi', '!=', '')
             ->get();
             // if(auth()->user()->hasPermissionTo('get-except_satgas-asset_inventaris')){
-                $countingSatgasAsset = DB::table('master_satgas as a')
+            $countingSatgasAsset = DB::table('master_satgas as a')
                 ->leftJoin('assets as b', 'a.id', '=', 'b.lokasi')
                 ->select('a.type', DB::raw('COUNT(b.id) AS total'))
                 ->whereNot('a.type', 'OPPD')
@@ -95,6 +95,19 @@ class HomeController extends Controller
                                         ->groupBy('b.name')
                                         ->orderBy('b.name', 'asc')
                                         ->get();
+
+            $countingAssetYear = DB::table('assets')
+                            ->selectRaw("
+                                COUNT(CASE WHEN (YEAR(CURDATE()) - th_pembuatan) < 5 THEN id END) AS pembuatan_kurang_5,
+                                COUNT(CASE WHEN (YEAR(CURDATE()) - th_operasi) < 5 THEN id END) AS operasi_kurang_5,
+                                COUNT(CASE WHEN (YEAR(CURDATE()) - th_pembuatan) BETWEEN 5 AND 10 THEN id END) AS pembuatan_5_10,
+                                COUNT(CASE WHEN (YEAR(CURDATE()) - th_operasi) BETWEEN 5 AND 10 THEN id END) AS operasi_5_10,
+                                COUNT(CASE WHEN (YEAR(CURDATE()) - th_pembuatan) > 10 THEN id END) AS pembuatan_lebih_10,
+                                COUNT(CASE WHEN (YEAR(CURDATE()) - th_operasi) > 10 THEN id END) AS operasi_lebih_10
+                            ")
+                            ->first(); // Ambil satu hasil karena ini agregat
+                                
+                                 
         return response()->json([
             'oppd' => $oppd,
             'countOppd' => $countOppd,
@@ -106,6 +119,7 @@ class HomeController extends Controller
             'countingSatgasAsset' => $countingSatgasAsset,
             'summaryChartCategory' => $summaryChartCategory,
             'summaryChartSatgas' => $summaryChartSatgas,
+            'countingAssetYear' => $countingAssetYear,
         ]);
     }
     

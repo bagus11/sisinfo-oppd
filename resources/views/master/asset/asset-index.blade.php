@@ -48,7 +48,8 @@
                                                 <label style="font-size:18px" for="">Satgas</label>
                                             </div>
                                             <div class="col-8">
-                                                <select name="select_satgas" class="select2" id="select_satgas"></select>
+                                                <select name="select_satgas" class="select2" id="select_satgas">
+                                                </select>
                                             </div>
                                         </div>
                                       </li>
@@ -67,6 +68,34 @@
                                                 <option value="4">RR TDK OPS</option>
                                                 <option value="5">M</option>
                                                 <option value="6">D</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                  </li>
+                                  <li class="mt-2">
+                                    <div class="row mx-2">
+                                        <div class="col-4 mt-2">
+                                            <label style="font-size:18px" for="">Th Operasi</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select name="select_th_operasi" class="select2" id="select_th_operasi">
+                                                <option value="">All Condition</option>
+                                                <option value="1">< 5 Tahun</option>
+                                                <option value="2">5 - 10 Tahun</option>
+                                                <option value="3">> 10 Tahun</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mx-2">
+                                        <div class="col-4 mt-2">
+                                            <label style="font-size:18px" for="">Th Pembuatan</label>
+                                        </div>
+                                        <div class="col-8">
+                                            <select name="select_th_pembuatan" class="select2" id="select_th_pembuatan">
+                                                <option value="">All Condition</option>
+                                                <option value="1">< 5 Tahun</option>
+                                                <option value="2">5 - 10 Tahun</option>
+                                                <option value="3">> 10 Tahun</option>
                                             </select>
                                         </div>
                                     </div>
@@ -108,6 +137,8 @@
                                   <th>No Rangka</th>
                                   <th>Satgas</th>
                                   <th>Lokasi</th>
+                                  <th>Th Pembuatan</th>
+                                  <th>Th Operasi</th>
                                 </tr>
                             </thead>
                         </table>
