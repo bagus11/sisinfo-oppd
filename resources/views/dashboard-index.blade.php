@@ -107,7 +107,6 @@
           height: 100% !important;
       }
       .select2-container--open {
-          left: 0px !important;
           width: 100% !important;
       }
 
