@@ -106,6 +106,11 @@
           width: 100% !important;
           height: 100% !important;
       }
+      .select2-container--open {
+          left: 0px !important;
+          width: 100% !important;
+      }
+
 
 </style>
 <div class="row mb-0" id="content-wrapper">
