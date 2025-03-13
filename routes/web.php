@@ -84,6 +84,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         // CategoryAsset
         Route::get('/setting_category_asset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@index')->name('setting_category_asset');
+        Route::get('/getCategoryAsset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@getCategoryAsset')->name('getCategoryAsset');
+        Route::post('/addCategoryAsset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@addCategoryAsset')->name('addCategoryAsset');
         
         // CategoryAsset
     // Setting
