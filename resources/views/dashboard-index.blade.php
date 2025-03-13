@@ -105,22 +105,7 @@
           transform: none !important;
           width: 100% !important;
           height: 100% !important;
-          .select2-container {
-              width: 100% !important;
-          }
-          .select2-container {
-              z-index: 9999 !important;
-              width: 100% !important;
-          }
-
-          .select2-dropdown {
-              z-index: 9999 !important;
-              position: absolute !important;
-          }
-
-          .modal {
-              overflow: visible !important;
-          }
+      }
 
 
 </style>
