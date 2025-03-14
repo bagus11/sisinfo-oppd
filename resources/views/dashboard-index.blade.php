@@ -253,7 +253,7 @@
 @endsection
 
 @push('js')
-    <script src="{{ asset('oppd/dashboard.js') }}"></script>
+   
     <script>
       $(document).ready(function () {
         $('#detailAssetModal').on('shown.bs.modal', function () {
@@ -262,109 +262,110 @@
                 width: '100%'
             });
         });
-    });
-      var userHasPermission = @json($userHasPermission);
-      console.log(userHasPermission);
-      function verticalBarChart(response){
-        var summaryChartSatgas = response.summaryChartSatgas;
-        // Prepare the data for the chart
-        var satgasNames = summaryChartSatgas.map(function(item) {
-          return item.satgas_name;  // Get satgas names
+      });
+        var userHasPermission = @json($userHasPermission);
+        console.log(userHasPermission);
+        function verticalBarChart(response){
+          var summaryChartSatgas = response.summaryChartSatgas;
+          // Prepare the data for the chart
+          var satgasNames = summaryChartSatgas.map(function(item) {
+            return item.satgas_name;  // Get satgas names
+        });
+
+      var totalCounts = summaryChartSatgas.map(function(item) {
+          return item.total;  // Get total count of assets for each satgas
       });
 
-    var totalCounts = summaryChartSatgas.map(function(item) {
-        return item.total;  // Get total count of assets for each satgas
-    });
+      // Dynamically generate colors for each satgas_name (you can customize the colors as needed)
+      var colors = [
+          "#97E1F0", "#33FF57", "#3357FF", "#F3FF33", "#FF33A6", // You can add more colors as per your requirement
+          "#FF8C00", "#A52A2A", "#6A5ACD", "#20B2AA", "#D2691E"
+      ];
 
-    // Dynamically generate colors for each satgas_name (you can customize the colors as needed)
-    var colors = [
-        "#97E1F0", "#33FF57", "#3357FF", "#F3FF33", "#FF33A6", // You can add more colors as per your requirement
-        "#FF8C00", "#A52A2A", "#6A5ACD", "#20B2AA", "#D2691E"
-    ];
-
-    // Make sure the number of colors matches the number of satgas names
-    if (colors.length < satgasNames.length) {
-        // In case there are more satgas names than colors, repeat the colors
-        while (colors.length < satgasNames.length) {
-            colors.push(colors[colors.length % colors.length]);
-        }
-    }
-
-    // Chart options
-    var options = {
-        chart: {
-            type: 'bar',  // Set the chart type to vertical bar
-            height: 400,
-            toolbar: {
-                show: false
-            },
-        },
-        plotOptions: {
-            bar: {
-                columnWidth: '50%',  // Width of the bars
-                endingShape: 'flat',  // Ensure bars end flat
-                dataLabels: {
-                    position: 'top',  // Position the data labels at the top of the bars
-                },
-            },
-        },
-        grid: {
-            borderColor: 'transparent',  // Remove grid borders
-        },
-        colors: colors,  // Assign dynamic colors based on satgas_name
-        series: [{
-            name: 'Total Aset',
-            data: totalCounts  // Use the total counts as the data for the bars
-        }],
-        xaxis: {
-            categories: satgasNames,  // Use satgas names as x-axis labels
-            labels: {
-                style: {
-                    colors: '#a1aab2',  // Label color for x-axis
-                    fontSize: '12px',
-                }
-            }
-        },
-        yaxis: {
-            title: {
-                text: 'Jumlah Aset',
-            },
-            labels: {
-                style: {
-                    colors: '#a1aab2',  // Label color for y-axis
-                    fontSize: '12px',
-                }
-            }
-        },
-        tooltip: {
-            y: {
-                formatter: function(val) {
-                    return "Total Aset: " + val;  // Show the total in tooltip
-                }
-            },
-            theme: "dark",
-        },
-        title: {
-            enable: false,
-            text: '',  // Chart title
-            align: 'center',
-            style: {
-                color: '#a1aab2',
-            },
-        },
-        dataLabels: {
-            enabled: true,  // Enable data labels
-            style: {
-                colors: ['#000'],  // Set the color of the data labels to black
-                fontSize: '9px',   // Adjust font size for the labels
-            },
-            offsetY: -20,  // Adjust the vertical offset to move the labels up (negative value places labels above the bars)
-        }
-    };
-
-    // Create the chart
-    var chart = new ApexCharts(document.querySelector("#verticalBarChart"), options);
-        chart.render();
+      // Make sure the number of colors matches the number of satgas names
+      if (colors.length < satgasNames.length) {
+          // In case there are more satgas names than colors, repeat the colors
+          while (colors.length < satgasNames.length) {
+              colors.push(colors[colors.length % colors.length]);
           }
+      }
+
+      // Chart options
+      var options = {
+          chart: {
+              type: 'bar',  // Set the chart type to vertical bar
+              height: 400,
+              toolbar: {
+                  show: false
+              },
+          },
+          plotOptions: {
+              bar: {
+                  columnWidth: '50%',  // Width of the bars
+                  endingShape: 'flat',  // Ensure bars end flat
+                  dataLabels: {
+                      position: 'top',  // Position the data labels at the top of the bars
+                  },
+              },
+          },
+          grid: {
+              borderColor: 'transparent',  // Remove grid borders
+          },
+          colors: colors,  // Assign dynamic colors based on satgas_name
+          series: [{
+              name: 'Total Aset',
+              data: totalCounts  // Use the total counts as the data for the bars
+          }],
+          xaxis: {
+              categories: satgasNames,  // Use satgas names as x-axis labels
+              labels: {
+                  style: {
+                      colors: '#a1aab2',  // Label color for x-axis
+                      fontSize: '12px',
+                  }
+              }
+          },
+          yaxis: {
+              title: {
+                  text: 'Jumlah Aset',
+              },
+              labels: {
+                  style: {
+                      colors: '#a1aab2',  // Label color for y-axis
+                      fontSize: '12px',
+                  }
+              }
+          },
+          tooltip: {
+              y: {
+                  formatter: function(val) {
+                      return "Total Aset: " + val;  // Show the total in tooltip
+                  }
+              },
+              theme: "dark",
+          },
+          title: {
+              enable: false,
+              text: '',  // Chart title
+              align: 'center',
+              style: {
+                  color: '#a1aab2',
+              },
+          },
+          dataLabels: {
+              enabled: true,  // Enable data labels
+              style: {
+                  colors: ['#000'],  // Set the color of the data labels to black
+                  fontSize: '9px',   // Adjust font size for the labels
+              },
+              offsetY: -20,  // Adjust the vertical offset to move the labels up (negative value places labels above the bars)
+          }
+      };
+
+      // Create the chart
+      var chart = new ApexCharts(document.querySelector("#verticalBarChart"), options);
+          chart.render();
+            }
     </script>
+     <script src="{{ asset('oppd/dashboard.js') }}"></script>
 @endpush
