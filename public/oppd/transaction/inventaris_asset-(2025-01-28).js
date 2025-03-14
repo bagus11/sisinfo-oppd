@@ -47,7 +47,10 @@ const table = $('#inventaris_table').DataTable({
         },
     ]
 });
-
+$('#select_kondisi').select2({
+    dropdownParent: $('#addAssetModal'),
+   
+})
 getActiveItems('getSatgasType',null,'select_filter_asset','Satgas')
 getActiveItems('getUser',null,'edit_select_reporter','Reporter')
 getCallbackNoSwal('getSatgas', null, function(response){

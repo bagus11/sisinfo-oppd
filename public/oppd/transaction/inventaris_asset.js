@@ -64,6 +64,7 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
     if (response && Array.isArray(response)) {
         // Destroy any existing DataTable instance
         $('#detailTableAsset').DataTable().clear().destroy();
+        $('#inventaris_table_log').DataTable().clear().destroy();
         // Populate the DataTable with the response data
         $('#detailTableAsset').DataTable({
             data: response,
@@ -104,6 +105,13 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                 { 
                     data: 'asset_relation.satgas_relation', 
                     name: 'asset_relation.satgas_relation.type',
+                    render: function(data) {
+                        return data ? data.type : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.satgas_relation', 
+                    name: 'asset_relation.satgas_relation.name',
                     render: function(data) {
                         return data ? data.name : '-';
                     }
@@ -158,6 +166,102 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
             paging: true,
             searching: true,
             ordering: true,
+        });
+        
+        $('#inventaris_table_log').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
+            ajax: {
+                url: `getInventarisLog`,
+                type: 'GET',
+                data: function(d) {
+                    d.inventaris_code = response[0].inventaris_code;
+                },
+                dataSrc: function(json) {
+                    console.log(json.data[0].asset_relation); // Debugging: Pastikan data sesuai
+                    return json.data;
+                }
+            },
+            columns: [
+                { 
+                    data: 'kondisi_saat_ini', 
+                    name: 'kondisi_saat_ini',
+                    render: function (data) {
+                        const kondisiMap = {
+                            0: '-',
+                            1: '<span class="badge" style="background-color:#16C47F;color:white;border-radius:10px;font-size:12px;font-weight:bold;">BAIK</span>',
+                            2: '<span class="badge" style="background-color:#40A2E3;color:white;border-radius:10px;font-size:12px;font-weight:bold;">RR OPS</span>',
+                            3: '<span class="badge" style="background-color:#E82561;color:white;border-radius:10px;font-size:12px;font-weight:bold;">RB</span>',
+                            4: '<span class="badge" style="background-color:#500073;color:white;border-radius:10px;font-size:12px;font-weight:bold;">RR TDK OPS</span>',
+                            5: '<span class="badge" style="background-color:#697565;color:white;border-radius:10px;font-size:12px;font-weight:bold;">M</span>',
+                            6: '<span class="badge" style="background-color:#3C3D37;color:white;border-radius:10px;font-size:12px;font-weight:bold;">D</span>'
+                        };
+                        return kondisiMap[parseInt(data)] || 'Unknown';
+                    }
+                },
+                { 
+                    data: 'kondisi', 
+                    name: 'kondisi',
+                    render: function (data) {
+                        const kondisiMap = {
+                            0: '-',
+                            1: '<span class="badge" style="background-color:#16C47F;color:white;border-radius:10px;font-size:12px;font-weight:bold;">BAIK</span>',
+                            2: '<span class="badge" style="background-color:#40A2E3;color:white;border-radius:10px;font-size:12px;font-weight:bold;">RR OPS</span>',
+                            3: '<span class="badge" style="background-color:#E82561;color:white;border-radius:10px;font-size:12px;font-weight:bold;">RB</span>',
+                            4: '<span class="badge" style="background-color:#500073;color:white;border-radius:10px;font-size:12px;font-weight:bold;">RR TDK OPS</span>',
+                            5: '<span class="badge" style="background-color:#697565;color:white;border-radius:10px;font-size:12px;font-weight:bold;">M</span>',
+                            6: '<span class="badge" style="background-color:#3C3D37;color:white;border-radius:10px;font-size:12px;font-weight:bold;">D</span>'
+                        };
+                        return kondisiMap[parseInt(data)] || 'Unknown';
+                    }
+                },
+                { 
+                    data: 'asset_relation.satgas_relation', 
+                    name: 'asset_relation.satgas_relation.type',
+                    render: function(data) {
+                        return data && data.type ? data.type : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.satgas_relation', 
+                    name: 'asset_relation.satgas_relation.name',
+                    render: function(data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                { data: 'asset_relation.no_un', name: 'asset_relation.no_un' },
+                { 
+                    data: 'asset_relation.category_relation', 
+                    name: 'asset_relation.category_relation.name',
+                    render: function(data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.sub_category_relation', 
+                    name: 'asset_relation.sub_category_relation',
+                    render: function(data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.type_relation', 
+                    name: 'asset_relation.type_relation',
+                    render: function(data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                { 
+                    data: 'asset_relation.merk_relation', 
+                    name: 'asset_relation.merk_relation',
+                    render: function(data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                { data: 'asset_relation.no_mesin', name: 'asset_relation.no_mesin' },
+                { data: 'asset_relation.no_rangka', name: 'asset_relation.no_rangka' }
+            ]
         });
     } else {
         console.error('Response is not valid or does not contain data');

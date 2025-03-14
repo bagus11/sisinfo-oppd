@@ -1,5 +1,5 @@
 <div class="modal fade" id="editAssetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header p-0 mx-2 pt-2">
                 <div class="row">
@@ -139,6 +139,7 @@
                                                   <th>Action</th>
                                                   <th>Kondisi</th>
                                                   <th>Satgas</th>
+                                                  <th>Lokasi</th>
                                                   <th>No UN</th>
                                                   <th>Kategori</th>
                                                   <th>Sub Kategori</th>
@@ -166,14 +167,17 @@
                                       <table id="inventaris_table_log" class="table table-striped table-bordered text-nowrap">
                                           <thead class="text-dark fs-1">
                                             <tr>
-                                                <th>Created At</th>
-                                                <th>User Name</th>
+                                                <th>Kondisi Sebelumnya</th>
+                                                <th>Kondisi Sesudah</th>
                                                 <th>Satgas</th>
-                                                <th>Bulan</th>
-                                                <th>Asset Code</th>
-                                                <th>Catatan</th>
-                                                <th>Attachment</th>
-                                                <th>Kondisi</th>
+                                                <th>Lokasi</th>
+                                                <th>No UN</th>
+                                                <th>Kategori</th>
+                                                <th>Sub Kategori</th>
+                                                <th>Jenis</th>
+                                                <th>Merk</th>
+                                                <th>No Mesin</th>
+                                                <th>No Rangka</th>
                                             </tr>
                                           </thead>
                                           <tbody></tbody>

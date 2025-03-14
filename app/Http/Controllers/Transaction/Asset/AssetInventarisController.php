@@ -9,6 +9,7 @@ use App\Http\Requests\Transaction\Asset\Inventaris\UpdateInventaris;
 
 use App\Models\Master\Asset;
 use App\Models\Master\AssetLog;
+use App\Models\Master\MasterAsset;
 use App\Models\Setting\MasterSatgas;
 use App\Models\Transaction\Asset\Inventaris;
 use App\Models\Transaction\Asset\InventarisDetail;
@@ -123,19 +124,19 @@ class AssetInventarisController extends Controller
     }
     
     function getInventarisLog(Request $request) {
-    
-        $data = InventarisLog::with(
+   
+        $data = InventarisDetailLog::with(
             [
                 'satgasRelation',
                 'reporterRelation',
                 'userRelation',
                 'assetRelation.categoryRelation',
                 'assetRelation.subCategoryRelation',
+                'assetRelation.satgasRelation',
                 'assetRelation.typeRelation',
                 'assetRelation.merkRelation',
             ]
         )->where('inventaris_code',$request->inventaris_code)->get();
-        
         if ($request->ajax()) {
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {
@@ -237,7 +238,7 @@ class AssetInventarisController extends Controller
                         $attachmentPath = "transaction/asset/inventaris/{$attachmentFileName}";
                         $file->storeAs('transaction/asset/inventaris', $attachmentFileName, 'public');
                     }
-    
+                    $asset_condition = Asset::where('asset_code', $asset['asset_code'])->first();
                     // Create InventarisDetail
                     InventarisDetail::create([
                         'inventaris_code' => $ticketCode,
@@ -259,6 +260,7 @@ class AssetInventarisController extends Controller
                         'reporter' => auth()->user()->id,
                         'asset_code' => $asset['asset_code'],
                         'kondisi' => $status,
+                        'kondisi_saat_ini' => $asset_condition->kondisi,
                         'user_id' => auth()->user()->id,
                         'catatan' => $asset['catatan'] ?? $request->catatan,
                         'attachment' => $status == 1 ? '' : $attachmentPath, // Save attachment if provided

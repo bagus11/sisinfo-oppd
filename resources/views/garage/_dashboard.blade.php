@@ -387,11 +387,11 @@
                 });
             })
             // $(".select2").select2({ width: '300px', dropdownCssClass: "bigdrop" });
-            $(document).on('shown.bs.modal', function (e) {
-                $(e.target).find('.select2').select2({
-                    dropdownParent: $(e.target) // Supaya dropdown tetap dalam modal yang aktif
-                });
-            });
+            // $(document).on('shown.bs.modal', function (e) {
+            //     $(e.target).find('.select2').select2({
+            //         dropdownParent: $(e.target) // Supaya dropdown tetap dalam modal yang aktif
+            //     });
+            // });
 
           toastr.options = {
               "closeButton": false,
