@@ -263,14 +263,14 @@
             });
         });
     });
-    console.log($('#select_th_operasi').select2());
       var userHasPermission = @json($userHasPermission);
+      console.log(userHasPermission);
       function verticalBarChart(response){
         var summaryChartSatgas = response.summaryChartSatgas;
         // Prepare the data for the chart
-    var satgasNames = summaryChartSatgas.map(function(item) {
-        return item.satgas_name;  // Get satgas names
-    });
+        var satgasNames = summaryChartSatgas.map(function(item) {
+          return item.satgas_name;  // Get satgas names
+      });
 
     var totalCounts = summaryChartSatgas.map(function(item) {
         return item.total;  // Get total count of assets for each satgas
