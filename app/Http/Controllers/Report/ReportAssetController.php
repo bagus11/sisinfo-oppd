@@ -606,7 +606,7 @@ class ReportAssetController extends Controller
             $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
-                ->where('master_satgas.type', $type->type)
+                ->where('b.type', $type->type)
                 ->groupBy('b.type', 'a.kondisi')
                 ->get();
             $child = Asset::query()
