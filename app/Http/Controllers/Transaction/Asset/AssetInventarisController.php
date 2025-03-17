@@ -40,7 +40,14 @@ class AssetInventarisController extends Controller
     }
     public function getInventaris(Request $request)
     {
-        $data = Inventaris::with([
+        // Ambil data satgas user
+        $satgas = MasterSatgas::find(auth()->user()->satgas);
+    
+        // Cek apakah user punya permission `only-gm-asset_inventaris`
+        $userHasPermission = auth()->user()->can('only-gm-asset_inventaris');
+    
+        // Query inventaris
+        $query = Inventaris::with([
             'detailRelation',
             'detailRelation.assetRelation',
             'detailRelation.assetRelation.categoryRelation',
@@ -50,10 +57,16 @@ class AssetInventarisController extends Controller
             'detailRelation.assetRelation.satgasRelation',
             'satgasRelation',
             'reporterRelation',
-        ])
-        ->get()
-        ->map(function ($inventaris) {
-            // Define a mapping for kondisi values
+        ]);
+    
+        // Jika user tidak punya permission, filter berdasarkan satgas
+        if (!$userHasPermission && $satgas) {
+            $query->whereHas('satgasRelation', function ($q) use ($satgas) {
+                $q->where('type', $satgas->type);
+            });
+        }
+    
+        $data = $query->get()->map(function ($inventaris) {
             $kondisiMapping = [
                 0 => '-',
                 1 => 'BAIK',
@@ -63,7 +76,7 @@ class AssetInventarisController extends Controller
                 5 => 'M',
                 6 => 'D',
             ];
-        
+    
             $backgroundMapping = [
                 0 => '-',
                 1 => '#16C47F',
@@ -73,31 +86,28 @@ class AssetInventarisController extends Controller
                 5 => '#697565',
                 6 => '#3C3D37',
             ];
-        
+    
             if ($inventaris->detailRelation) {
-                // Count occurrences of each kondisi
                 $kondisiCounts = $inventaris->detailRelation
                     ->groupBy('kondisi')
                     ->map(function ($group) {
                         return $group->count();
                     });
-        
-                // Generate badges for kondisi with counts
+    
                 $kondisiBadges = $kondisiCounts->map(function ($count, $kondisi) use ($kondisiMapping, $backgroundMapping) {
-                    $kondisiText = $kondisiMapping[$kondisi] ?? 'Unknown'; // Map kondisi to text
-                    $backgroundColor = $backgroundMapping[$kondisi] ?? '#ccc'; // Default color if not found
-        
+                    $kondisiText = $kondisiMapping[$kondisi] ?? 'Unknown';
+                    $backgroundColor = $backgroundMapping[$kondisi] ?? '#ccc';
+    
                     return '<span class="badge badge-primary w-15 mx-1" style="background-color:'.$backgroundColor.';color:white;border-radius:10px !important;font-size:12px !important; font-weight:bold;">' . e($kondisiText) . ' : ' . $count . '</span>';
                 })->implode(' ');
             } else {
                 $kondisiBadges = '<span class="badge badge-secondary">No Data</span>';
             }
-        
-            $inventaris->kondisi_summary = $kondisiBadges; // Add as a custom attribute
+    
+            $inventaris->kondisi_summary = $kondisiBadges;
             return $inventaris;
         });
-        
-        
+    
         if ($request->ajax()) {
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {
@@ -110,18 +120,17 @@ class AssetInventarisController extends Controller
                     return $editBtn . ' ' . $printBtn;
                 })
                 ->addColumn('kondisi', function ($row) {
-                    return $row->kondisi_summary; // Use the custom attribute with badges
+                    return $row->kondisi_summary;
                 })
-                ->rawColumns(['kondisi', 'action']) // Ensure 'kondisi' column renders HTML
+                ->rawColumns(['kondisi', 'action'])
                 ->make(true);
         }
-        
+    
         return response()->json([
             'data' => $data,
         ]);
-        
-        
     }
+    
     
     function getInventarisLog(Request $request) {
    
