@@ -570,6 +570,7 @@ class ReportAssetController extends Controller
     
         // Check if the user has permission
         if (auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
+            dd('test 1');
             $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
@@ -593,6 +594,7 @@ class ReportAssetController extends Controller
                 ->select('assets.*')
                 ->get();
         } else {
+            dd('test 2');
             $type = MasterSatgas::find(auth()->user()->satgas);
             $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
