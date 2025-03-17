@@ -295,7 +295,7 @@
 </style>
 <body>    
     @php
-        $satgas = MasterSatgas::find(auth()->user()->satgas);
+        $satgas = DB::table('master_satgas')::find(auth()->user()->satgas);
     @endphp
     <div class="preloader">
         <img src="{{ asset('assets/images/logos/logo.png') }}" alt="loader" class="lds-ripple img-fluid" />
