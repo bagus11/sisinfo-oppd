@@ -139,7 +139,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                                 data: 'satgas_relation', 
                                                 name: 'satgas_relation.type', 
                                                 render: function (data) {
-                                                    return data?.name || '-';
+                                                    return data?.type || '-';
                                                 }
                                             },
                                             { 
@@ -615,7 +615,7 @@ function getRadialBar(response) {
                                     data: 'satgas_relation', 
                                     name: 'satgas_relation.type', 
                                     render: function (data) {
-                                        return data?.name || '-';
+                                        return data?.type || '-';
                                     }
                                 },
                                 { 
@@ -980,7 +980,7 @@ $('#btn_filter_asset').on('click', function () {
                 data: 'satgas_relation', 
                 name: 'satgas_relation.type', 
                 render: function (data) {
-                    return data?.name || '-';
+                    return data?.type || '-';
                 }
             },
             { 
