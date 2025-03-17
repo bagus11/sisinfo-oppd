@@ -854,6 +854,7 @@
                                                 @php
                                                 $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first();
                                                 @endphp
+                                                {{auth()->user()->email}}
                                                 {{$satgas->type}} - {{$satgas->name}}
                                             </p>
                                         </div>
