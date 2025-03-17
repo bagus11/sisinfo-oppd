@@ -851,7 +851,10 @@
                                             <h5 class="mb-0 fs-12">{{auth()->user()->name}}
                                             </h5>
                                             <p class="mb-0 text-dark">
-                                                {{auth()->user()->email}}
+                                                @php
+                                                $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first();
+                                                @endphp
+                                                {{$satgas->type}} - {{$satgas->name}}
                                             </p>
                                         </div>
                                     </div>
