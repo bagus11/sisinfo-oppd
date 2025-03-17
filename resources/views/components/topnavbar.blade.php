@@ -160,7 +160,7 @@
             </ul>
 
             <div class="d-block d-lg-none py-9 py-xl-0">
-                <img src="{{ asset('assets/images/logos/logo.png') }}" style="width:40px"  alt="matdash-img" /><b>SISINFO OPPD</b>
+                <img src="{{ asset('assets/images/logos/logo.png') }}" style="width:40px"  alt="matdash-img" /><b>SISINFOLOG OPPD</b>
             </div>
             <a class="navbar-toggler p-0 border-0 nav-icon-hover-bg rounded-circle" href="javascript:void(0)"
                 data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
@@ -317,8 +317,8 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link" href="javascript:void(0)" id="drop1" aria-expanded="false">
                                 <div class="d-flex align-items-center gap-2 lh-base">
-                                    <img src="{{ asset('assets/images/profile/user-1.jpg') }}" class="rounded-circle"
-                                        width="35" height="35" alt="matdash-img" />
+                                    <img src="{{ auth()->user()->avatar ? asset('storage/users-avatar/' . auth()->user()->avatar) : asset('assets/images/profile/user-1.jpg') }}"
+                                        class="rounded-circle" width="45" height="45" alt="user-avatar" />
                                     <iconify-icon icon="solar:alt-arrow-down-bold" class="fs-2"></iconify-icon>
                                 </div>
                             </a>
@@ -326,34 +326,22 @@
                                 aria-labelledby="drop1">
                                 <div class="position-relative px-4 pt-3 pb-2">
                                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom gap-6">
-                                        <img src="{{ asset('assets/images/profile/user-1.jpg') }}" class="rounded-circle"
-                                            width="56" height="56" alt="matdash-img" />
+                                        <img src="{{ auth()->user()->avatar ? asset('storage/users-avatar/' . auth()->user()->avatar) : asset('assets/images/profile/user-1.jpg') }}"
+                                        class="rounded-circle" width="56" height="56" alt="user-avatar" />
                                         <div>
-                                            <h5 class="mb-0 fs-12">{{auth()->user()->name}} <span
-                                                    class="text-success fs-11">Pro</span>
+                                            <h5 class="mb-0 fs-12">{{auth()->user()->name}}
                                             </h5>
                                             <p class="mb-0 text-dark">
-                                                david@wrappixel.com
+                                               {{auth()->user()->email}}
                                             </p>
                                         </div>
                                     </div>
                                     <div class="message-body">
-                                        <a href="javascript:void(0)" class="p-2 dropdown-item h6 rounded-1">
-                                            My Profile
+                                        <a href="{{ route('setting') }}" class="p-2 dropdown-item h6 rounded-1">
+                                            <i class="fa-solid fa-gears"></i>   Setting
                                         </a>
-                                        <a href="javascript:void(0)" class="p-2 dropdown-item h6 rounded-1">
-                                            My Subscription
-                                        </a>
-                                        <a href="javascript:void(0)" class="p-2 dropdown-item h6 rounded-1">
-                                            My Statements <span
-                                                class="badge bg-danger-subtle text-danger rounded ms-8">4</span>
-                                        </a>
-                                        <a href="javascript:void(0)" class="p-2 dropdown-item h6 rounded-1">
-                                            Account Settings
-                                        </a>
-                                        <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item dropdown-footer">
-                                       Log Out</a>
+                                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item dropdown-footer">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
@@ -837,54 +825,6 @@
                         <!-- ------------------------------- -->
                         <!-- start language Dropdown -->
                         <!-- ------------------------------- -->
-                        <li class="nav-item dropdown nav-icon-hover-bg rounded-circle">
-                            <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <img src="{{ asset('assets/images/flag/icon-flag-en.svg') }}" alt="matdash-img" width="20px"
-                                    height="20px" class="rounded-circle object-fit-cover round-20" />
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up"
-                                aria-labelledby="drop2">
-                                <div class="message-body">
-                                    <a href="javascript:void(0)"
-                                        class="d-flex align-items-center gap-2 py-3 px-4 dropdown-item">
-                                        <div class="position-relative">
-                                            <img src="{{ asset('assets/images/flag/icon-flag-en.svg') }}" alt="matdash-img"
-                                                width="20px" height="20px"
-                                                class="rounded-circle object-fit-cover round-20" />
-                                        </div>
-                                        <p class="mb-0 fs-3">English (UK)</p>
-                                    </a>
-                                    <a href="javascript:void(0)"
-                                        class="d-flex align-items-center gap-2 py-3 px-4 dropdown-item">
-                                        <div class="position-relative">
-                                            <img src="{{ asset('assets/images/flag/icon-flag-cn.svg') }}" alt="matdash-img"
-                                                width="20px" height="20px"
-                                                class="rounded-circle object-fit-cover round-20" />
-                                        </div>
-                                        <p class="mb-0 fs-3">中国人 (Chinese)</p>
-                                    </a>
-                                    <a href="javascript:void(0)"
-                                        class="d-flex align-items-center gap-2 py-3 px-4 dropdown-item">
-                                        <div class="position-relative">
-                                            <img src="{{ asset('assets/images/flag/icon-flag-fr.svg') }}" alt="matdash-img"
-                                                width="20px" height="20px"
-                                                class="rounded-circle object-fit-cover round-20" />
-                                        </div>
-                                        <p class="mb-0 fs-3">français (French)</p>
-                                    </a>
-                                    <a href="javascript:void(0)"
-                                        class="d-flex align-items-center gap-2 py-3 px-4 dropdown-item">
-                                        <div class="position-relative">
-                                            <img src="{{ asset('assets/images/flag/icon-flag-sa.svg') }}" alt="matdash-img"
-                                                width="20px" height="20px"
-                                                class="rounded-circle object-fit-cover round-20" />
-                                        </div>
-                                        <p class="mb-0 fs-3">عربي (Arabic)</p>
-                                    </a>
-                                </div>
-                            </div>
-                        </li>
                         <!-- ------------------------------- -->
                         <!-- end language Dropdown -->
                         <!-- ------------------------------- -->
@@ -904,14 +844,14 @@
                                 aria-labelledby="drop1">
                                 <div class="position-relative px-4 pt-3 pb-2">
                                     <div class="d-flex align-items-center mb-3 pb-3 border-bottom gap-6">
-                                        <img src="{{ asset('assets/images/profile/user-1.jpg') }}" class="rounded-circle"
-                                            width="56" height="56" alt="matdash-img" />
+                                        <img src="{{ auth()->user()->avatar ? asset('storage/users-avatar/' . auth()->user()->avatar) : asset('assets/images/profile/user-1.jpg') }}"
+                                        class="rounded-circle" width="56" height="56" alt="user-avatar" />
+                                   
                                         <div>
-                                            <h5 class="mb-0 fs-12">David McMichael <span
-                                                    class="text-success fs-11">Pro</span>
+                                            <h5 class="mb-0 fs-12">{{auth()->user()->name}}
                                             </h5>
                                             <p class="mb-0 text-dark">
-                                                david@wrappixel.com
+                                                {{auth()->user()->email}}
                                             </p>
                                         </div>
                                     </div>

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
+    function index() {
+        return view('setting.general.setting-index');   
+    }
     function changeDarkTheme(Request $request) {
         try {
            $theme = auth()->user()->theme == 1 ? 0 : 1;
@@ -26,5 +29,13 @@ class SettingController extends Controller
                 500
             );
         }
+    }
+    function getUserProfile(Request $request) {
+        $data = User::with([
+            'locationRelation',
+        ])->find(auth()->user()->id);
+        return response()->json([
+            'data' => $data
+        ]);
     }
 }

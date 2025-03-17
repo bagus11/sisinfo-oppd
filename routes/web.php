@@ -28,6 +28,8 @@ Route::group(['middleware' => 'auth'], function () {
     // Setting
         // General 
             Route::post('changeDarkTheme', 'App\Http\Controllers\Setting\SettingController@changeDarkTheme')->name('changeDarkTheme');
+            Route::get('setting', 'App\Http\Controllers\Setting\SettingController@index')->name('setting');
+            Route::get('getUserProfile', 'App\Http\Controllers\Setting\SettingController@getUserProfile')->name('getUserProfile');
         // General 
         // Menus
             Route::get('/menus', 'App\Http\Controllers\Setting\MenusController@index')->name('menus');
@@ -72,6 +74,10 @@ Route::group(['middleware' => 'auth'], function () {
             
             Route::get('/master_satgas', 'App\Http\Controllers\Setting\MasterSatgasController@index')->name('master_satgas');
             Route::get('/getSatgasTable', 'App\Http\Controllers\Setting\MasterSatgasController@getSatgasTable')->name('getSatgasTable');
+            Route::get('/getSatgasType', 'App\Http\Controllers\Setting\MasterSatgasController@getSatgasType')->name('getSatgasType');
+            Route::post('/updatePass', 'App\Http\Controllers\Setting\MasterSatgasController@updatePass')->name('updatePass');
+            Route::post('/changeImage', 'App\Http\Controllers\Setting\MasterSatgasController@changeImage')->name('changeImage');
+            Route::post('/updateProfile', 'App\Http\Controllers\Setting\MasterSatgasController@updateProfile')->name('updateProfile');
             Route::post('/addSatgas', 'App\Http\Controllers\Setting\MasterSatgasController@addSatgas')->name('addSatgas');
         // Master Satgas
 

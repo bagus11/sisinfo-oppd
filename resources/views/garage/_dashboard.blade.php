@@ -290,7 +290,7 @@
 </style>
 <body>    
     <div class="preloader">
-        <img src="{{ asset('assets/images/logos/favicon.png') }}" alt="loader" class="lds-ripple img-fluid" />
+        <img src="{{ asset('assets/images/logos/logo.png') }}" alt="loader" class="lds-ripple img-fluid" />
     </div>
     <div id="main-wrapper">
         <aside class="side-mini-panel with-vertical">
