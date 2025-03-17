@@ -503,9 +503,9 @@ class ReportAssetController extends Controller
     
     public function getAssetKondisi(Request $request)
     {
-        $satgas = MasterSatgas::find(auth()->user()->lokasi); // Ambil satgas user
+        $satgas = MasterSatgas::find(auth()->user()->satgas); // Ambil satgas user
         $userHasPermission = auth()->user()->can('get-except_satgas-master_asset'); // Cek permission
-        dd($satgas);
+        // dd($satgas);
         // Ambil data dengan filter jika user tidak punya permission
         $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
