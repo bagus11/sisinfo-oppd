@@ -294,9 +294,7 @@
     }
 </style>
 <body>    
-    @php
-        $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first();
-    @endphp
+  
     <div class="preloader">
         <img src="{{ asset('assets/images/logos/logo.png') }}" alt="loader" class="lds-ripple img-fluid" />
     </div>

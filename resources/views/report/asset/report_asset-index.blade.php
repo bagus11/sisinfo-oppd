@@ -49,6 +49,9 @@
         background-color: #BCCCDC !important;
     }
 </style>
+@php
+$satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first();
+@endphp
 <div class="row">
     <div class="col-12">
         <div class="card">
