@@ -98,10 +98,12 @@ $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first(
                                     </li>
                                 </ul>
                             </div>
-                            @can('get-only_staff-laporan_asset')
-                                <b>{{$satgas->type}}</b>
-                            @endcan
                         </div>
+                        @can('get-only_staff-laporan_asset')
+                            <div class="row mx-2 mt-2">
+                                <b>{{$satgas->type}}</b>
+                            </div>
+                        @endcan
 
                         <div class="tab-content">
                           
@@ -163,10 +165,12 @@ $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first(
                                     </li>
                                 </ul>
                             </div>
-                            @can('get-only_staff-laporan_asset')
-                                <b>{{$satgas->type}}</b>
-                            @endcan
                         </div>
+                        @can('get-only_staff-laporan_asset')
+                            <div class="row mx-2 mt-2">
+                                <b>{{$satgas->type}}</b>
+                            </div>
+                        @endcan
 
                         <div class="tab-content">
                             <div class="row mx-2">
