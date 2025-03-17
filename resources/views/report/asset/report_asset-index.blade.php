@@ -111,11 +111,13 @@
                             <div class="tab-pane active p-3" id="tab-chart-view">
                                 <div class="row mt-2">
                                     <div class="col-12 col-sm-12 col-md-12">
+                                        @can('get-only_gm-laporan_asset')
                                         <fieldset>
                                             <legend class="bg-danger">   <i class="fas fa-filter"></i>Filter</legend>
                                             <div id="satgas_button" class="row d-flex justify-content-between">
                                             </div>
                                         </fieldset>
+                                        @endcan
                                     </div>
                                 </div>
                                 <div class="chart-container">
