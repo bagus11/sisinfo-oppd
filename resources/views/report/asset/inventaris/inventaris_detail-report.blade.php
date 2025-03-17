@@ -128,13 +128,13 @@
                     <tr>
                         <td>{{$kondisi}}</td>
                         <td>{{$item->satgasRelation->name}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->no_un}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->categoryRelation->name}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->subCategoryRelation->name}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->typeRelation->name}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->merkRelation->name}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->noRangka}}</td>
-                        <td>{{$item->assetRelation == null ? '-' : $item->assetRelation->no_mesin}}</td>
+                        <td>{{$item->assetRelation ->no_un}}</td>
+                        <td>{{ optional(optional($item->assetRelation)->categoryRelation)->name ?? '-' }}</td>
+                        <td>{{ optional(optional($item->assetRelation)->subCategoryRelation)->name ?? '-' }}</td>
+                        <td>{{ optional(optional($item->assetRelation)->typeRelation)->name ?? '-' }}</td>
+                        <td>{{ optional(optional($item->assetRelation)->merkRelation)->name ?? '-' }}</td>
+                        <td>{{$item->assetRelation ->noRangka}}</td>
+                        <td>{{$item->assetRelation ->no_mesin}}</td>
                         <td>{{$item->catatan}}</td>
                         <td>
                             @if($item->attachment !== '')
