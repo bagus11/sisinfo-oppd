@@ -49,7 +49,6 @@
         background-color: #BCCCDC !important;
     }
 </style>
-
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -96,6 +95,9 @@
                                     </li>
                                 </ul>
                             </div>
+                            @can('get-except_satgas-master_asset')
+                                <b>{{$satgas->type}}</b>
+                            @endcan
                         </div>
 
                         <div class="tab-content">
@@ -158,6 +160,9 @@
                                     </li>
                                 </ul>
                             </div>
+                            @can('get-except_satgas-master_asset')
+                                <b>{{$satgas->type}}</b>
+                            @endcan
                         </div>
 
                         <div class="tab-content">

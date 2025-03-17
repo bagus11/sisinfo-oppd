@@ -387,7 +387,7 @@ class ReportAssetController extends Controller
     
         // Prepare data for the view
         $data = [
-            'title' => 'Report Asset by Category',
+            'title' => 'Report Asset Berdasarkan Kategori',
             'data'  => $pivotData, // Pass pivotData instead of asset_category
             'date' => now()->format('d F Y'),
             'chartBase64' => $chartBase64, 
@@ -655,7 +655,7 @@ class ReportAssetController extends Controller
     
         // Prepare data for the view
         $data = [
-            'title' => 'Report Asset by Category',
+            'title' => 'Report Asset Berdasarkan Kondisi',
             'data'  => $response['data'], // Pass data for asset category table
             'date' => now()->format('d F Y'),
             'chartBase64' => $chartBase64, // Pass base64 chart to the view
@@ -667,7 +667,7 @@ class ReportAssetController extends Controller
         $header .= '<table width="100%">
                         <tr>
                             <td style="padding-left:10px;">
-                                <span style="font-size: 16px; font-weight: bold;"> SYSINFO OPPD</span>
+                                <span style="font-size: 16px; font-weight: bold;"> SYSINFOLOG OPPD</span>
                                 <br>
                                 <span style="font-size:9px;">Mako PMPP Sentul, FV8J+XCP, Tangkil, Kec. Citeureup, Kabupaten Bogor, Jawa Barat 16810</span>
                             </td>
