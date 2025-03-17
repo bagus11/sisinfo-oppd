@@ -95,7 +95,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            @can('get-except_satgas-master_asset')
+                            @can('get-only_staff-laporan_asset')
                                 <b>{{$satgas->type}}</b>
                             @endcan
                         </div>
@@ -160,7 +160,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            @can('get-except_satgas-master_asset')
+                            @can('get-only_staff-laporan_asset')
                                 <b>{{$satgas->type}}</b>
                             @endcan
                         </div>
