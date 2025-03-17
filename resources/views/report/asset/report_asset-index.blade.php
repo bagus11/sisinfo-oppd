@@ -100,8 +100,8 @@ $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first(
                             </div>
                         </div>
                         @can('get-only_staff-laporan_asset')
-                            <div class="row mx-2 mt-2">
-                                <b class="ml-2">{{$satgas->type}}</b>
+                            <div class="row mx-4 mt-2">
+                                <b>{{$satgas->type}}</b>
                             </div>
                         @endcan
 
@@ -167,8 +167,8 @@ $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first(
                             </div>
                         </div>
                         @can('get-only_staff-laporan_asset')
-                            <div class="row mx-2 mt-2">
-                                <b class="ml-2">{{$satgas->type}}</b>
+                            <div class="row mx-4 mt-2">
+                                <b>{{$satgas->type}}</b>
                             </div>
                         @endcan
 
