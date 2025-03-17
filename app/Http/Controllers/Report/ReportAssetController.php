@@ -503,16 +503,23 @@ class ReportAssetController extends Controller
     
     public function getAssetKondisi(Request $request)
     {
-        // Ambil data dengan query yang telah disesuaikan
+        $satgas = MasterSatgas::find(auth()->user()->lokasi); // Ambil satgas user
+        $userHasPermission = auth()->user()->can('get-except_satgas-master_asset'); // Cek permission
+
+        // Ambil data dengan filter jika user tidak punya permission
         $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
+                ->when(!$userHasPermission, function ($q) use ($satgas) {
+                    // Jika tidak punya permission, filter hanya data dari satgas user
+                    $q->where('b.type', $satgas->type);
+                })
                 ->when(!empty($request->type), function ($q) use ($request) {
                     $q->where('b.type', $request->type);
                 })
                 ->groupBy('b.type', 'a.kondisi')
                 ->get();
-    
+
         // Struktur data yang akan dikirimkan
         $kondisiMapping = [
             1 => 'BAIK',
@@ -522,10 +529,10 @@ class ReportAssetController extends Controller
             5 => 'M',
             6 => 'D'
         ];
-    
+
         // Memetakan data berdasarkan kondisi
         $responseData = [];
-    
+
         foreach ($data as $item) {
             $kondisi = $kondisiMapping[$item->kondisi] ?? 'Unknown';  // Mapping kondisi
             if (!isset($responseData[$kondisi])) {
@@ -533,17 +540,17 @@ class ReportAssetController extends Controller
             }
             $responseData[$kondisi][$item->satgas] = $item->total;
         }
-    
+
         // Format data untuk dikirimkan ke frontend
-        $columns = array_keys($responseData[array_key_first($responseData)]);  // Mengambil satgas yang ada
-    
+        $columns = array_keys($responseData[array_key_first($responseData)] ?? []);  // Mengambil satgas yang ada
+
         // Menyusun data dan kolom untuk respons JSON
         $response = [
             'columns' => $columns,
             'data' => [],
             'chart'=> $data
         ];
-    
+
         // Membuat data baris berdasarkan kondisi
         foreach ($responseData as $kondisi => $satgasData) {
             $row = ['category' => $kondisi];  // Menyimpan kategori berdasarkan kondisi
@@ -552,9 +559,10 @@ class ReportAssetController extends Controller
             }
             $response['data'][] = $row;
         }
-    
+
         return response()->json($response);  // Mengirimkan response dalam format JSON
     }
+
 
     function exportAssetKondisiPDF(Request $request) {
         ini_set('max_execution_time', 720);
@@ -570,7 +578,7 @@ class ReportAssetController extends Controller
     
         // Check if the user has permission
         if (auth()->user()->hasPermissionTo('get-except_satgas-master_asset')) {
-            dd('test 1');
+         
             $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
                 ->join('master_satgas as b', 'a.lokasi', '=', 'b.id')
@@ -594,7 +602,6 @@ class ReportAssetController extends Controller
                 ->select('assets.*')
                 ->get();
         } else {
-            dd('test 2');
             $type = MasterSatgas::find(auth()->user()->satgas);
             $data = DB::table('assets as a')
                 ->select(DB::raw('b.type as satgas, a.kondisi, COUNT(a.id) AS total'))
