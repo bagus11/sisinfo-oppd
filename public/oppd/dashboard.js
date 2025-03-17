@@ -137,6 +137,13 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                         columns: [
                                             { 
                                                 data: 'satgas_relation', 
+                                                name: 'satgas_relation.type', 
+                                                render: function (data) {
+                                                    return data?.name || '-';
+                                                }
+                                            },
+                                            { 
+                                                data: 'satgas_relation', 
                                                 name: 'satgas_relation.name', 
                                                 render: function (data) {
                                                     return data?.name || '-';
@@ -606,6 +613,13 @@ function getRadialBar(response) {
                             columns: [
                                 { 
                                     data: 'satgas_relation', 
+                                    name: 'satgas_relation.type', 
+                                    render: function (data) {
+                                        return data?.name || '-';
+                                    }
+                                },
+                                { 
+                                    data: 'satgas_relation', 
                                     name: 'satgas_relation.name', 
                                     render: function (data) {
                                         return data?.name || '-';
@@ -962,6 +976,13 @@ $('#btn_filter_asset').on('click', function () {
                 }   
         },
         columns: [
+            { 
+                data: 'satgas_relation', 
+                name: 'satgas_relation.type', 
+                render: function (data) {
+                    return data?.name || '-';
+                }
+            },
             { 
                 data: 'satgas_relation', 
                 name: 'satgas_relation.name', 

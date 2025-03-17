@@ -45,6 +45,7 @@
                         <thead class="text-dark fs-1">
                             <tr>
                                 <th>Satgas</th>
+                                <th>Lokasi</th>
                                 <th>No UN</th>
                                 <th>Kategori</th>
                                 <th>Sub Kategori</th>
