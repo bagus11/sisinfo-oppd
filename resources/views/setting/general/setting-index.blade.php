@@ -2,7 +2,7 @@
 @section('content')
 <style>
     .select2-container {
-        z-index: 1050 !important; /* Sesuaikan dengan modal jika perlu */
+        z-index: 1000 !important; /* Sesuaikan dengan modal jika perlu */
     }
     #cropContainer {
         text-align: center;
