@@ -345,17 +345,23 @@
     <script>
         $('.customizer-btn').prop('hidden', true)
         function SwalLoading(html = 'Loading ...', title = '') {
-                return Swal.fire({
-                  title: title,
-                  html: html,
-                  customClass: 'swal-wide',
-                  timerProgressBar: true,
-                  allowOutsideClick: false,
-                  didOpen: () => {
-                      Swal.showLoading()
-                  }
-              });
-          }
+            return Swal.fire({
+                title: title,
+                html: `
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <img src="{{ asset('assets/images/logos/logo.png') }}" style="width:50px" alt="Logo" />
+                        <b style="font-size:14px">${html}</b>
+                    </div>`,
+                customClass: 'swal-wide',
+                timerProgressBar: true,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        }
+
+
         //   $(document).ready(function() {
             //     $.ajaxSetup({
             //         headers: {

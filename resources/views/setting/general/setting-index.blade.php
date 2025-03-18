@@ -44,12 +44,12 @@
                   </div>
                 </div>
                 <div class="col-lg-4 order-last">
-                  <ul class="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-end my-3 mx-4 pe-4 gap-3">
+                  <ul class="list-unstyled d-flex align-items-center justify-content-center justify-content-lg-end my-3 pe-4 gap-3">
                     <li>
-                        <button style="font-size: 10px" class="btn btn-info"><i class="fa-solid fa-image-portrait" id="btn_change_image"></i> Ubah Profile</button>
+                        <button class="btn btn-sm btn-info" id="btn_change_image"><i class="fa-solid fa-image-portrait"></i> Ubah Profile</button>
                     </li>
                     <li>
-                      <button style="font-size: 10px" class="btn btn-danger"><i class="fa-solid fa-key" id="btn_change_pass"></i> Ganti Password</button>
+                      <button class="btn btn-sm btn-danger" id="btn_change_pass"><i class="fa-solid fa-key"></i> Ganti Password</button>
                     </li>
                   </ul>
                 </div>
