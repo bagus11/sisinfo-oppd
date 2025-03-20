@@ -343,6 +343,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
     <script>
+        window.onload = function () {
+            document.addEventListener("keydown", function (e) {
+                if (e.ctrlKey && e.key === "u") {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "Hayooo mau ngapain?",
+                        imageUrl: "{{ asset('assets/images/403.jpg') }}",
+                        imageAlt: "Funny Image",
+                        confirmButtonText: "Hehe maaf"
+                    });
+                }
+            });
+        };
         $('.customizer-btn').prop('hidden', true)
         function SwalLoading(html = 'Loading ...', title = '') {
             return Swal.fire({

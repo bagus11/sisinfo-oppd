@@ -554,17 +554,5 @@ function getHorizontalBar(response) {
         console.warn("Tidak ada data untuk chart.");
     }
 }
-window.onload = function () {
-    document.addEventListener("keydown", function (e) {
-        if (e.ctrlKey && e.key === "u") {
-            e.preventDefault();
-            Swal.fire({
-                title: "Hayooo mau ngapain?",
-                imageUrl: "https://yourdomain.com/assets/images/403.jpg",
-                imageAlt: "Funny Image",
-                confirmButtonText: "Hehe maaf"
-            });
-        }
-    });
-};
+
 
