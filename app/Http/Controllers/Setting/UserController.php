@@ -10,6 +10,7 @@ use App\Models\Setting\MasterSatgas;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 use function Intervention\Image\Drivers\Imagick\has;
 
@@ -41,7 +42,7 @@ class UserController extends Controller
                 'location'  => $location->id,
                 'password'=> Hash::make('oppd-'.$request->nrp),
                 'position'  => $request->position,
-                'no_hp'  => null,
+                'no_hp'  => 0,
             ];
             $user = User::create($post);
             $role = Role::find(4); // Cari role dengan ID 4
