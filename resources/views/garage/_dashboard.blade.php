@@ -383,6 +383,13 @@
             //     });
             // });
             $(document).ready(function(){
+                $(".select2").each(function(){
+                        $(this).select2({
+                            // allowClear: true,
+                            width: "100%",  
+                            dropdownCssClass: "bigdrop" 
+                    });
+                });
              $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},})
                 // $(".select2").select2();
                 // $('.select2').select2({ dropdownCssClass: "selectOption2" });
@@ -392,11 +399,6 @@
                 //     tags: true,
                 //     minimumResultsForSearch: 0
                 // });
-                $(".select2").each(function(){
-                        $(this).select2({
-                           
-                     });
-                });
             })
             // $(".select2").select2({ width: '300px', dropdownCssClass: "bigdrop" });
             // $(document).on('shown.bs.modal', function (e) {

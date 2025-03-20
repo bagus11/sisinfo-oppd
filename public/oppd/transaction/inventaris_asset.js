@@ -26,6 +26,21 @@ const table = $('#inventaris_table').DataTable({
     ]
 });
 
+$(document).ready(function () {
+    $('#addAssetModal').on('shown.bs.modal', function () {
+        $('#select_kondisi_filter').select2({
+            dropdownParent: $('#addAssetModal'),
+            width: '100%'
+        });
+    });
+    $('#editAssetModal').on('shown.bs.modal', function () {
+       var test = $('#select_update_kondisi').select2({
+            dropdownParent: $('#editAssetModal'),
+            width: '100%'
+        });
+        console.log(test)
+    });
+})
 getActiveItems('getSatgasType',null,'select_filter_asset','Satgas')
 getActiveItems('getUser',null,'edit_select_reporter','Reporter')
 getCallbackNoSwal('getSatgas', null, function(response){
@@ -646,18 +661,36 @@ $('#btn_add_asset').on('click', function(){
     $("#reporter").val('')
     $("#satgas").val('')
     getActiveItems('getUser',null,'select_reporter','Reporter')
-    getCallbackNoSwal('getSatgas', null, function(response){
-        $('#select_satgas').empty()
-        var select_satgas = '<option value="">All Satgas</option>'
-        for(i = 0; i < response.data.length; i++){
-            select_satgas += `
-                <option value="${response.data[i].name}" data-type ="${response.data[i].type}">
-                    ${response.data[i].name} - ${response.data[i].type}
-                </option>
-            `
+    getCallbackNoSwal('getSatgas', null, function(response) {
+        var $select = $('#select_satgas');
+    
+        // Hapus Select2 dulu biar gak dobel
+        if ($select.data('select2')) {
+            $select.select2('destroy');
         }
-        $('#select_satgas').html(select_satgas)
-    })
+    
+        // Kosongkan dan isi ulang option
+        $select.empty().append('<option value="">All Satgas</option>');
+    
+        response.data.forEach(item => {
+            let option = new Option(`${item.name} - ${item.type}`, item.name, false, false);
+            $(option).attr("data-type", item.type);
+            $select.append(option);
+        });
+    
+        // Inisialisasi Select2 dengan tambahan opsi
+        $select.select2({
+            placeholder: "Pilih Satgas",
+            allowClear: true,
+            width: "100%",
+            dropdownParent: $select.closest("form") // Jika dalam form/modal
+        });
+    
+        // Trigger supaya Select2 membaca ulang data
+        $select.trigger('change');
+    });
+    
+    
 })
     onChange('select_reporter','reporter')
     onChange('select_asset','asset')

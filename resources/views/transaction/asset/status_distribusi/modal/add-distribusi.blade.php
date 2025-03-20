@@ -10,7 +10,7 @@
                 <div class="modal-body p-0">
                     <div class="container mt-2">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-10">
                                 <fieldset class="mt-4 mx-2">
                                     <legend class="bg-danger">Filter </legend>
                                     <div class="row mt-2">

@@ -1,4 +1,16 @@
 $(document).ready(function () {
+    $('#addAssetModal').on('shown.bs.modal', function () {
+        $('#select_kategori, #select_subkategori, #select_jenis, #select_brand').select2({
+            dropdownParent: $('#addAssetModal'),
+            width: '100%'
+        });
+    });
+    $('#editAssetModal').on('shown.bs.modal', function () {
+        $('#edit_select_kategori, #edit_select_subkategori, #edit_select_jenis, #edit_select_brand').select2({
+            dropdownParent: $('#editAssetModal'),
+            width: '100%'
+        });
+    });
    if(userHasPermission){
     var table = $('#asset_table').DataTable({
         processing: true,

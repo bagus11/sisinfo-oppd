@@ -38,8 +38,18 @@ const table = $('#status_distribusi_table').DataTable({
     
     
 });
+
+$(document).ready(function () {
+    $('#addStatusDistribusiModal').on('shown.bs.modal', function () {
+        $('#select_satgas_filter, #select_kondisi_filter').select2({
+            dropdownParent: $('#addStatusDistribusiModal'),
+            width: '100%'
+        });
+    });
+})
 let selectedAssets = [];
 var detailRows =[]
+
 $('#status_distribusi_table').on('click', 'tbody td.dt-control', function (e) {
     let tr = $(this).closest('tr');
     let row = table.row(tr);
