@@ -43,6 +43,7 @@ class UserController extends Controller
                 'password'=> Hash::make('oppd-'.$request->nrp),
                 'position'  => $request->position,
                 'no_hp'  => 0,
+                'avatar'  => '',
             ];
             $user = User::create($post);
             $role = Role::find(4); // Cari role dengan ID 4

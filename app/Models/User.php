@@ -29,6 +29,7 @@ class User extends Authenticatable
         'nrp',
         'satgas',
         'no_hp',
+        'avatar',
         'location',
         'position',
         'password',
