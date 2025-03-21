@@ -762,8 +762,8 @@ function getRadialBar(response) {
                 show: true,
                 position: "left",
                 floating: true,
-                offsetX: 0,
-                offsetY: 10,
+                offsetX: -30,
+                offsetY: -10,
                 markers: {
                     width: 10,
                     height: 10,

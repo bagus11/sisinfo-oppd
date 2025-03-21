@@ -205,7 +205,7 @@ class ReportAssetController extends Controller
                         $header             .= '<table width="100%">
                                                     <tr>
                                                         <td style="padding-left:10px;">
-                                                            <span style="font-size: 16px; font-weight: bold;"> SYSINFO OPPD</span>
+                                                            <span style="font-size: 16px; font-weight: bold;"> SYSINFOLOG OPPD</span>
                                                             <br>
                                                             <span style="font-size:9px;">Mako PMPP Sentul, FV8J+XCP, Tangkil, Kec. Citeureup, Kabupaten Bogor, Jawa Barat 16810</span>
                                                         </td>
@@ -398,7 +398,7 @@ class ReportAssetController extends Controller
         $header             .= '<table width="100%">
                                     <tr>
                                         <td style="padding-left:10px;">
-                                            <span style="font-size: 16px; font-weight: bold;"> SYSINFO OPPD</span>
+                                            <span style="font-size: 16px; font-weight: bold;"> SYSINFOLOG OPPD</span>
                                             <br>
                                             <span style="font-size:9px;">Mako PMPP Sentul, FV8J+XCP, Tangkil, Kec. Citeureup, Kabupaten Bogor, Jawa Barat 16810</span>
                                         </td>

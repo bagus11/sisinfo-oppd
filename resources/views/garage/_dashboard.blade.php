@@ -150,12 +150,12 @@
         .select2-hidden-accessible{
             z-index:10 !important;
         }
-        form-control{
+        /* form-control{
             font-size: 10px !important;
         }
         label{
             font-size: 10px !important;
-        }
+        } */
         fieldset {
             border: 1px solid#ddd;
             font-family: Poppins !important;
@@ -176,7 +176,7 @@
         border-radius: 20px !important;
     }
 
-        input[type="date"] {
+        /* input[type="date"] {
             font-size: 10px !important;
         }
         input[type="file"] {
@@ -187,10 +187,15 @@
         }
         textarea{
             font-size: 10px !important;
-        }
+        } 
+        
+        input[type="email"]{
+            font-size: 10px;
+        }    
+        */
         .table{
             
-            font-size: 10px !important;
+            font-size: 12px !important;
         }
 
     .open\:bg-green-200[open] {
@@ -222,7 +227,6 @@
     tr.shown td.details-control {
         background: url('/assets/images/details_close.png') no-repeat center center;
     }
-
 
 
     th.subdetails-control {
