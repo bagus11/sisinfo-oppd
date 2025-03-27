@@ -897,7 +897,7 @@ function adjustZoomForScreens() {
 
 // Call this function on page load
 window.onload = function() {
-    adjustZoomForScreens();
+    // adjustZoomForScreens();
 };
 
 function assetChart(response) {
