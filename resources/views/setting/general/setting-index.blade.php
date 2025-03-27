@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-12 order-last">
-                        <ul class="list-unstyled d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end my-3 gap-2">
+                        <ul class=" mx-2 list-unstyled d-flex flex-wrap align-items-center justify-content-center justify-content-lg-end my-3 gap-2">
                             <li>
                                 <button class="btn btn-sm btn-info w-100" id="btn_change_image"><i class="fa-solid fa-image-portrait"></i> Ubah Profile</button>
                             </li>
