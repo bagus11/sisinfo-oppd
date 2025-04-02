@@ -39,15 +39,7 @@ class MasterAssetController extends Controller
                 'merkRelation',
                 'satgasRelation'
             ])
-            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
-            ->select('assets.*', 
-                     'category_relation.name as category_relation_name', 
-                     'sub_category_relation.name as sub_category_relation_name', 
-                     'type_relation.name as type_relation_name', 
-                     'merk_relation.name as merk_relation_name', 
-                     'satgas_relation.type as satgas_relation_type', 
-                     'satgas_relation.name as satgas_relation_name');
-        
+            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%');
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
             if (!empty($request->satgas_type)) {
                 $query->where('master_satgas.type', 'like', '%' . $request->satgas_type . '%');
