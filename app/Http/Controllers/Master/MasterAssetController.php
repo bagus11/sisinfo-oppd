@@ -30,108 +30,63 @@ class MasterAssetController extends Controller
     
     function getMasterAsset(Request $request) {
         $currentYear = date('Y');
+        $query = Asset::query()
+            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+            ->with([
+                'categoryRelation',
+                'subCategoryRelation',
+                'typeRelation',
+                'merkRelation',
+                'satgasRelation'
+            ])
+            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
+            ->select('assets.*', 
+                     'category_relation.name as category_relation_name', 
+                     'sub_category_relation.name as sub_category_relation_name', 
+                     'type_relation.name as type_relation_name', 
+                     'merk_relation.name as merk_relation_name', 
+                     'satgas_relation.type as satgas_relation_type', 
+                     'satgas_relation.name as satgas_relation_name');
+        
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
-            $query = Asset::query()
-            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-            ->with([
-                'categoryRelation',
-                'subCategoryRelation',
-                'typeRelation',
-                'merkRelation',
-                'satgasRelation'
-            ])
-            ->where(function ($q) use ($request) {
-                if (!empty($request->satgas_type)) {
-                    $q->where('master_satgas.type', 'like', '%' . $request->satgas_type . '%');
-                }
-            })
-            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
-            ->select('assets.*');
-            if (!empty($request->th_operasi)) {
-                if ($request->th_operasi == "1") {
-                    $query->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
-                } elseif ($request->th_operasi == "2") {
-                    $query->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]);
-                } elseif ($request->th_operasi == "3") {
-                    $query->where('assets.th_operasi', '<', $currentYear - 10);
-                }
+            if (!empty($request->satgas_type)) {
+                $query->where('master_satgas.type', 'like', '%' . $request->satgas_type . '%');
             }
-    
-            // **Filter Tahun Pembuatan (th_pembuatan)**
-            if (!empty($request->th_pembuatan)) {
-                if ($request->th_pembuatan == "1") {
-                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
-                } elseif ($request->th_pembuatan == "2") {
-                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]);
-                } elseif ($request->th_pembuatan == "3") {
-                    $query->where('assets.th_pembuatan', '<', $currentYear - 10);
-                }
-            }
-            $query->get();
-        
-        }else{
+        } else {
             $type = MasterSatgas::find(auth()->user()->satgas);
-            $query = Asset::query()
-            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-            ->with([
-                'categoryRelation',
-                'subCategoryRelation',
-                'typeRelation',
-                'merkRelation',
-                'satgasRelation'
-            ])
-            ->where(function ($q) use ($type, $request) {
-                if (!empty($request->satgas_type)) {
-                    $q->where('master_satgas.type', $type->type);
-                }
-            })
-            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%')
-            ->select('assets.*');
-            if (!empty($request->th_operasi)) {
-                if ($request->th_operasi == "1") {
-                    $query->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
-                } elseif ($request->th_operasi == "2") {
-                    $query->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]);
-                } elseif ($request->th_operasi == "3") {
-                    $query->where('assets.th_operasi', '<', $currentYear - 10);
-                }
+            if (!empty($request->satgas_type)) {
+                $query->where('master_satgas.type', $type->type);
             }
-    
-            // **Filter Tahun Pembuatan (th_pembuatan)**
-            if (!empty($request->th_pembuatan)) {
-                if ($request->th_pembuatan == "1") {
-                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
-                } elseif ($request->th_pembuatan == "2") {
-                    $query->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]);
-                } elseif ($request->th_pembuatan == "3") {
-                    $query->where('assets.th_pembuatan', '<', $currentYear - 10);
-                }
-            }
-            $query->get();
-        
-
         }
+    
+        // Filter Tahun Operasi
+        if (!empty($request->th_operasi)) {
+            $this->applyYearFilter($query, 'assets.th_operasi', $request->th_operasi, $currentYear);
+        }
+    
+        // Filter Tahun Pembuatan
+        if (!empty($request->th_pembuatan)) {
+            $this->applyYearFilter($query, 'assets.th_pembuatan', $request->th_pembuatan, $currentYear);
+        }
+    
         if ($request->ajax()) {
             return DataTables::of($query)
                 ->addColumn('action', function ($row) {
                     $editBtn = '<button class="btn btn-sm btn-warning edit" data-id="' . $row->id . '">
-                    <i class="fas fa-edit"></i>
-                    </button>';
+                                <i class="fas fa-edit"></i>
+                                </button>';
                     $printBtn = '<button class="btn btn-sm btn-success print" data-id="' . $row->id . '">
-                    <i class="fas fa-file"></i>
-                    </button>';
-                    $return =
-                    ' '
-                    .$printBtn ;
-                    return $return;
+                                <i class="fas fa-file"></i>
+                                </button>';
+                    return $printBtn;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return response()->json([
-            'data'=>$query,
-        ]);
+    
+        return response()->json(['data' => $query->get()]);
     }
+    
     function getMasterAssetInventarisTable(Request $request) {
        
     if(auth()->user()->hasPermissionTo('get-except_satgas-asset_inventaris')){
