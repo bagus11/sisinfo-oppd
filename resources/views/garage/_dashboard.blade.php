@@ -350,10 +350,10 @@
         document.addEventListener("contextmenu", function (e) {
             e.preventDefault();
             Swal.fire({
-                title: "Hayooo mau ngapain?",
+                title: "Right-click is disabled to maintain the confidentiality and security of our content.",
                 imageUrl: "{{ url('assets/images/profile/user-14.jpg') }}",
                 imageAlt: "Funny Image",
-                confirmButtonText: "Hehe maaf"
+                confirmButtonText: "Hehe sorry"
             });
         });
 
