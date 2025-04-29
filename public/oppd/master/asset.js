@@ -27,54 +27,48 @@ $(document).ready(function () {
             }
         },
         columns: [
+            { 
+                data: 'asset_code', 
+                name: 'asset_code',
+                render: function (data) {
+                    return data ? `<input type="checkbox" class="checkbox" data-asset="${data}">` : '';
+                },
+            },
             { data: 'asset_code', name: 'asset_code' },
             { data: 'no_un', name: 'no_un' },
-            { 
-                data: 'category_relation.name', 
-                name: 'category_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+        
+            {
+                data: 'categoryRelation',
+                name: 'categoryRelation',
             },
-            { 
-                data: 'sub_category_relation.name', 
-                name: 'sub_category_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'subCategoryRelation',
+                name: 'subCategoryRelation',
             },
-            { 
-                data: 'type_relation.name', 
-                name: 'type_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'typeRelation',
+                name: 'typeRelation',
             },
-            { 
-                data: 'merk_relation.name', 
-                name: 'merk_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'merkRelation',
+                name: 'merkRelation',
             },
+        
             { data: 'no_mesin', name: 'no_mesin' },
             { data: 'no_rangka', name: 'no_rangka' },
-            { 
-                data: 'satgas_relation.type', 
-                name: 'satgas_relation.type',
-                render: function(data) {
-                    return data ? data : '-';
-                }
-            },
-            { 
-                data: 'satgas_relation.name', 
-                name: 'satgas_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
-            },
-        ]
         
+            {
+                data: 'satgasType',
+                name: 'satgasType',
+            },
+            {
+                data: 'satgasName',
+                name: 'satgasName',
+            },
+        
+            { data: 'th_pembuatan', name: 'th_pembuatan' },
+            { data: 'th_operasi', name: 'th_operasi' },
+        ]
     });
    }else{
     var table = $('#asset_table').DataTable({
@@ -99,49 +93,31 @@ $(document).ready(function () {
             },
             { data: 'asset_code', name: 'asset_code' },
             { data: 'no_un', name: 'no_un' },
-            { 
-                data: 'category_relation.name', // menggunakan alias yang diberikan
-                name: 'category_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'categoryRelation',
+                name: 'categoryRelation',
             },
-            { 
-                data: 'sub_category_relation.name', // menggunakan alias yang diberikan
-                name: 'sub_category_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'subCategoryRelation',
+                name: 'subCategoryRelation',
             },
-            { 
-                data: 'type_relation.name', // menggunakan alias yang diberikan
-                name: 'type_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'typeRelation',
+                name: 'typeRelation',
             },
-            { 
-                data: 'merk_relation.name', // menggunakan alias yang diberikan
-                name: 'merk_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'merkRelation',
+                name: 'merkRelation',
             },
             { data: 'no_mesin', name: 'no_mesin' },
             { data: 'no_rangka', name: 'no_rangka' },
-            { 
-                data: 'satgas_relation.`type', // menggunakan alias yang diberikan
-                name: 'satgas_relation.`type',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'satgasType',
+                name: 'satgasType',
             },
-            { 
-                data: 'satgas_relation.name', // menggunakan alias yang diberikan
-                name: 'satgas_relation.name',
-                render: function(data) {
-                    return data ? data : '-';
-                }
+            {
+                data: 'satgasName',
+                name: 'satgasName',
             },
             { data: 'th_pembuatan', name: 'th_pembuatan' },
             { data: 'th_operasi', name: 'th_operasi' },

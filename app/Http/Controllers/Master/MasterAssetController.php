@@ -31,15 +31,21 @@ class MasterAssetController extends Controller
     function getMasterAsset(Request $request) {
         $currentYear = date('Y');
         $query = Asset::query()
-            ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-            ->with([
-                'categoryRelation',
-                'subCategoryRelation',
-                'typeRelation',
-                'merkRelation',
-                'satgasRelation'
-            ])
-            ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%');
+        ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+        ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
+        ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
+        ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
+        ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+        ->select([
+            'assets.*',
+            'inventory_categories.name as categoryRelation',
+            'inventory_sub_categories.name as subCategoryRelation',
+            'inventory_types.name as typeRelation',
+            'inventory_brands.name as merkRelation',
+            'master_satgas.name as satgasName',
+            'master_satgas.type as satgasType',
+        ])
+        ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%');
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
             if (!empty($request->satgas_type)) {
                 $query->where('master_satgas.type', 'like', '%' . $request->satgas_type . '%');
