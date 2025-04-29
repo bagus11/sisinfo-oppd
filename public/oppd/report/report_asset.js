@@ -599,6 +599,7 @@ function kondisiChart(response) {
 
 $('#btn_print_kondisi_pdf').on('click', function () {
     // Ambil elemen chart
+    SwalLoading('pelase wait, system still gerenate your report')
     let chart = document.querySelector("#assetsChartKondisi svg");
 
     if (chart) {
