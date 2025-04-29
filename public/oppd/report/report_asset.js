@@ -625,11 +625,13 @@ $('#btn_print_kondisi_pdf').on('click', function () {
                 },
                 xhrFields: { responseType: 'blob' },
                 success: function (data) {
+                    
                     let blob = new Blob([data], { type: "application/pdf" });
                     let link = document.createElement("a");
                     link.href = window.URL.createObjectURL(blob);
                     link.download = "Report.pdf";
                     link.click();
+                    swal.close()
                 },
                 error: function (xhr, status, error) {
                     console.error("Error generating PDF:", error);
