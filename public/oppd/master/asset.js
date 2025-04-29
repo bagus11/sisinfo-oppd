@@ -147,14 +147,13 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
     // Disable Fields
     $('#edit_no_un, #edit_no_rangka, #edit_no_mesin, #edit_th_pembuatan, #edit_th_operasi').prop('readOnly', true);
     $('#edit_select_kategori, #edit_select_subkategori, #edit_select_brand, #edit_select_jenis').prop('disabled', true);
-
+    console.log(row)
     // Populate Form Fields
     $('#asset_code').val(row.asset_code || '');
-    $('#edit_select_kategori').val(row.category_relation?.id || '').trigger('change');
+    $('#edit_select_kategori').val(row.kategori || '').trigger('change');
     $('#edit_select_subkategori').val(row.subkategori || '').trigger('change');
     $('#edit_select_brand').val(row.merk || '').trigger('change');
     $('#edit_select_jenis').val(row.jenis || '').trigger('change');
-    console.log(row.th_pembuatan)
     $('#edit_no_un').val(row.no_un || '');
     $('#edit_no_rangka').val(row.no_rangka || '');
     $('#edit_no_mesin').val(row.no_mesin || '');
