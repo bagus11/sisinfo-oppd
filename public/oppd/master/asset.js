@@ -337,7 +337,8 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         getActiveItems('getInventorySubCategory', null, 'select_subkategori', 'Subkategori');
         getActiveItems('getInventoryType', null, 'select_jenis', 'Jenis');
         getActiveItems('getInventoryBrand', null, 'select_brand', 'Merk');
-        getCallbackNoSwal('getSatgas', null, function(response) {
+        getCallback('getSatgas', null, function(response) {
+            swal.close()
             $('#select_lokasi').empty();
             var select_satgas = '';
             var groupedData = {};
