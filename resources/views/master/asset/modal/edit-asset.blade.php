@@ -109,17 +109,17 @@
                               <span class="message_error edit_merk_error text-red d-block"></span>
                           </div>
                           <div class="col-md-2 mt-2">
-                              <label for="edit_select_brand">Th Pembuatan</label>
+                              <label for="">Th Pembuatan</label>
                           </div>
                           <div class="col-md-4 mb-2">
-                              <input type="text" class="form-control" id="edit_th_pembuatan">
+                              <input type="text" class="form-control yearpicker" id="edit_th_pembuatan">
                               <span class="message_error edit_th_pembuatan_error text-red d-block"></span>
                           </div>
                           <div class="col-md-2 mt-2">
-                              <label for="edit_select_brand">Th Operasi</label>
+                              <label for="">Th Operasi</label>
                           </div>
                           <div class="col-md-4 mb-2">
-                              <input type="text" class="form-control" id="edit_th_operasi">
+                              <input type="text" class="form-control yearpicker" id="edit_th_operasi">
                               <span class="message_error edit_th_operasi_error text-red d-block"></span>
                           </div>
                       </div>

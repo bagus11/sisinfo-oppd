@@ -73,23 +73,22 @@
                         <span class="message_error merk_error text-red d-block"></span>
                     </div>
                   
-                        <div class="col-4">
-                            <label for="th_pembuatan" class="col-form-label">Th Pembuatan</label>
-                        </div>
-                        <div class="col-8 mb-2">
-                            <input type="number" name="th_pembuatan" id="th_pembuatan" 
-                                   min="1970" max="{{ date('Y') }}" class="form-control" required>
-                            <span class="message_error th_pembuatan_error text-danger d-block"></span>
-                        </div>
+                    <div class="col-4">
+                        <label for="th_pembuatan" class="col-form-label">Th Pembuatan</label>
+                    </div>
+                    <div class="col-8 mb-2">
+                        <input type="text" name="th_pembuatan" id="th_pembuatan" class="form-control yearpicker" required readonly>
+                        <span class="message_error th_pembuatan_error text-danger d-block"></span>
+                    </div>
                     
-                        <div class="col-4">
-                            <label for="th_operasi" class="col-form-label">Th Operasi</label>
-                        </div>
-                        <div class="col-8 mb-2">
-                            <input type="number" name="th_operasi" id="th_operasi" 
-                                   min="1970" max="{{ date('Y') }}" class="form-control" required>
-                            <span class="message_error th_operasi_error text-danger d-block"></span>
-                        </div>
+                    <div class="col-4">
+                        <label for="th_operasi" class="col-form-label">Th Operasi</label>
+                    </div>
+                    <div class="col-8 mb-2">
+                        <input type="text" name="th_operasi" id="th_operasi" class="form-control yearpicker" required readonly>
+                        <span class="message_error th_operasi_error text-danger d-block"></span>
+                    </div>
+                    
                 </div>
             </div>
             <div class="modal-footer">
