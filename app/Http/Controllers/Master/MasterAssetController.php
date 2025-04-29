@@ -211,7 +211,7 @@ class MasterAssetController extends Controller
                     $ticket_code = $month_before[0] + 1 .'/ASSET/'.$month_convert.'/'.$year;
                 }   
             }
-            // dd($ticket_code);
+            $lokasi = MasterSatgas::where('name', $request->lokasi)->first();
             $post=[
                 'asset_code'    => $ticket_code,
                 'no_un'         =>$request->no_un,
@@ -226,7 +226,7 @@ class MasterAssetController extends Controller
                 'user_id'       =>auth()->user()->id,
                 'pic'           =>0,
                 'kondisi'           =>1,
-                'lokasi'        =>0
+                'lokasi'        =>$lokasi->id
             ];
             $postLog=[
                 'asset_code'    => $ticket_code,
@@ -242,7 +242,7 @@ class MasterAssetController extends Controller
                 'th_operasi'          =>$request->th_operasi,
                 'pic'           =>0,
                 'kondisi'           =>1,
-                'lokasi'        =>0,
+                'lokasi'        =>$lokasi->id,
                 'remark'        => auth()->user()->name. ' telah menambahkan asset'
             ];
             Asset::create($post);

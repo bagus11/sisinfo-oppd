@@ -1,6 +1,6 @@
 $(document).ready(function () {
     $('#addAssetModal').on('shown.bs.modal', function () {
-        $('#select_kategori, #select_subkategori, #select_jenis, #select_brand').select2({
+        $('#select_kategori, #select_subkategori, #select_jenis, #select_brand, #select_lokasi').select2({
             dropdownParent: $('#addAssetModal'),
             width: '100%'
         });
@@ -325,6 +325,9 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         $('#brand').val('')
         $('#th_pembuatan').val('')
         $('#th_operasi').val('')
+        $('#select_lokasi').val('')
+        $('#select_lokasi').select2().trigger('change');
+        $('#lokasi').val('')
         resetSelect2('select_kategori');
         resetSelect2('select_subkategori');
         resetSelect2('select_jenis');
@@ -334,7 +337,37 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         getActiveItems('getInventorySubCategory', null, 'select_subkategori', 'Subkategori');
         getActiveItems('getInventoryType', null, 'select_jenis', 'Jenis');
         getActiveItems('getInventoryBrand', null, 'select_brand', 'Merk');
+        getCallbackNoSwal('getSatgas', null, function(response) {
+            $('#select_lokasi').empty();
+            var select_satgas = '';
+            var groupedData = {};
+        
+            // Kelompokkan data berdasarkan tipe
+            for (i = 0; i < response.data.length; i++) {
+                var type = response.data[i].type;
+                var name = response.data[i].name;
+        
+                if (!groupedData[type]) {
+                    groupedData[type] = [];
+                }
+                groupedData[type].push(name);
+            }
+        
+            // Buat option dengan struktur parent-child
+            for (var type in groupedData) {
+                select_satgas += `<optgroup label="${type}">`;
+                groupedData[type].forEach(function(name) {
+                    select_satgas += `<option value="${name}">${name}</option>`;
+                });
+                select_satgas += '</optgroup>';
+            }
+        
+            // Set HTML ke dalam select2
+            $('#select_lokasi').html(select_satgas);
+            $('#select_lokasi').select2();
+        });
     })
+    onChange('select_lokasi', 'lokasi')
     onChange('select_kategori','kategori')
     onChange('select_subkategori','subkategori')
     onChange('select_jenis','jenis')
@@ -349,6 +382,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
             subkategori:$('#subkategori').val(),
             jenis:$('#jenis').val(),
             merk:$('#merk').val(),
+            lokasi:$('#lokasi').val(),
             th_operasi:$('#th_operasi').val(),
             th_pembuatan:$('#th_pembuatan').val(),
         }

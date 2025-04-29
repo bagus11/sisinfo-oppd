@@ -8,6 +8,14 @@
             <div class="modal-body" data-simplebar="">
                 <div class="row mx-2">
                     <div class="col-4">
+                        <label  class="col-form-label" for="no_un">Lokasi</label>
+                    </div>
+                    <div class="col-8 mb-2">
+                        <select name="select_lokasi" id="select_lokasi"></select>
+                        <input type="hidden" class="form-control" id="lokasi" aria-describedby="nameHelp">
+                        <span class="message_error lokasi_error text-red d-block"></span>
+                    </div>
+                    <div class="col-4">
                         <label  class="col-form-label" for="no_un">No UN</label>
                     </div>
                     <div class="col-8 mb-2">
