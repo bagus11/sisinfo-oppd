@@ -295,6 +295,7 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
 $('#detailTableAsset').on('click', '.btn-edit-row', function (e) {
     e.preventDefault();
     $('.general_asset').prop('hidden', false)
+    console.log(response.detail.asset_relation)
     const asset_code = $(this).data('asset_code');
     getCallbackNoSwal('getInventarisDetail', { 'asset_code' :asset_code, 'inventaris_code' : $('#update_inventaris_code').val() }, function (response) {
         $('#update_label_asset_code').html(': ' + response.detail.asset_code)
