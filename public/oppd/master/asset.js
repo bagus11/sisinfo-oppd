@@ -36,34 +36,19 @@ $(document).ready(function () {
             },
             { data: 'asset_code', name: 'asset_code' },
             { data: 'no_un', name: 'no_un' },
-        
-            {
-                data: 'categoryRelation',
-                name: 'categoryRelation',
-            },
-            {
-                data: 'subCategoryRelation',
-                name: 'subCategoryRelation',
-            },
-            {
-                data: 'typeRelation',
-                name: 'typeRelation',
-            },
-            {
-                data: 'merkRelation',
-                name: 'merkRelation',
-            },
-        
+            { data: 'categoryRelation', name: 'inventory_categories.name' },
+            { data: 'subCategoryRelation', name: 'inventory_sub_categories.name' },
+            { data: 'typeRelation', name: 'inventory_types.name' },
+            { data: 'merkRelation', name: 'inventory_brands.name' },
             { data: 'no_mesin', name: 'no_mesin' },
             { data: 'no_rangka', name: 'no_rangka' },
-        
             {
                 data: 'satgasType',
-                name: 'satgasType',
+                name: 'master_satgas.type',
             },
             {
                 data: 'satgasName',
-                name: 'satgasName',
+                name: 'master_satgas.name',
             },
         
             { data: 'th_pembuatan', name: 'th_pembuatan' },
@@ -93,22 +78,10 @@ $(document).ready(function () {
             },
             { data: 'asset_code', name: 'asset_code' },
             { data: 'no_un', name: 'no_un' },
-            {
-                data: 'categoryRelation',
-                name: 'categoryRelation',
-            },
-            {
-                data: 'subCategoryRelation',
-                name: 'subCategoryRelation',
-            },
-            {
-                data: 'typeRelation',
-                name: 'typeRelation',
-            },
-            {
-                data: 'merkRelation',
-                name: 'merkRelation',
-            },
+            { data: 'categoryRelation', name: 'inventory_categories.name' },
+            { data: 'subCategoryRelation', name: 'inventory_sub_categories.name' },
+            { data: 'typeRelation', name: 'inventory_types.name' },
+            { data: 'merkRelation', name: 'inventory_brands.name' },
             { data: 'no_mesin', name: 'no_mesin' },
             { data: 'no_rangka', name: 'no_rangka' },
             {

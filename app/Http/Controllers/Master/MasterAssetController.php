@@ -84,7 +84,18 @@ class MasterAssetController extends Controller
     
         return response()->json(['data' => $query->get()]);
     }
-    
+    private function applyYearFilter($query, $column, $value, $currentYear)
+    {
+        if ($value == 1) {
+            $query->whereRaw("($currentYear - $column) < 5");
+        } elseif ($value == 2) {
+            $query->whereRaw("($currentYear - $column) >= 5 AND ($currentYear - $column) <= 10");
+        } elseif ($value == 3) {
+            $query->whereRaw("($currentYear - $column) > 10");
+        } elseif (is_numeric($value)) {
+            $query->where($column, $value);
+        }
+    }
     function getMasterAssetInventarisTable(Request $request) {
        
     if(auth()->user()->hasPermissionTo('get-except_satgas-asset_inventaris')){
@@ -138,6 +149,7 @@ class MasterAssetController extends Controller
             'data'=>$data,
         ]);
     }
+
     function getMasterAssetInventaris() {
         $data = Asset::with([
             'detailInventarisRelation',
