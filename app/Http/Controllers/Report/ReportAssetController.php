@@ -110,6 +110,7 @@ class ReportAssetController extends Controller
                     'userRelation',
                 ])->where('inventaris_code', $inventaris_code)->get();
                 $summary = InventarisDetail::select('inventaris_code', DB::raw('count(*) as total'),'kondisi')
+                ->where('inventaris_code', $inventaris_code)
                 ->groupBy('kondisi','inventaris_code')
                 ->get();
             

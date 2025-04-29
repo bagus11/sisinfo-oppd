@@ -137,6 +137,7 @@
                                             <thead class="text-dark fs-1">
                                               <tr>
                                                   <th>Action</th>
+                                                  <th>Asset Code</th>
                                                   <th>Kondisi</th>
                                                   <th>Satgas</th>
                                                   <th>Lokasi</th>
@@ -167,6 +168,7 @@
                                       <table id="inventaris_table_log" class="table table-striped table-bordered text-nowrap">
                                           <thead class="text-dark fs-1">
                                             <tr>
+                                                <th>Asset Code</th>
                                                 <th>Kondisi Sebelumnya</th>
                                                 <th>Kondisi Sesudah</th>
                                                 <th>Satgas</th>

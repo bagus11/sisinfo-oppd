@@ -348,6 +348,8 @@ class AssetInventarisController extends Controller
         'reporter' => $detailInventaris->reporter,
         'asset_code' => $detailInventaris->asset_code, 
         'kondisi' => $detailInventaris->kondisi,
+        'kondisi_saat_ini' => $asset->kondisi,
+      
         'catatan' => $request->update_catatan,
         'user_id' => auth()->user()->id,
         'attachment' => $attachmentPathLog
@@ -371,6 +373,9 @@ class AssetInventarisController extends Controller
         'pic'         => auth()->user()->id,
         'kondisi'     => $request->update_kondisi,
         'lokasi'      => $asset->lokasi,
+        'th_operasi' => $asset->th_operasi,
+        'th_pembuatan' => $asset->th_pembuatan,
+        'remark'     => auth()->user()->name . ' telah update kondisi aset',
     ];
 
     // Data for the asset update

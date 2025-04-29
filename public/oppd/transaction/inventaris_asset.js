@@ -99,6 +99,10 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                             return '-';
                         }  
                  },
+                 { 
+                    data: 'asset_code', 
+                    name: 'asset_code',
+                },
                 {
                     data: 'kondisi',
                     name: 'kondisi',
@@ -117,6 +121,7 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                         }
                     }
                 },
+             
                 { 
                     data: 'asset_relation.satgas_relation', 
                     name: 'asset_relation.satgas_relation.type',
@@ -193,12 +198,16 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                 data: function(d) {
                     d.inventaris_code = response[0].inventaris_code;
                 },
-                dataSrc: function(json) {
-                    console.log(json.data[0].asset_relation); // Debugging: Pastikan data sesuai
-                    return json.data;
-                }
+                // dataSrc: function(json) {
+                //     console.log(json.data[0].asset_relation); // Debugging: Pastikan data sesuai
+                //     return json.data;
+                // }
             },
             columns: [
+                { 
+                    data: 'asset_code', 
+                    name: 'asset_code',
+                },
                 { 
                     data: 'kondisi_saat_ini', 
                     name: 'kondisi_saat_ini',
@@ -231,6 +240,7 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
                         return kondisiMap[parseInt(data)] || 'Unknown';
                     }
                 },
+              
                 { 
                     data: 'asset_relation.satgas_relation', 
                     name: 'asset_relation.satgas_relation.type',
