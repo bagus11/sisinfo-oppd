@@ -721,6 +721,7 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
         onChange('select_tujuan','tujuan')
         onChange('select_reporter','reporter')
         $('#btn_save_distribusi').on('click', function (e) {
+            $('#btn_save_distribusi').prop('disabled', true);
             e.preventDefault();
         
             // Check if at least one item is selected
@@ -740,7 +741,8 @@ $('#status_distribusi_table tbody').on('click', 'tr', function (e) {
                 postAttachment('addDistribusi', data, false, function (response) {
                     swal.close();
                     toastr['success'](response.meta.message);
-                    $('#addDistribusiModal').modal('hide');
+                    $('#btn_save_distribusi').prop('disabled', false);
+                    $('#addStatusDistribusiModal').modal('hide');
                     $('#status_distribusi_table').DataTable().ajax.reload();
                 });
 

@@ -297,7 +297,6 @@ $('#detailTableAsset').on('click', '.btn-edit-row', function (e) {
     $('.general_asset').prop('hidden', false)
     const asset_code = $(this).data('asset_code');
     getCallbackNoSwal('getInventarisDetail', { 'asset_code' :asset_code, 'inventaris_code' : $('#update_inventaris_code').val() }, function (response) {
-        console.log(response.detail.asset_relation)
         $('#update_label_asset_code').html(': ' + response.detail.asset_code)
         $('#update_label_no_un').html(': ' + (response.detail.asset_relation?.no_un ?? '-'))
         $('#update_label_no_rangka').html(': ' + (response.detail.asset_relation?.no_rangka ?? '-'))
