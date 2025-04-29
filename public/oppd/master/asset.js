@@ -69,13 +69,13 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { 
-                data: 'asset_code', 
-                name: 'asset_code',
-                render: function (data) {
-                    return data ? `<input type="checkbox" class="checkbox" data-asset="${data}">` : '';
-                }
-            },
+            // { 
+            //     data: 'asset_code', 
+            //     name: 'asset_code',
+            //     render: function (data) {
+            //         return data ? `<input type="checkbox" class="checkbox" data-asset="${data}">` : '';
+            //     }
+            // },
             { data: 'asset_code', name: 'asset_code' },
             { data: 'no_un', name: 'no_un' },
             { data: 'categoryRelation', name: 'inventory_categories.name' },
