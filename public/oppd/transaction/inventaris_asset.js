@@ -298,9 +298,9 @@ $('#detailTableAsset').on('click', '.btn-edit-row', function (e) {
     const asset_code = $(this).data('asset_code');
     getCallbackNoSwal('getInventarisDetail', { 'asset_code' :asset_code, 'inventaris_code' : $('#update_inventaris_code').val() }, function (response) {
         $('#update_label_asset_code').html(': ' + response.detail.asset_code)
-        $('#update_label_no_un').html(': ' + response.detail.asset_relation.no_un)
-        $('#update_label_no_rangka').html(': ' + response.detail.asset_relation.no_rangka)
-        $('#update_label_no_mesin').html(': ' + response.detail.asset_relation.no_mesin)
+        $('#update_label_no_un').html(': ' + response.detail.asset_relation?.no_un || '-')
+        $('#update_label_no_rangka').html(': ' + response.detail.asset_relation?.no_rangka || '-')
+        $('#update_label_no_mesin').html(': ' + response.detail.asset_relation?.no_mesin || '-')
         $('#update_label_kategori').html(': ' + response.detail.asset_relation.category_relation.name)
         $('#update_label_sub_kategori').html(': ' + response.detail.asset_relation.sub_category_relation.name)
         $('#update_label_jenis').html(': ' + response.detail.asset_relation.type_relation.name)
