@@ -121,7 +121,7 @@
                 <td>{{$item->typeRelation == null ?'-' :  $item->typeRelation->name}}</td>
                 <td>{{$item->merkRelation == null ?'-' :  $item->merkRelation->name}}</td>
                 <td>{{$item->no_mesin}}</td>
-                <td>{{$item->noRangka}}</td>
+                <td>{{$item->no_rangka}}</td>
                 <td>{{$kondisi}}</td>
             </tr>  
         @endforeach

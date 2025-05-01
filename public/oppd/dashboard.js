@@ -117,7 +117,7 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                     $('#select_th_operasi').select2().trigger('change');
                                     $('#satgasTypeFilter').val(satgasType);
                                     $('#modal_title').html(satgasType + " : " + selectedKondisi);
-                                    console.log(satgasType + ' : ' + selectedKondisi)
+                                    $('#selectedKondisi').val(selectedKondisi);
                                     $('#asset_table').DataTable().clear().destroy();
                                     $('#asset_table').DataTable({
                                         processing: true,
@@ -220,7 +220,12 @@ getCallbackNoSwal('getCountingAsset', null, function(response) {
                                                     return kondisiMapping[data] || '-';
                                                 }
                                             }
-                                        ]
+                                        ],
+                                        "drawCallback": function(settings) {
+                                            // This function will be called after each draw (after the data is refreshed)
+                                            let totalItems = settings.json.recordsFiltered;
+                                            $('#totalItemAsset').text(totalItems);
+                                        }
                                     });
                                 }
                             }
@@ -696,7 +701,12 @@ function getRadialBar(response) {
                                         return kondisiMapping[data] || '-';
                                     }
                                 }
-                            ]
+                            ],
+                            "drawCallback": function(settings) {
+                                // This function will be called after each draw (after the data is refreshed)
+                                let totalItems = settings.json.recordsFiltered;
+                                $('#totalItemAsset').text(totalItems);
+                            }
                         });
                     }
                 }
@@ -962,6 +972,7 @@ $('#btn_filter_asset').on('click', function () {
     let thOperasi = $('#select_th_operasi').val();
     let thPembuatan = $('#select_th_pembuatan').val();
     $('#asset_table').DataTable().clear().destroy();
+    
     let table = $('#asset_table').DataTable({
         processing: true,
         serverSide: true,
@@ -969,11 +980,12 @@ $('#btn_filter_asset').on('click', function () {
         ajax: {
             url: `getAssetFilter`,
             type: 'GET',
-            data :{ 'type' : $('#satgasTypeFilter').val(),
-                    'kondisi' : $('#selectedKondisi').val(), 
-                    'th_operasi' : $('#select_th_operasi').val(), 
-                    'th_pembuatan' : $('#select_th_pembuatan').val()
-                }   
+            data: {
+                'type': $('#satgasTypeFilter').val(),
+                'kondisi': $('#selectedKondisi').val(),
+                'th_operasi': thOperasi,
+                'th_pembuatan': thPembuatan
+            }
         },
         columns: [
             { 
@@ -987,56 +999,56 @@ $('#btn_filter_asset').on('click', function () {
                 data: 'satgas_relation', 
                 name: 'satgas_relation.name', 
                 render: function (data) {
-                    return data && data.name ? data.name : '-'; // Safely check if data and data.name exist
+                    return data?.name || '-';
                 }
             },
             { 
                 data: 'no_un', 
                 name: 'no_un', 
                 render: function (data) {
-                    return data ? data : '-'; // Return '-' if the value is null or undefined
+                    return data || '-';
                 }
             },
             { 
                 data: 'category_relation', 
                 name: 'category_relation.name', 
                 render: function (data) {
-                    return data ? data.name : '-'; // Safely check for null/undefined
+                    return data?.name || '-';
                 }
             },
             { 
-                data: 'sub_category_relation', // Check if sub_category_relation exists
+                data: 'sub_category_relation',
                 name: 'sub_category_relation.name', 
                 render: function (data) {
-                    return data && data.name ? data.name : '-'; // Safely check for null/undefined
+                    return data?.name || '-';
                 }
             },
             { 
                 data: 'type_relation', 
                 name: 'type_relation.name', 
                 render: function (data) {
-                    return data ? data.name : '-'; // Safely check for null/undefined
+                    return data?.name || '-';
                 }
             },
             { 
                 data: 'merk_relation', 
                 name: 'merk_relation.name', 
                 render: function (data) {
-                    return data ? data.name : '-'; // Safely check for null/undefined
+                    return data?.name || '-';
                 }
             },
             { 
                 data: 'no_mesin', 
                 name: 'no_mesin', 
                 render: function (data) {
-                    return data ? data : '-'; // Safely check for null/undefined
+                    return data || '-';
                 }
             },
             { 
                 data: 'no_rangka', 
                 name: 'no_rangka',
                 render: function (data) {
-                    return data ? data : '-'; // Safely check for null/undefined
+                    return data || '-';
                 }
             },
             { 
@@ -1060,7 +1072,37 @@ $('#btn_filter_asset').on('click', function () {
                     return kondisiMapping[data] || '-';
                 }
             }
-        ]
+        ],
+        "drawCallback": function(settings) {
+            // This function will be called after each draw (after the data is refreshed)
+            let totalItems = settings.json.recordsFiltered;
+            $('#totalItemAsset').text(totalItems);
+        }
     });
-  
+});
+
+$('#btn_export_asset').on('click', function () {
+      
+        var type = $('#satgasTypeFilter').val()
+        var kondisi = $('#selectedKondisi').val() 
+        var th_operasi = $('#select_th_operasi').val() 
+        var th_pembuatan = $('#select_th_pembuatan').val()
+                 
+        Swal.fire({
+            title: 'Export Data',
+            text: 'Pilih format export yang kamu mau:',
+            icon: 'question',
+            showCancelButton: true,
+            showDenyButton: true,
+            confirmButtonText: 'PDF',
+            denyButtonText: 'Excel',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.open(`printAssetDashboard/${type?type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/pdf`,'_blank');
+              
+            } else if (result.isDenied) {
+                window.open(`printAssetDashboard/${type?type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/excel`,'_blank');
+            }
+        });
 });
