@@ -98,7 +98,7 @@
                                                 ->where([
                                                     'submenus.status'    => 1,
                                                     'submenus.menus_id'  =>$menu->id
-                                                    'model_has_roles.model_id', auth()->user()->id
+                                                    
                                                 ])
                                                 ->groupBy('submenus.link','submenus.name','submenus.id','submenus.logo')
                                                 ->get();
