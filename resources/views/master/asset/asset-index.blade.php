@@ -41,7 +41,7 @@
                                   <i class="fas fa-filter"></i>
                                 </button>
                                 <ul class="dropdown-menu animated flipInX" style="width: 300px">
-                                    @can('get-except_satgas-master_asset')
+                                    @can('create-master_asset')
                                     <li>
                                         <div class="row mx-2">
                                             <div class="col-4 mt-2">
