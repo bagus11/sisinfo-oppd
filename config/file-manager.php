@@ -63,6 +63,7 @@ return [
      */
     'rightPath'         => null,
     'allow_download' => true,
+    'show_download' => true,
 
 
     /**
