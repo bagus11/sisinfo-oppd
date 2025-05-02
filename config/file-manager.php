@@ -62,6 +62,8 @@ return [
      * null - root directory
      */
     'rightPath'         => null,
+    'allow_download' => true,
+
 
     /**
      * File manager modules configuration
