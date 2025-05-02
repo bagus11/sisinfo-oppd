@@ -113,6 +113,7 @@ class MasterAssetController extends Controller
         })
         ->get();
     }else{
+        dd('test');
         $data = Asset::with([
             'detailInventarisRelation',
             'categoryRelation',
