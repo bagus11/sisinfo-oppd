@@ -51,7 +51,6 @@ class MasterAssetController extends Controller
                 $query->where('master_satgas.type', 'like', '%' . $request->satgas_type . '%');
             }
         } else {
-            dd('test');
             $type = MasterSatgas::find(auth()->user()->satgas);
             if (!empty($request->satgas_type)) {
                 $query->where('master_satgas.type', $type->type);
