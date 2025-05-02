@@ -27,7 +27,7 @@
                   <!-- Tab panes -->
                   <div class="tab-content">
                     <div class="tab-pane active p-3" id="navpill-11" role="tabpanel">
-                        @can('get-except_satgas-master_asset')
+                        @can('update-master_asset')
                         <div class="row d-flex justify-content-end">
                             <div class="col-12">
                                 <button style="float:right;margin-left:5px" title="Print PDF" class="btn btn-sm btn-danger" id="btn_print_pdf">
