@@ -48,6 +48,7 @@ return [
             'root' => storage_path('app/public/file_sharing'),
             'url' => env('APP_URL') . '/storage/file_sharing',
             'visibility' => 'public',
+            'show_download' => true,
         ],
         's3' => [
             'driver' => 's3',
