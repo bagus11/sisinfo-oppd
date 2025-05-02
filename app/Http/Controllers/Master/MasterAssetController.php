@@ -52,11 +52,11 @@ class MasterAssetController extends Controller
             }
         } else {
             $type = MasterSatgas::find(auth()->user()->satgas);
-            if (!empty($request->satgas_type)) {
-                $query->where('master_satgas.type', $type->type);
-            }
+            $query->where('master_satgas.type', $type->type);
         }
-    
+        if (!empty($request->satgas_type)) {
+            $query->where('master_satgas.type', $request->type);
+        }
         // Filter Tahun Operasi
         if (!empty($request->th_operasi)) {
             $this->applyYearFilter($query, 'assets.th_operasi', $request->th_operasi, $currentYear);
