@@ -17,6 +17,11 @@
     }
 </style>
     <div class="row">
+        <div class="col-12 mb-2">
+            <button id="btnInfoAsset" class="btn btn-sm btn-info" title="List Asset yang belum di periksa" style="float: right">
+                <i class="fas fa-circle-info"></i>
+            </button>
+        </div>
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-core">
@@ -50,6 +55,7 @@
         </div>
     </div>
     @include('transaction.asset.asset_inventaris.modal.add-asset_inventaris')
+    @include('transaction.asset.asset_inventaris.modal.info-asset_inventaris')
     @include('transaction.asset.asset_inventaris.modal.image-asset_inventaris')
     @include('transaction.asset.asset_inventaris.modal.edit-asset_inventaris')
 @endsection

@@ -25,11 +25,135 @@ const table = $('#inventaris_table').DataTable({
         { data: 'kondisi', name: 'kondisi',class:'d-flex justify-content-start', orderable: false, searchable: false }, // Kondisi column
     ]
 });
+let infoAssetTable = $('#info_asset_table').DataTable({
+    processing: true,
+    serverSide: true,
+    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
+    ajax: {
+        url: `getMasterAssetInventarisTable`,
+        type: 'GET',
+        data: function (d) {
+            d.satgas = $('#info_select_satgas').val(); // Kirim filter Satgas
+            d.kondisi = $('#info_select_kondisi_filter').val(); // Kirim filter Kondisi
+        }
+    },
+    columns: [
+        {
+            data :'asset_code',
+            name :'asset_code'
+        },
+        {
+            data: 'kondisi', 
+            name: 'kondisi',
+            render: function(data, type, row) {
+                let kondisi = '-'; // Default value
+                switch (parseInt(data)) {  // Konversi data ke integer sekali di awal
+                    case 1:
+                        kondisi = 'BAIK';
+                        break;
+                    case 2:
+                        kondisi = 'RR OPS';
+                        break;
+                    case 3:
+                        kondisi = 'RB';
+                        break;
+                    case 4:
+                        kondisi = 'RR TDK OPS';
+                        break;
+                    case 5:
+                        kondisi = 'M';
+                        break;
+                    case 6:
+                        kondisi = 'D';
+                        break;
+                }
+            
+                return kondisi;
+            }
+            
+        },
+        { 
+            data: 'satgas_relation', 
+            name: 'satgas_relation.name', 
+            render: function (data) {
+                return data && data.name ? data.name : '-';
+            }
+        },
+        { data: 'no_un', name: 'no_un' },
+        { 
+            data: 'category_relation', 
+            name: 'category_relation.name', 
+            render: function (data) {
+                return data ? data.name : '-';
+            }
+        },
+        { 
+            data: 'sub_category_relation', 
+            name: 'sub_category_relation.name', 
+            render: function (data) {
+                return data && data.name ? data.name : '-';
+            }
+        },
+        { 
+            data: 'type_relation', 
+            name: 'type_relation.name', 
+            render: function (data) {
+                return data ? data.name : '-';
+            }
+        },
+        { 
+            data: 'merk_relation', 
+            name: 'merk_relation.name', 
+            render: function (data) {
+                return data ? data.name : '-';
+            }
+        },
+        { data: 'no_mesin', name: 'no_mesin' },
+        { data: 'no_rangka', name: 'no_rangka' },
+    ]
+});
+$('#btnInfoAsset').on('click', function(){
+    $('#infoAssetModal').modal('show')
+    getCallbackNoSwal('getSatgas', null, function(response){
+        $('#info_select_satgas').empty()
+        var info_select_satgas = '<option value="">Pilih Satgas</option>'
+        for(i = 0; i < response.data.length; i++){
+            info_select_satgas += `
+                <option value="${response.data[i].name}" data-type ="${response.data[i].type}">
+                    ${response.data[i].name} - ${response.data[i].type}
+                </option>
+            `
+        }
+        $('#info_select_satgas').html(info_select_satgas)
+    })
+  
+})
+function applyFilterInfo() {
+    var satgas = $('#info_select_satgas').val(); // Ambil nilai Satgas
+    var kondisi = $('#info_select_kondisi_filter').val(); // Ambil nilai Kondisi
+    console.log(satgas)
+    infoAssetTable.column(2).search(satgas || ''); // Kolom 2 untuk Satgas
+    infoAssetTable.column(1).search(kondisi || ''); // Kolom 1 untuk Kondisi
+    infoAssetTable.draw();
+}
 
+// Event untuk filter Satgas
+$('#info_select_satgas').on('change', function () {
+    applyFilterInfo();
+});
+
+// Event untuk filter Kondisi
+$('#info_select_kondisi_filter').on('change', function () {
+    applyFilterInfo();
+});
 $(document).ready(function () {
     $('#addAssetModal').on('shown.bs.modal', function () {
         $('#select_kondisi_filter').select2({
             dropdownParent: $('#addAssetModal'),
+            width: '100%'
+        });
+        $('#info_select_satgas').select2({
+            dropdownParent: $('#infoAssetModal'),
             width: '100%'
         });
     });
