@@ -44,4 +44,7 @@ class Asset extends Model
     function distribusiRelation() {
         return $this->hasOne(StatusDistribusiItem::class,'asset_code', 'asset_code');
     }
+    function historyRelation(){
+        return $this->hasMany(AssetLog::class,'asset_code', 'asset_code');
+    }
 }

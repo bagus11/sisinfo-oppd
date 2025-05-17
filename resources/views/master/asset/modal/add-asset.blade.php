@@ -88,6 +88,23 @@
                         <input type="text" name="th_operasi" id="th_operasi" class="form-control yearpicker" required readonly>
                         <span class="message_error th_operasi_error text-danger d-block"></span>
                     </div>
+
+                    <div class="col-4">
+                        <label for="kondisi" class="col-form-label">Kondisi</label>
+                    </div>
+                    <div class="col-8 mb-2">
+                        <select name="select_kondisi" class="select2" id="select_kondisi">
+                            <option value="">Pilih Kondisi</option>
+                            <option value="1">BAIK</option>
+                            <option value="2">RR OPS</option>
+                            <option value="3">RB</option>
+                            <option value="4">RR TDK OPS</option>
+                            <option value="5">M</option>
+                            <option value="6">D</option>
+                        </select>
+                        <input type="hidden" name="kondisi" id="kondisi" class="form-control yearpicker" required readonly>
+                        <span class="message_error kondisi_error text-danger d-block"></span>
+                    </div>
                     
                 </div>
             </div>

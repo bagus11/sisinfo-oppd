@@ -131,7 +131,6 @@ $('#btnInfoAsset').on('click', function(){
 function applyFilterInfo() {
     var satgas = $('#info_select_satgas').val(); // Ambil nilai Satgas
     var kondisi = $('#info_select_kondisi_filter').val(); // Ambil nilai Kondisi
-    console.log(satgas)
     infoAssetTable.column(2).search(satgas || ''); // Kolom 2 untuk Satgas
     infoAssetTable.column(1).search(kondisi || ''); // Kolom 1 untuk Kondisi
     infoAssetTable.draw();
@@ -141,7 +140,6 @@ function applyFilterInfo() {
 $('#info_select_satgas').on('change', function () {
     applyFilterInfo();
 });
-
 // Event untuk filter Kondisi
 $('#info_select_kondisi_filter').on('change', function () {
     applyFilterInfo();
@@ -162,7 +160,7 @@ $(document).ready(function () {
             dropdownParent: $('#editAssetModal'),
             width: '100%'
         });
-        console.log(test)
+        
     });
 })
 getActiveItems('getSatgasType',null,'select_filter_asset','Satgas')
@@ -199,7 +197,6 @@ $('#inventaris_table tbody').on('click', 'tr', function () {
     const data = table.row(this).data();
     var response = data.detail_relation;
     $('#update_inventaris_code').val(response[0].inventaris_code)
-    // Check if `response` contains data
     if (response && Array.isArray(response)) {
         // Destroy any existing DataTable instance
         $('#detailTableAsset').DataTable().clear().destroy();
@@ -450,382 +447,482 @@ $('#imageModal').on('shown.bs.modal', function () {
 })
 $('#detailTableAsset').on('click', '.btn-view-attachment', function (e) {
     e.preventDefault();
-    const imageUrl ='storage/'+ $(this).data('attachment-url');
 
-    if (imageUrl) {
-        // Set the image source in the modal
-        $('#imageModal img').attr('src', imageUrl);
+    const attachments = $(this).data('attachment-url'); // ex: "img1.jpg,img2.jpg"
 
-        // Show the modal
+    if (attachments) {
+        const attachmentArray = attachments.split(',');
+        const $modalBody = $('#imageModal .modal-body');
+
+        $modalBody.empty(); // kosongkan isi sebelumnya
+
+        attachmentArray.forEach(path => {
+            const imageUrl = 'storage/' + path.trim();
+            const imgElement = `<img src="${imageUrl}" class="img-fluid m-2" style="max-height:300px;">`;
+            $modalBody.append(imgElement);
+        });
+
         $('#imageModal').modal('show');
     }
 });
-onChange('select_type','type')
-$('#btn_add_asset').on('click', function(){
 
-    $('#asset_table').DataTable().clear().destroy();
-    $('#asset_array_table').DataTable().clear().destroy();
-    $('.update_container').prop('hidden', true)
-    $('#asset_array_table').prop('hidden', true)
-    $('#array_table_asset').prop('hidden', true)
+
+onChange('select_type','type')
+    $('#btn_add_asset').on('click', function(){
 
         $('#asset_table').DataTable().clear().destroy();
-        $(document).ready(function () {
-            const assetTable = $('#asset_table').DataTable({
-                processing: true,
-                serverSide: true,
-                lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
-                ajax: {
-                    url: `getMasterAssetInventarisTable`,
-                    type: 'GET',
-                    data: function (d) {
-                        d.satgas = $('#select_satgas').val(); // Kirim filter Satgas
-                        d.kondisi = $('#select_kondisi_filter').val(); // Kirim filter Kondisi
-                    }
-                },
-                columns: [
-                    {
-                        data: null,
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            return `<input type="checkbox" class="row-checkbox" value="${row.asset_code}">`;
+        $('#asset_array_table').DataTable().clear().destroy();
+        $('.update_container').prop('hidden', true)
+        $('#asset_array_table').prop('hidden', true)
+        $('#array_table_asset').prop('hidden', true)
+
+            $('#asset_table').DataTable().clear().destroy();
+            $(document).ready(function () {
+                const assetTable = $('#asset_table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
+                    ajax: {
+                        url: `getMasterAssetInventarisTable`,
+                        type: 'GET',
+                        data: function (d) {
+                            d.satgas = $('#select_satgas').val(); // Kirim filter Satgas
+                            d.kondisi = $('#select_kondisi_filter').val(); // Kirim filter Kondisi
                         }
                     },
-                    { 
-                        data: 'kondisi', 
-                        name: 'kondisi',
-                        render: function(data, type, row) {
-                            let kondisi = '-'; // Default value
-                            switch (parseInt(data)) {  // Konversi data ke integer sekali di awal
-                                case 1:
-                                    kondisi = 'BAIK';
-                                    break;
-                                case 2:
-                                    kondisi = 'RR OPS';
-                                    break;
-                                case 3:
-                                    kondisi = 'RB';
-                                    break;
-                                case 4:
-                                    kondisi = 'RR TDK OPS';
-                                    break;
-                                case 5:
-                                    kondisi = 'M';
-                                    break;
-                                case 6:
-                                    kondisi = 'D';
-                                    break;
+                    columns: [
+                        {
+                            data: null,
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                return `<input type="checkbox" class="row-checkbox" value="${row.asset_code}">`;
                             }
-                        
-                            return kondisi;
+                        },
+                        { 
+                            data: 'kondisi', 
+                            name: 'kondisi',
+                            render: function(data, type, row) {
+                                let kondisi = '-'; // Default value
+                                switch (parseInt(data)) {  // Konversi data ke integer sekali di awal
+                                    case 1:
+                                        kondisi = 'BAIK';
+                                        break;
+                                    case 2:
+                                        kondisi = 'RR OPS';
+                                        break;
+                                    case 3:
+                                        kondisi = 'RB';
+                                        break;
+                                    case 4:
+                                        kondisi = 'RR TDK OPS';
+                                        break;
+                                    case 5:
+                                        kondisi = 'M';
+                                        break;
+                                    case 6:
+                                        kondisi = 'D';
+                                        break;
+                                }
+                            
+                                return kondisi;
+                            }
+                            
+                        },
+                        { 
+                            data: 'satgas_relation', 
+                            name: 'satgas_relation.name', 
+                            render: function (data) {
+                                return data && data.name ? data.name : '-';
+                            }
+                        },
+                        { data: 'no_un', name: 'no_un' },
+                        { 
+                            data: 'category_relation', 
+                            name: 'category_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
+                        { 
+                            data: 'sub_category_relation', 
+                            name: 'sub_category_relation.name', 
+                            render: function (data) {
+                                return data && data.name ? data.name : '-';
+                            }
+                        },
+                        { 
+                            data: 'type_relation', 
+                            name: 'type_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
+                        { 
+                            data: 'merk_relation', 
+                            name: 'merk_relation.name', 
+                            render: function (data) {
+                                return data ? data.name : '-';
+                            }
+                        },
+                        { data: 'no_mesin', name: 'no_mesin' },
+                        { data: 'no_rangka', name: 'no_rangka' },
+                    ]
+                });
+                
+                
+                const selectedAssetCodes = new Set();
+                $(document).on('change', '#check-all', function () {
+                    const isChecked = $(this).is(':checked');
+                    $('#asset_table .row-checkbox').each(function () {
+                        const assetCode = $(this).val();
+                        $(this).prop('checked', isChecked);
+                
+                        if (isChecked) {
+                            selectedAssetCodes.add(assetCode);
+                        } else {
+                            selectedAssetCodes.delete(assetCode);
                         }
-                        
-                    },
-                    { 
-                        data: 'satgas_relation', 
-                        name: 'satgas_relation.name', 
-                        render: function (data) {
-                            return data && data.name ? data.name : '-';
-                        }
-                    },
-                    { data: 'no_un', name: 'no_un' },
-                    { 
-                        data: 'category_relation', 
-                        name: 'category_relation.name', 
-                        render: function (data) {
-                            return data ? data.name : '-';
-                        }
-                    },
-                    { 
-                        data: 'sub_category_relation', 
-                        name: 'sub_category_relation.name', 
-                        render: function (data) {
-                            return data && data.name ? data.name : '-';
-                        }
-                    },
-                    { 
-                        data: 'type_relation', 
-                        name: 'type_relation.name', 
-                        render: function (data) {
-                            return data ? data.name : '-';
-                        }
-                    },
-                    { 
-                        data: 'merk_relation', 
-                        name: 'merk_relation.name', 
-                        render: function (data) {
-                            return data ? data.name : '-';
-                        }
-                    },
-                    { data: 'no_mesin', name: 'no_mesin' },
-                    { data: 'no_rangka', name: 'no_rangka' },
-                ]
-            });
-            
-            
-            const selectedAssetCodes = new Set();
-            $(document).on('change', '#check-all', function () {
-                const isChecked = $(this).is(':checked');
-                $('#asset_table .row-checkbox').each(function () {
+                    });
+                });
+                
+                $(document).on('change', '#asset_table .row-checkbox', function () {
                     const assetCode = $(this).val();
-                    $(this).prop('checked', isChecked);
-            
-                    if (isChecked) {
+                
+                    if ($(this).is(':checked')) {
                         selectedAssetCodes.add(assetCode);
                     } else {
                         selectedAssetCodes.delete(assetCode);
                     }
+                
+                    // Update the "check all" checkbox state
+                    const totalCheckboxes = $('#asset_table .row-checkbox').length;
+                    const checkedCheckboxes = $('#asset_table .row-checkbox:checked').length;
+                    $('#check-all').prop('checked', totalCheckboxes === checkedCheckboxes);
                 });
-            });
-            
-            $(document).on('change', '#asset_table .row-checkbox', function () {
-                const assetCode = $(this).val();
-            
-                if ($(this).is(':checked')) {
-                    selectedAssetCodes.add(assetCode);
-                } else {
-                    selectedAssetCodes.delete(assetCode);
-                }
-            
-                // Update the "check all" checkbox state
-                const totalCheckboxes = $('#asset_table .row-checkbox').length;
-                const checkedCheckboxes = $('#asset_table .row-checkbox:checked').length;
-                $('#check-all').prop('checked', totalCheckboxes === checkedCheckboxes);
-            });
-            
+                
 
-            $('#asset_table').on('draw.dt', function () {
-                // Restore the "check all" checkbox state
-                const totalCheckboxes = $('#asset_table .row-checkbox').length;
-                const checkedCheckboxes = $('#asset_table .row-checkbox').filter(function () {
-                    return selectedAssetCodes.has($(this).val());
-                }).length;
-                $('#check-all').prop('checked', totalCheckboxes === checkedCheckboxes);
-            
-                // Restore individual row checkbox states
-                $('#asset_table .row-checkbox').each(function () {
-                    const assetCode = $(this).val();
-                    $(this).prop('checked', selectedAssetCodes.has(assetCode));
+                $('#asset_table').on('draw.dt', function () {
+                    // Restore the "check all" checkbox state
+                    const totalCheckboxes = $('#asset_table .row-checkbox').length;
+                    const checkedCheckboxes = $('#asset_table .row-checkbox').filter(function () {
+                        return selectedAssetCodes.has($(this).val());
+                    }).length;
+                    $('#check-all').prop('checked', totalCheckboxes === checkedCheckboxes);
+                
+                    // Restore individual row checkbox states
+                    $('#asset_table .row-checkbox').each(function () {
+                        const assetCode = $(this).val();
+                        $(this).prop('checked', selectedAssetCodes.has(assetCode));
+                    });
                 });
-            });
-                      
-            // filter lokasi satgas
-                function applyFilters() {
-                    let satgas = $('#select_satgas').val(); // Ambil nilai Satgas
-                    let kondisi = $('#select_kondisi_filter').val(); // Ambil nilai Kondisi
+                        
+                // filter lokasi satgas
+                    function applyFilters() {
+                        let satgas = $('#select_satgas').val(); // Ambil nilai Satgas
+                        let kondisi = $('#select_kondisi_filter').val(); // Ambil nilai Kondisi
+                        
+                        assetTable.column(2).search(satgas || ''); // Kolom 2 untuk Satgas
+                        assetTable.column(1).search(kondisi || ''); // Kolom 1 untuk Kondisi
+                        assetTable.draw();
+                    }
                     
-                    assetTable.column(2).search(satgas || ''); // Kolom 2 untuk Satgas
-                    assetTable.column(1).search(kondisi || ''); // Kolom 1 untuk Kondisi
-                    assetTable.draw();
-                }
+                    // Event untuk filter Satgas
+                    $('#select_satgas').on('change', function () {
+                        applyFilters();
+                    });
+                    
+                    // Event untuk filter Kondisi
+                    $('#select_kondisi_filter').on('change', function () {
+                        applyFilters();
+                    });
+                // filter lokasi satgas
+            
+                const addedAssetCodes = new Set();
+
+                $('#btn_add_array_item').on('click', function (e) {
+                    e.preventDefault();
+                    $('#asset_array_table').prop('hidden', false);
                 
-                // Event untuk filter Satgas
-                $('#select_satgas').on('change', function () {
-                    applyFilters();
+                    let hasSelected = false;
+                    $('#asset_table .row-checkbox:checked').each(function () {
+                        const rowElement = $(this).closest('tr');
+                        const rowData = assetTable.row(rowElement).data();
+                
+                        if (addedAssetCodes.has(rowData.asset_code)) {
+                            console.warn(`Asset ${rowData.asset_code} is already added.`);
+                            return;
+                        }
+                
+                        hasSelected = true;
+                        addedAssetCodes.add(rowData.asset_code);
+                
+                        const catatan = $('#catatan').val();
+                        const attachmentFiles = $('#attachment')[0].files;
+                
+                        const sanitizedAssetCode = rowData.asset_code.replace(/[^\w-]/g, '_');
+                        const attachmentInputId = `attachment-${sanitizedAssetCode}`;
+                
+                        let kodisi = $('#select_kondisi').val();
+                        switch (kodisi) {
+                            case '1': kodisi = 'BAIK'; break;
+                            case '2': kodisi = 'RR OPS'; break;
+                            case '3': kodisi = 'RB'; break;
+                            case '4': kodisi = 'RR TDK OPS'; break;
+                            case '5': kodisi = 'M'; break;
+                            case '6': kodisi = 'D'; break;
+                        }
+                
+                        const attachmentNames = Array.from(attachmentFiles).map(file => file.name).join(', ') || 'No file selected';
+                
+                        const newRow = `
+                            <tr data-id="${rowData.asset_code}">
+                                <td>${rowData.asset_code}</td>
+                                <td>${kodisi}</td>
+                                <td>${rowData.satgas_relation ? rowData.satgas_relation.name : '-'}</td>
+                                <td>${rowData.no_un}</td>
+                                <td>${rowData.category_relation ? rowData.category_relation.name : '-'}</td>
+                                <td>${rowData.sub_category_relation ? rowData.sub_category_relation.name : '-'}</td>
+                                <td>${rowData.type_relation ? rowData.type_relation.name : '-'}</td>
+                                <td>${rowData.merk_relation ? rowData.merk_relation.name : '-'}</td>
+                                <td>${rowData.no_mesin}</td>
+                                <td>${rowData.no_rangka}</td>
+                                <td>${catatan}</td>
+                                <td>
+                                    ${attachmentNames}
+                                    <input type="file" name="attachments[${rowData.asset_code}][]" class="d-none" id="${attachmentInputId}" multiple>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger btn-remove-row">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>`;
+                
+                        $('#asset_array_table tbody').append(newRow);
+                
+                        // Clone & assign all selected files
+                        if (attachmentFiles.length > 0) {
+                            const clonedInput = $(`#${attachmentInputId}`);
+                            const dt = new DataTransfer();
+                            for (let file of attachmentFiles) {
+                                dt.items.add(file);
+                            }
+                            clonedInput[0].files = dt.files;
+                        }
+                    });
+                
+                    if (!hasSelected) {
+                        alert('Please select at least one row or ensure you are not re-adding the same asset.');
+                    }
+                
+                    $('#catatan').val('');
+                    $('#select_kondisi').val('').select2().trigger('change');
+                    $('#attachment').val('');
+                    $('#attachment').next('.custom-file-label').html('Choose file...');
                 });
                 
-                // Event untuk filter Kondisi
-                $('#select_kondisi_filter').on('change', function () {
-                    applyFilters();
-                });
-            // filter lokasi satgas
-        
-            const addedAssetCodes = new Set();
-            $('#btn_add_array_item').on('click', function (e) {
-                e.preventDefault();
-                $('#asset_array_table').prop('hidden', false)
-                let hasSelected = false;
-                $('#asset_table .row-checkbox:checked').each(function () {
+                $('#asset_array_table').on('click', '.btn-remove-row', function () {
                     const rowElement = $(this).closest('tr');
-                    const rowData = assetTable.row(rowElement).data();
-                    var test_case = $('#select_kondisi').val()
-                    if (addedAssetCodes.has(rowData.asset_code)) {
-                        console.warn(`Asset ${rowData.asset_code} is already added.`);
-                        return;
-                    }
-            
-                    hasSelected = true;
-                    addedAssetCodes.add(rowData.asset_code);
-            
-                    // Get the values of Catatan and Attachment
-                    const catatan = $('#catatan').val(); // Value from the Catatan textarea
-                    const attachmentFile = test_case == 1 ? '': $('#attachment')[0].files[0]; // File from the Attachment input
-                    const attachmentName = attachmentFile ? attachmentFile.name : 'No file selected';
-            
-                    // Sanitize the asset_code to create a safe ID
-                    const sanitizedAssetCode = rowData.asset_code.replace(/[^\w-]/g, '_');
-                    const attachmentInputId = `attachment-${sanitizedAssetCode}`;
-            
-                    let kodisi = $('#select_kondisi').val();
-                    switch (kodisi) {
-                        case 1:
-                            kodisi = 'BAIK';
-                            break;
-                        case 2:
-                            kodisi = 'RR OPS';
-                            break;
-                        case 3:
-                            kodisi = 'RB';
-                            break;
-                        case 4:
-                            kodisi = 'RR TDK OPS';
-                            break;
-                        case 5:
-                            kodisi = 'M';
-                            break;
-                        case 6:
-                            kodisi = 'D';
-                            break;
-                    }
-            
-                    // Add the row to asset_array_table with Catatan and Attachment values
-                    const newRow = `
-                        <tr data-id="${rowData.asset_code}">
-                            <td>${rowData.asset_code}</td>
-                            <td>${kodisi}</td>
-                            <td>${rowData.satgas_relation ? rowData.satgas_relation.name : '-'}</td>
-                            <td>${rowData.no_un}</td>
-                            <td>${rowData.category_relation ? rowData.category_relation.name : '-'}</td>
-                            <td>${rowData.sub_category_relation ? rowData.sub_category_relation.name : '-'}</td>
-                            <td>${rowData.type_relation ? rowData.type_relation.name : '-'}</td>
-                            <td>${rowData.merk_relation ? rowData.merk_relation.name : '-'}</td>
-                            <td>${rowData.no_mesin}</td>
-                            <td>${rowData.no_rangka}</td>
-                            <td>${catatan}</td>
-                            <td>
-                                ${attachmentName}
-                                <input type="file" name="attachments[]" class="d-none" id="${attachmentInputId}">
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-danger btn-remove-row">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>`;
-            
-                    // Append the new row to the table
-                    $('#asset_array_table tbody').append(newRow);
-            
-                    // Clone the file input and assign it to the newly added row
-                    if (attachmentFile) {
-                        const clonedFileInput = $('#attachment').clone();
-                        clonedFileInput.attr('id', attachmentInputId);
-                        clonedFileInput[0].files = $('#attachment')[0].files;
-                        $(`#${attachmentInputId}`).replaceWith(clonedFileInput);
-                    }
+                    const rowId = rowElement.data('id');
+                    rowElement.remove();
+                    $('#asset_table tbody').find(`input.row-checkbox[value="${rowId}"]`).prop('checked', false);
+                    addedAssetCodes.delete(rowId); // Allow re-adding if removed
                 });
-            
-                if (!hasSelected) {
-                    alert('Please select at least one row or ensure you are not re-adding the same asset.');
-                }
-            
-                // Reset the Catatan and Kondisi fields
-                $('#catatan').val('');
-                $('#select_kondisi').val('');
-                $('#select_kondisi').select2().trigger('change');
-                // $('#attachment').val('');
-                $('#attachment').next('.custom-file-label').html('Choose file...');
-            });
-           
-            $('#asset_array_table').on('click', '.btn-remove-row', function () {
-                const rowElement = $(this).closest('tr');
-                const rowId = rowElement.data('id'); // Get the asset code of the row
-
-                // Remove row from asset_array_table
-                rowElement.remove();
-
-                // Find the corresponding row in the asset_table
-                const assetRow = $('#asset_table tbody').find(`input.row-checkbox[value="${rowId}"]`).closest('tr');
-
-                // Uncheck the checkbox in the asset_table
-                assetRow.find('input.row-checkbox').prop('checked', false);
-            });
-
-        });
-        
-        
-        
-        $('#btn_save_inventaris').on('click', function (e) {
-            e.preventDefault();
-        
-            const formData = new FormData();
-            const dataToSave = [];
-        
-            $('#asset_array_table tbody tr').each(function () {
-                const row = $(this).find('td');
-                const attachmentInput = $(this).find('input[type="file"]')[0]; // Improved selector
                 
-                const rowData = {
-                    asset_code: $(row[0]).text(),
-                    kondisi: $(row[1]).text(),
-                    satgas: $(row[2]).text(),
-                    no_un: $(row[3]).text(),
-                    category: $(row[4]).text(),
-                    sub_category: $(row[5]).text(),
-                    type: $(row[6]).text(),
-                    merk: $(row[7]).text(),
-                    no_mesin: $(row[8]).text(),
-                    no_rangka: $(row[9]).text(),
-                    catatan: $(row[10]).text(),
-                };
-                dataToSave.push(rowData);
-                // Append the file to the formData object if it exists
-                if (attachmentInput && attachmentInput.files.length > 0) {
-                    formData.append('attachments[]', attachmentInput.files[0]); // Attach file
-                } else {
-                    console.log(`No file attached for: ${rowData.asset_code}`);
-                }
-                console.log(dataToSave)
-            });
-        
-            formData.append('data', JSON.stringify(dataToSave));
-            formData.append('_token', $('meta[name="csrf-token"]').attr('content')); // CSRF token
-        
-            postAttachment('addInventaris', formData, false, function (response) {
-                swal.close();
-                toastr['success'](response.meta.message);
-                $('#addAssetModal').modal('hide');
-                $('#inventaris_table').DataTable().ajax.reload();
-            });
-        });
+                $('#btn_save_inventaris').on('click', function (e) {
+                    e.preventDefault();
+                
+                    const formData = new FormData();
+                    const dataToSave = [];
+                
+                    $('#asset_array_table tbody tr').each(function () {
+                        const row = $(this).find('td');
+                        const assetCode = $(this).data('id');
+                        const attachmentInput = $(this).find(`input[type="file"]`)[0];
+                
+                        const rowData = {
+                            asset_code: $(row[0]).text(),
+                            kondisi: $(row[1]).text(),
+                            satgas: $(row[2]).text(),
+                            no_un: $(row[3]).text(),
+                            category: $(row[4]).text(),
+                            sub_category: $(row[5]).text(),
+                            type: $(row[6]).text(),
+                            merk: $(row[7]).text(),
+                            no_mesin: $(row[8]).text(),
+                            no_rangka: $(row[9]).text(),
+                            catatan: $(row[10]).text(),
+                        };
+                        dataToSave.push(rowData);
+                
+                        if (attachmentInput && attachmentInput.files.length > 0) {
+                            for (let file of attachmentInput.files) {
+                                formData.append(`attachments[${assetCode}][]`, file);
+                            }
+                        } else {
+                            console.log(`No file attached for: ${rowData.asset_code}`);
+                        }
+                    });
+                
+                    formData.append('data', JSON.stringify(dataToSave));
+                    formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
+                
+                    postAttachment('addInventaris', formData, false, function (response) {
+                        swal.close();
+                        toastr['success'](response.meta.message);
+                        $('#addAssetModal').modal('hide');
+                        $('#inventaris_table').DataTable().ajax.reload();
+                    });
+                });
+                
+                $('#asset_array_table').on('click', '.btn-remove-row', function () {
+                    const rowElement = $(this).closest('tr');
+                    const rowId = rowElement.data('id'); // Get the asset code of the row
 
-    $("#type").val('')
-    $("#asset").val('')
-    $("#reporter").val('')
-    $("#satgas").val('')
-    getActiveItems('getUser',null,'select_reporter','Reporter')
-    getCallbackNoSwal('getSatgas', null, function(response) {
-        var $select = $('#select_satgas');
-    
-        // Hapus Select2 dulu biar gak dobel
-        if ($select.data('select2')) {
-            $select.select2('destroy');
-        }
-    
-        // Kosongkan dan isi ulang option
-        $select.empty().append('<option value="">All Satgas</option>');
-    
-        response.data.forEach(item => {
-            let option = new Option(`${item.name} - ${item.type}`, item.name, false, false);
-            $(option).attr("data-type", item.type);
-            $select.append(option);
+                    // Remove row from asset_array_table
+                    rowElement.remove();
+
+                    // Find the corresponding row in the asset_table
+                    const assetRow = $('#asset_table tbody').find(`input.row-checkbox[value="${rowId}"]`).closest('tr');
+
+                    // Uncheck the checkbox in the asset_table
+                    assetRow.find('input.row-checkbox').prop('checked', false);
+                });
+
+            });
+
+            // $('#btn_save_inventaris').on('click', function (e) {
+            //     e.preventDefault();
+            
+            //     const formData = new FormData();
+            //     const dataToSave = [];
+            
+            //      $('#asset_array_table tbody tr').each(function () {
+            //         const row = $(this).find('td');
+            //         const attachmentInput = $(this).find('input[type="file"]')[0];
+                
+            //         const rowData = {
+            //             asset_code: $(row[0]).text(),
+            //             kondisi: $(row[1]).text(),
+            //             satgas: $(row[2]).text(),
+            //             no_un: $(row[3]).text(),
+            //             category: $(row[4]).text(),
+            //             sub_category: $(row[5]).text(),
+            //             type: $(row[6]).text(),
+            //             merk: $(row[7]).text(),
+            //             no_mesin: $(row[8]).text(),
+            //             no_rangka: $(row[9]).text(),
+            //             catatan: $(row[10]).find('input, textarea').val() || $(row[10]).text(),
+            //         };
+                
+            //         dataToSave.push(rowData);
+            //         console.log(attachmentInput.files.length)
+            //         if (attachmentInput && attachmentInput.files.length > 0) {
+            //             for (let i = 0; i < attachmentInput.files.length; i++) {
+            //                 const fileKey = `attachments[${rowData.asset_code}][]`;
+            //                 formData.append(fileKey, attachmentInput.files[i]);
+            //             }
+            //         } else {
+            //             console.log(`No file attached for: ${rowData.asset_code}`);
+            //         }
+            //     });
+            
+            //     formData.append('data', JSON.stringify(dataToSave));
+            //     formData.append('_token', $('meta[name="csrf-token"]').attr('content')); // CSRF token
+            
+            //     postAttachment('addInventaris', formData, false, function (response) {
+            //         swal.close();
+            //         toastr['success'](response.meta.message);
+            //         $('#addAssetModal').modal('hide');
+            //         $('#inventaris_table').DataTable().ajax.reload();
+            //     });
+            // });
+
+
+               // $('#btn_save_inventaris').on('click', function (e) {
+            //     e.preventDefault();
+            
+            //     const formData = new FormData();
+            //     const dataToSave = [];
+            
+            //     $('#asset_array_table tbody tr').each(function () {
+            //         const row = $(this).find('td');
+            //         const attachmentInput = $(this).find('input[type="file"]')[0]; // Improved selector
+                    
+            //         const rowData = {
+            //             asset_code: $(row[0]).text(),
+            //             kondisi: $(row[1]).text(),
+            //             satgas: $(row[2]).text(),
+            //             no_un: $(row[3]).text(),
+            //             category: $(row[4]).text(),
+            //             sub_category: $(row[5]).text(),
+            //             type: $(row[6]).text(),
+            //             merk: $(row[7]).text(),
+            //             no_mesin: $(row[8]).text(),
+            //             no_rangka: $(row[9]).text(),
+            //             catatan: $(row[10]).text(),
+            //         };
+            //         dataToSave.push(row);
+            //         // Append the file to the formData object if it exists
+            //         if (attachmentInput && attachmentInput.files.length > 0) {
+            //             for (let i = 0; i < attachmentInput.files.length; i++) {
+            //                 const fileKey = `attachments[${rowData.asset_code}][]`;
+            //                 formData.append(fileKey, attachmentInput.files[i]);
+            //                 console.log(`Attachment key: ${fileKey}, File:`, attachmentInput.files[i]);
+            //             }
+            //         }else {
+            //             console.log(`No file attached for: ${rowData.asset_code}`);
+            //         }
+            //     });
+            
+            //     formData.append('data', JSON.stringify(dataToSave));
+            //     formData.append('_token', $('meta[name="csrf-token"]').attr('content')); // CSRF token
+            
+            //     postAttachment('addInventaris', formData, false, function (response) {
+            //         swal.close();
+            //         toastr['success'](response.meta.message);
+            //         $('#addAssetModal').modal('hide');
+            //         $('#inventaris_table').DataTable().ajax.reload();
+            //     });
+            // });
+            
+        $("#type").val('')
+        $("#asset").val('')
+        $("#reporter").val('')
+        $("#satgas").val('')
+        getActiveItems('getUser',null,'select_reporter','Reporter')
+        getCallbackNoSwal('getSatgas', null, function(response) {
+            var $select = $('#select_satgas');
+        
+            // Hapus Select2 dulu biar gak dobel
+            if ($select.data('select2')) {
+                $select.select2('destroy');
+            }
+        
+            // Kosongkan dan isi ulang option
+            $select.empty().append('<option value="">All Satgas</option>');
+        
+            response.data.forEach(item => {
+                let option = new Option(`${item.name} - ${item.type}`, item.name, false, false);
+                $(option).attr("data-type", item.type);
+                $select.append(option);
+            });
+        
+            // Inisialisasi Select2 dengan tambahan opsi
+            $select.select2({
+                placeholder: "Pilih Satgas",
+                allowClear: true,
+                width: "100%",
+                dropdownParent: $select.closest("form") // Jika dalam form/modal
+            });
+        
+            // Trigger supaya Select2 membaca ulang data
+            $select.trigger('change');
         });
-    
-        // Inisialisasi Select2 dengan tambahan opsi
-        $select.select2({
-            placeholder: "Pilih Satgas",
-            allowClear: true,
-            width: "100%",
-            dropdownParent: $select.closest("form") // Jika dalam form/modal
-        });
-    
-        // Trigger supaya Select2 membaca ulang data
-        $select.trigger('change');
-    });
-    
-    
-})
+        
+        
+    })
     onChange('select_reporter','reporter')
     onChange('select_asset','asset')
     onChange('select_satgas','satgas')

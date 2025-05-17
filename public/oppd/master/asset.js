@@ -147,7 +147,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
     // Disable Fields
     $('#edit_no_un, #edit_no_rangka, #edit_no_mesin, #edit_th_pembuatan, #edit_th_operasi').prop('readOnly', true);
     $('#edit_select_kategori, #edit_select_subkategori, #edit_select_brand, #edit_select_jenis').prop('disabled', true);
-    console.log(row)
+
     // Populate Form Fields
     $('#asset_code').val(row.asset_code || '');
     $('#edit_select_kategori').val(row.kategori || '').trigger('change');
@@ -328,10 +328,12 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         $('#select_lokasi').val('')
         $('#select_lokasi').select2().trigger('change');
         $('#lokasi').val('')
+        $('#kondisi').val('')
         resetSelect2('select_kategori');
         resetSelect2('select_subkategori');
         resetSelect2('select_jenis');
         resetSelect2('select_brand');
+        resetSelect2('select_kondisi');
 
         getActiveItems('getInventoryCategory', null, 'select_kategori', 'Kategori');
         getActiveItems('getInventorySubCategory', null, 'select_subkategori', 'Subkategori');
@@ -373,7 +375,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
     onChange('select_subkategori','subkategori')
     onChange('select_jenis','jenis')
     onChange('select_brand','merk')
-
+    onChange('select_kategori','kondisi')
     $('#btn_save_asset').on('click', function(){
         var data ={
             no_un:$('#no_un').val(),
@@ -386,6 +388,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
             lokasi:$('#lokasi').val(),
             th_operasi:$('#th_operasi').val(),
             th_pembuatan:$('#th_pembuatan').val(),
+            kondisi : $('#kondisi').val()
         }
         postCallback('addMasterAsset', data, function(response){
             swal.close()
@@ -396,6 +399,7 @@ $('#asset_table tbody').on('click', 'tr', function (e) {
         })
     })
 // Add Asset
+   
     onChange('edit_select_kategori','edit_kategori')
     onChange('edit_select_subkategori','edit_subkategori')
     onChange('edit_select_jenis','edit_jenis')

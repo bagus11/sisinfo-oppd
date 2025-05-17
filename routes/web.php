@@ -174,8 +174,13 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/getNews', 'App\Http\Controllers\Transaction\PeneranganController@getNews')->name('getNews');
 
         // Penerangan
+            Route::get('/test', 'App\Http\Controllers\Transaction\Employee\PersonaliaController@index')->name('test');
 
 
+
+        // izin gais
+
+        // izin gais
         // Personalia
         Route::get('/personalia', 'App\Http\Controllers\Transaction\Employee\PersonaliaController@index')->name('personalia');
         Route::get('/getPersonalia', 'App\Http\Controllers\Transaction\Employee\PersonaliaController@getPersonalia')->name('getPersonalia');

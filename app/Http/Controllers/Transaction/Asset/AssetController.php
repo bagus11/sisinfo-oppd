@@ -42,12 +42,12 @@ class AssetController extends Controller
 
         return abort(403, 'Unauthorized action.');
     }
+
     public function getAssetFilter(Request $request)
     {
         if ($request->ajax()) {
             $currentYear = date('Y');
-    
-            // Konversi kondisi ke angka
+
             $kondisi = match ($request->kondisi) {
                 "BAIK" => 1,
                 "RR OPS" => 2,
@@ -57,31 +57,36 @@ class AssetController extends Controller
                 "D" => 6,
                 default => 0,
             };
-    
-            // Query utama
+
             $data = Asset::query()
+                ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+                ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
+                ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
+                ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
                 ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
                 ->with([
-                    'categoryRelation',
-                    'subCategoryRelation',
-                    'typeRelation',
-                    'merkRelation',
-                    'satgasRelation'
-                ]);
-            if($kondisi != 0){
+                    'detailInventarisRelation',
+                    'distribusiRelation',
+                ])
+                ->select(
+                    'assets.*',
+                    'inventory_categories.name as category_name',
+                    'inventory_sub_categories.name as subcategory_name',
+                    'inventory_types.name as type_name',
+                    'inventory_brands.name as merk_name',
+                    'master_satgas.name as satgas_name',
+                    'master_satgas.type as satgas_type',
+                    DB::raw('(SELECT remark FROM asset_logs WHERE asset_logs.asset_code = assets.asset_code ORDER BY created_at DESC LIMIT 1) AS latest_remark'),
+                );
+
+            if ($kondisi != 0) {
                 $data->where('assets.kondisi', $kondisi);
-                // ->where('assets.kondisi', 'like', '%' . $kondisi . '%');
             }
-    
-            // **Filter berdasarkan SatgasRelation**
+
             if (!empty($request->type)) {
-                $data->where(function ($q) use ($request) {
-                    $q->whereRaw('master_satgas.type = ?', [$request->type]);
-                });
+                $data->where('master_satgas.type', $request->type);
             }
-                        
-    
-            // **Filter Tahun Operasi (th_operasi)**
+
             if (!empty($request->th_operasi)) {
                 if ($request->th_operasi == "1") {
                     $data->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
@@ -91,8 +96,7 @@ class AssetController extends Controller
                     $data->where('assets.th_operasi', '<', $currentYear - 10);
                 }
             }
-    
-            // **Filter Tahun Pembuatan (th_pembuatan)**
+
             if (!empty($request->th_pembuatan)) {
                 if ($request->th_pembuatan == "1") {
                     $data->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
@@ -102,20 +106,13 @@ class AssetController extends Controller
                     $data->where('assets.th_pembuatan', '<', $currentYear - 10);
                 }
             }
-    
-            // **Hapus ORDER BY satgasRelation.name di Query Langsung**
+
             return DataTables::of($data)
-                ->order(function ($query) {
-                    // Sorting setelah data diambil
-                    $query->get()->sortBy('satgasRelation.name');
-                })
                 ->make(true);
         }
-    
+
         return abort(403, 'Unauthorized action.');
     }
-    
-    
     
     function getMasterSatgas() {
         $data = MasterSatgas::all();
@@ -130,11 +127,9 @@ class AssetController extends Controller
         ->groupBy('type')
         ->get();
     
-    return response()->json([
-        'data' => $data,
-    ]);
-  
-    
+        return response()->json([
+            'data' => $data,
+        ]);
     }
     function addAsset(Request $request) {
         // try {
@@ -203,14 +198,25 @@ class AssetController extends Controller
         
                 // Query utama
                 $data = Asset::query()
-                    ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-                    ->with([
-                        'categoryRelation',
-                        'subCategoryRelation',
-                        'typeRelation',
-                        'merkRelation',
-                        'satgasRelation'
-                    ]);
+                ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+                ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
+                ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
+                ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
+                ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+                ->with([
+                    'detailInventarisRelation',
+                    'distribusiRelation',
+                ])
+                ->select(
+                    'assets.*',
+                    'inventory_categories.name as category_name',
+                    'inventory_sub_categories.name as subcategory_name',
+                    'inventory_types.name as type_name',
+                    'inventory_brands.name as merk_name',
+                    'master_satgas.name as satgas_name',
+                    'master_satgas.type as satgas_type',
+                    DB::raw('(SELECT remark FROM asset_logs WHERE asset_logs.asset_code = assets.asset_code ORDER BY created_at DESC LIMIT 1) AS latest_remark'),
+                );
                   
                 if($kondisi != 0){
                     $data->where('assets.kondisi', $kondisi);
@@ -287,6 +293,7 @@ class AssetController extends Controller
 
 
             $filteredData = $data->get();
+            
             if ($format === 'pdf') {
                 $imageLogo          = '<img src="'.public_path('logo.png').'" width="50px" style="float: right;"/>';
                 $header             = '';

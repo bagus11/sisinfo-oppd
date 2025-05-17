@@ -49,6 +49,7 @@
                     <table id="asset_table" class="table table-striped table-bordered text-nowrap">
                         <thead class="text-dark fs-1">
                             <tr>
+                                <th>Asset Code</th>
                                 <th>Satgas</th>
                                 <th>Lokasi</th>
                                 <th>No UN</th>
@@ -61,6 +62,7 @@
                                 <th>Th Pembuatan</th>
                                 <th>Th Operasi</th>
                                 <th>Kondisi</th>
+                                <th>Catatan Terkini</th>
                             </tr>
                         </thead>
                     </table>

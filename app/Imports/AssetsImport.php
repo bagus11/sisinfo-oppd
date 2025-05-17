@@ -24,6 +24,49 @@ class AssetsImport implements ToModel, WithStartRow
 
     public function model(array $row)
     {
+        // ... kode sebelumnya tetap ...
+    
+        // Transformasi tanggal
+        $created_at = $this->transformDate($row[0], date('H:i:s'));
+    
+        // Ambil ID terkait
+        $kategori = InventoryCategory::where('name', $row[4])->first();
+        $subkategori = InventorySubCategory::where('name', $row[5])->first();
+        $jenis = Inventory_type::where('name', $row[6])->first();
+        $merk = InventoryBrand::where('name', $row[7])->first();
+        $lokasi = MasterSatgas::where('name', $row[8])->first();
+        $lokasiType = MasterSatgas::where('type', $row[8])->first();
+        $lokasi_id = $lokasi->id ?? ($lokasiType->id ?? 0);
+    
+        $kondisi = 0;
+        switch ($row[9]) {
+            case 'BAIK': $kondisi = 1; break;
+            case 'RR OPS': $kondisi = 2; break;
+            case 'RB': $kondisi = 3; break;
+            case 'RR TDK OPS': $kondisi = 4; break;
+            case 'M': $kondisi = 5; break;
+            case 'D': $kondisi = 6; break;
+        }
+    
+        // CEK apakah asset sudah ada
+        $existingAsset = Asset::where('no_un', $row[1] ?? '')
+            ->where('no_rangka', $row[2] ?? '')
+            ->where('no_mesin', $row[3] ?? '')
+            ->where('kategori', $kategori->id ?? 0)
+            ->where('subkategori', $subkategori->id ?? 0)
+            ->where('jenis', $jenis->id ?? 0)
+            ->where('merk', $merk->id ?? 0)
+            ->where('lokasi', $lokasi_id)
+            ->where('kondisi', $kondisi)
+            ->first();
+    
+        if ($existingAsset) {
+            // Optional: Log untuk ngecek
+            Log::info("Asset duplikat ditemukan, dilewati: " . json_encode($row));
+            return null;
+        }
+    
+        // Generate kode asset
         $increment_code = Asset::withTrashed()->orderBy('id', 'desc')->first();
         $date_month = strtotime(date('Y-m-d'));
         $month = idate('m', $date_month);
@@ -41,40 +84,6 @@ class AssetsImport implements ToModel, WithStartRow
             }
         }
     
-        // Transform Excel serialized date and append the time
-        $created_at = $this->transformDate($row[0], date('H:i:s'));
-    
-        // Cek apakah data ditemukan sebelum mengakses properti id
-        $kategori = InventoryCategory::where('name', $row[4])->first();
-        $subkategori = InventorySubCategory::where('name', $row[5])->first();
-        $jenis = Inventory_type::where('name', $row[6])->first();
-        $merk = InventoryBrand::where('name', $row[7])->first();
-        $lokasi = MasterSatgas::where('name', $row[8])->first();
-        $lokasiType = MasterSatgas::where('type', $row[8])->first();
-        $lokasi_id = $lokasi->id ?? ($lokasiType->id ?? 0);
-
-        $kondisi = 0;
-        switch ($row[9]) {
-            case 'BAIK':
-                $kondisi = 1;
-                break;
-            case 'RR OPS':
-                $kondisi = 2;
-                break;
-            case 'RB':
-                $kondisi = 3;
-                break;
-            case 'RR TDK OPS':
-                $kondisi = 4;
-                break;
-            case 'M':
-                $kondisi = 5;
-                break;
-            case 'D':
-                $kondisi = 6;
-                break;
-        }
-       
         $post = [
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
@@ -92,21 +101,21 @@ class AssetsImport implements ToModel, WithStartRow
             'th_operasi'    => $row[11] ?? 0,
             'lokasi'        => $lokasi_id,
         ];
+    
         if ($lokasi == null && $lokasiType == null) {
-            
             Log::warning("Asset dengan lokasi kosong: " . $ticket_code. " , Lokasi : " . json_encode($lokasi). " : Type ". json_encode($lokasiType));
         }
-        
+    
         Asset::create($post);
     
         return new AssetLog([
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
-            'no_un'         => $row[1] == null ? '' : $row[1],
-            'no_rangka'     => $row[2] == null ? '' : $row[2],
-            'no_mesin'      => $row[3] == null ? '' : $row[3],
+            'no_un'         => $row[1] ?? '',
+            'no_rangka'     => $row[2] ?? '',
+            'no_mesin'      => $row[3] ?? '',
             'kategori'      => $kategori->id ?? 0,
-            'subkategori'   => $subkategori ? $subkategori->id : 0, // Ensure null if not found
+            'subkategori'   => $subkategori->id ?? 0,
             'jenis'         => $jenis->id ?? 0,
             'merk'          => $merk->id ?? 0,
             'user_id'       => auth()->user()->id ?? 0,
@@ -114,11 +123,10 @@ class AssetsImport implements ToModel, WithStartRow
             'kondisi'       => $kondisi,
             'th_pembuatan'  => $row[10] ?? 0,
             'th_operasi'    => $row[11] ?? 0,
-            'lokasi'        => $lokasi->id ?? 0,
-            'remark'        => auth()->user()->name. ' telah menambahkan asset'
+            'lokasi'        => $lokasi_id,
+            'remark'        => auth()->user()->name . ' telah menambahkan asset'
         ]);
     }
-    
 
     /**
      * Transform Excel serialized date into Y-m-d format with timezone adjustment and append time.

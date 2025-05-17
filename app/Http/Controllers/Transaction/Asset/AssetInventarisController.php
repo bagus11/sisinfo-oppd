@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use NumConvert;
+use PhpParser\Node\Stmt\Else_;
 use Yajra\DataTables\Facades\DataTables;
 
 class AssetInventarisController extends Controller
@@ -189,131 +190,355 @@ class AssetInventarisController extends Controller
     }
 
 
+    // public function addInventaris(Request $request, StoreInventaris $storeInventaris)
+    // {
+    //     // try {
+    //         // Validate input
+    //         $storeInventaris->validated();
+    
+    //         // Generate ticket code
+    //         $lastCode = Inventaris::orderBy('id', 'desc')->first();
+    //         $currentMonth = idate('m');
+    //         $currentYear = idate('y');
+    //         $romanMonth = NumConvert::roman($currentMonth);
+    //         $ticketCode = $lastCode && explode('/', $lastCode->inventaris_code)[2] === $romanMonth
+    //             ? (explode('/', $lastCode->inventaris_code)[0] + 1) . "/INV/{$romanMonth}/{$currentYear}"
+    //             : "1/INV/{$romanMonth}/{$currentYear}";
+    
+    //         DB::transaction(function () use ($request, $ticketCode) {
+    //             // Insert into `inventaris`
+    //             $satgas = $request->satgas ?? auth()->user()->satgas;
+    //             $satgasType = MasterSatgas::find($satgas)->type;
+    
+    //             $inventaris = Inventaris::create([
+    //                 'inventaris_code' => $ticketCode,
+    //                 'bulan' => date('Y-m-d'),
+    //                 'satgas' => $satgas,
+    //                 'satgas_type' => $satgasType,
+    //                 'reporter' => auth()->user()->id,
+    //                 'user_id' => auth()->user()->id,
+    //                 'catatan' => '-',
+    //             ]);
+    
+    //             // Process assets
+    //             $assets = json_decode($request->data, true);
+
+    //             $files = $request->file('attachments') ?? []; // Get the attachments array
+    //             // dd($request->data);
+    //             foreach ($assets as $key => $asset) {
+    //                 // Determine asset condition status
+    //                 $status = (int)$asset['kondisi'];
+    //                 // {
+    //                 //     'BAIK' => 1,
+    //                 //     'RR OPS' => 2,
+    //                 //     'RB' => 3,
+    //                 //     'RR TDK OPS' => 4,
+    //                 //     'M' => 5,
+    //                 //     'D' => 6,
+    //                 //     default => 0,
+    //                 // };
+    //                 // dd((int)$asset['kondisi']);
+    //                 // Prepare attachment path
+    //                 $attachmentPath = null;
+    //                 if (array_key_exists($key, $files) && $status != 1) {
+    //                     $file = $files[$key];
+    //                     $assetCodeSanitized = str_replace('/', '_', $asset['asset_code']);
+    //                     $dateSuffix = date('Ymd');
+    //                     $attachmentFileName = "{$assetCodeSanitized}_{$dateSuffix}." . $file->getClientOriginalExtension();
+    //                     $attachmentPath = "transaction/asset/inventaris/{$attachmentFileName}";
+    //                     $file->storeAs('transaction/asset/inventaris', $attachmentFileName, 'public');
+    //                 }
+    //                 $asset_condition = Asset::where('asset_code', $asset['asset_code'])->first();
+    //                 // Create InventarisDetail
+    //                 InventarisDetail::create([
+    //                     'inventaris_code' => $ticketCode,
+    //                     'bulan' => date('Y-m-d'),
+    //                     'satgas' => $satgas,
+    //                     'satgas_type' => $satgasType,
+    //                     'reporter' => auth()->user()->id,
+    //                     'asset_code' => $asset['asset_code'],
+    //                     'kondisi' => $status,
+    //                     'user_id' => auth()->user()->id,
+    //                     'catatan' => $asset['catatan'] ?? $request->catatan,
+    //                     'attachment' => $status == 1 ? '' : $attachmentPath, // Save attachment if provided
+    //                 ]);
+    //                 InventarisDetailLog::create([
+    //                     'inventaris_code' => $ticketCode,
+    //                     'bulan' => date('Y-m-d'),
+    //                     'satgas' => $satgas,
+    //                     'satgas_type' => $satgasType,
+    //                     'reporter' => auth()->user()->id,
+    //                     'asset_code' => $asset['asset_code'],
+    //                     'kondisi' => $status,
+    //                     'kondisi_saat_ini' => $asset_condition->kondisi,
+    //                     'user_id' => auth()->user()->id,
+    //                     'catatan' => $asset['catatan'] ?? $request->catatan,
+    //                     'attachment' => $status == 1 ? '' : $attachmentPath, // Save attachment if provided
+    //                 ]);
+    
+    //                 // Update Asset
+    //                 Asset::where('asset_code', $asset['asset_code'])->update([
+    //                     'kondisi' => $status,
+    //                     'user_id' => auth()->user()->id,
+    //                 ]);
+    
+    //                 // Create AssetLog
+    //                 $assetDetail = Asset::where('asset_code', $asset['asset_code'])->first();
+    //                 AssetLog::create([
+    //                     'asset_code' => $asset['asset_code'],
+    //                     'no_un' => $assetDetail->no_un ?? '',
+    //                     'no_rangka' => $assetDetail->no_rangka ?? '',
+    //                     'no_mesin' => $assetDetail->no_mesin ?? '',
+    //                     'kategori' => $assetDetail->kategori ?? '',
+    //                     'subkategori' => $assetDetail->subkategori ?? '',
+    //                     'jenis' => $assetDetail->jenis ?? '',
+    //                     'merk' => $assetDetail->merk ?? '',
+    //                     'th_pembuatan'  => $assetDetail->th_pembuatan,
+    //                     'th_operasi'    => $assetDetail->th_operasi,
+    //                     'user_id' => auth()->user()->id,
+    //                     'pic' => auth()->user()->id,
+    //                     'kondisi' => $status,
+    //                     'lokasi' => $satgas,
+    //                     'remark' => $asset['catatan'],
+    //                 ]);
+    //             }
+    //         });
+    
+    //         return ResponseFormatter::success(null, 'Asset berhasil ditambahkan');
+    //     // } catch (\Throwable $th) {
+    //     //     return ResponseFormatter::error($th->getMessage(), 'Asset gagal ditambahkan', 500);
+    //     // }
+    // }
+    
+    // function addInventaris(Request $request, StoreInventaris $storeInventaris){
+    //     $storeInventaris->validated();
+    //     $lastCode = Inventaris::orderBy('id', 'desc')->first();
+    //     $currentMonth = idate('m');
+    //     $currentYear = idate('y');
+    //     $romanMonth = NumConvert::roman($currentMonth);
+    //     $ticketCode = $lastCode && explode('/', $lastCode->inventaris_code)[2] === $romanMonth
+    //         ? (explode('/', $lastCode->inventaris_code)[0] + 1) . "/INV/{$romanMonth}/{$currentYear}"
+    //         : "1/INV/{$romanMonth}/{$currentYear}";
+
+    //     DB::transaction(function () use ($request, $ticketCode) {
+    //         $satgas = $request->satgas ?? auth()->user()->satgas;
+    //         $satgasType = MasterSatgas::find($satgas)->type;
+            
+    //         $inventaris = Inventaris::create([
+    //             'inventaris_code' => $ticketCode,
+    //             'bulan' => date('Y-m-d'),
+    //             'satgas' => $satgas,
+    //             'satgas_type' => $satgasType,
+    //             'reporter' => auth()->user()->id,
+    //             'user_id' => auth()->user()->id,
+    //             'catatan' => '-',
+    //         ]);
+
+    //         $assets = json_decode($request->data, true);
+    //         $attachments = $request->file('attachments') ?? [];
+    //         dd($request->file);
+    //         foreach ($assets as $asset) {
+    //             $status = (int)$asset['kondisi'];
+    //             $attachmentPaths = [];
+    //             $attachmentString ='';
+    //             $asset_condition = Asset::where('asset_code', $asset['asset_code'])->first();
+    //             dd($attachments[$asset['asset_code']]);
+    //             if ((isset($attachments[$asset['asset_code']]) && $status != 1) ||
+    //                 (isset($attachmentPath[$asset['asset_code']]) && $asset_condition->status !== 1 && $status === 1)){
+                       
+    //                 foreach ($attachments[$asset['asset_code']] as $file) {
+    //                     $assetCodeSanitized = str_replace('/', '_', $asset['asset_code']);
+    //                     $dateSuffix = date('YmdHis');
+    //                     $fileName = "{$assetCodeSanitized}_{$dateSuffix}_" . uniqid() . '.' . $file->getClientOriginalExtension();
+    //                     $filePath = "transaction/asset/inventaris/{$fileName}";
+    //                     $file->storeAs('transaction/asset/inventaris', $fileName, 'public');
+    //                     $attachmentPaths[] = $filePath;
+    //                 }
+    //                 $attachmentString = implode(',', $attachmentPaths);
+    //             }
+                
+    //             InventarisDetail::create([
+    //                 'inventaris_code' => $ticketCode,
+    //                 'bulan' => date('Y-m-d'),
+    //                 'satgas' => $satgas,
+    //                 'satgas_type' => $satgasType,
+    //                 'reporter' => auth()->user()->id,
+    //                 'asset_code' => $asset['asset_code'],
+    //                 'kondisi' => $status,
+    //                 'user_id' => auth()->user()->id,
+    //                 'catatan' => $asset['catatan'] ?? $request->catatan,
+    //                 'attachment' =>$attachmentString ,
+    //             ]);
+
+    //             InventarisDetailLog::create([
+    //                 'inventaris_code' => $ticketCode,
+    //                 'bulan' => date('Y-m-d'),
+    //                 'satgas' => $satgas,
+    //                 'satgas_type' => $satgasType,
+    //                 'reporter' => auth()->user()->id,
+    //                 'asset_code' => $asset['asset_code'],
+    //                 'kondisi' => $status,
+    //                 'kondisi_saat_ini' => $asset_condition->kondisi,
+    //                 'user_id' => auth()->user()->id,
+    //                 'catatan' => $asset['catatan'] ?? $request->catatan,
+    //                 'attachment' =>$attachmentString,
+    //             ]);
+
+    //             Asset::where('asset_code', $asset['asset_code'])->update([
+    //                 'kondisi' => $status,
+    //                 'user_id' => auth()->user()->id,
+    //             ]);
+
+    //             $assetDetail = Asset::where('asset_code', $asset['asset_code'])->first();
+    //             AssetLog::create([
+    //                 'asset_code' => $asset['asset_code'],
+    //                 'no_un' => $assetDetail->no_un ?? '',
+    //                 'no_rangka' => $assetDetail->no_rangka ?? '',
+    //                 'no_mesin' => $assetDetail->no_mesin ?? '',
+    //                 'kategori' => $assetDetail->kategori ?? '',
+    //                 'subkategori' => $assetDetail->subkategori ?? '',
+    //                 'jenis' => $assetDetail->jenis ?? '',
+    //                 'merk' => $assetDetail->merk ?? '',
+    //                 'th_pembuatan'  => $assetDetail->th_pembuatan,
+    //                 'th_operasi'    => $assetDetail->th_operasi,
+    //                 'user_id' => auth()->user()->id,
+    //                 'pic' => auth()->user()->id,
+    //                 'kondisi' => $status,
+    //                 'lokasi' => $satgas,
+    //                 'remark' => $asset['catatan'],
+    //             ]);
+    //         }
+    //     });
+
+    //     return ResponseFormatter::success(null, 'Asset berhasil ditambahkan');
+    // }
+
     public function addInventaris(Request $request, StoreInventaris $storeInventaris)
     {
-        // try {
-            // Validate input
-            $storeInventaris->validated();
-    
-            // Generate ticket code
-            $lastCode = Inventaris::orderBy('id', 'desc')->first();
-            $currentMonth = idate('m');
-            $currentYear = idate('y');
-            $romanMonth = NumConvert::roman($currentMonth);
-            $ticketCode = $lastCode && explode('/', $lastCode->inventaris_code)[2] === $romanMonth
-                ? (explode('/', $lastCode->inventaris_code)[0] + 1) . "/INV/{$romanMonth}/{$currentYear}"
-                : "1/INV/{$romanMonth}/{$currentYear}";
-    
-            DB::transaction(function () use ($request, $ticketCode) {
-                // Insert into `inventaris`
-                $satgas = $request->satgas ?? auth()->user()->satgas;
-                $satgasType = MasterSatgas::find($satgas)->type;
-    
-                $inventaris = Inventaris::create([
-                    'inventaris_code' => $ticketCode,
-                    'bulan' => date('Y-m-d'),
-                    'satgas' => $satgas,
-                    'satgas_type' => $satgasType,
-                    'reporter' => auth()->user()->id,
-                    'user_id' => auth()->user()->id,
-                    'catatan' => '-',
-                ]);
-    
-                // Process assets
-                $assets = json_decode($request->data, true);
+        $storeInventaris->validated();
 
-                $files = $request->file('attachments') ?? []; // Get the attachments array
-                // dd($request->data);
-                foreach ($assets as $key => $asset) {
-                    // Determine asset condition status
-                    $status = (int)$asset['kondisi'];
-                    // {
-                    //     'BAIK' => 1,
-                    //     'RR OPS' => 2,
-                    //     'RB' => 3,
-                    //     'RR TDK OPS' => 4,
-                    //     'M' => 5,
-                    //     'D' => 6,
-                    //     default => 0,
-                    // };
-                    // dd((int)$asset['kondisi']);
-                    // Prepare attachment path
-                    $attachmentPath = null;
-                    if (array_key_exists($key, $files) && $status != 1) {
-                        $file = $files[$key];
-                        $assetCodeSanitized = str_replace('/', '_', $asset['asset_code']);
-                        $dateSuffix = date('Ymd');
-                        $attachmentFileName = "{$assetCodeSanitized}_{$dateSuffix}." . $file->getClientOriginalExtension();
-                        $attachmentPath = "transaction/asset/inventaris/{$attachmentFileName}";
-                        $file->storeAs('transaction/asset/inventaris', $attachmentFileName, 'public');
-                    }
-                    $asset_condition = Asset::where('asset_code', $asset['asset_code'])->first();
-                    // Create InventarisDetail
-                    InventarisDetail::create([
-                        'inventaris_code' => $ticketCode,
-                        'bulan' => date('Y-m-d'),
-                        'satgas' => $satgas,
-                        'satgas_type' => $satgasType,
-                        'reporter' => auth()->user()->id,
-                        'asset_code' => $asset['asset_code'],
-                        'kondisi' => $status,
-                        'user_id' => auth()->user()->id,
-                        'catatan' => $asset['catatan'] ?? $request->catatan,
-                        'attachment' => $status == 1 ? '' : $attachmentPath, // Save attachment if provided
-                    ]);
-                    InventarisDetailLog::create([
-                        'inventaris_code' => $ticketCode,
-                        'bulan' => date('Y-m-d'),
-                        'satgas' => $satgas,
-                        'satgas_type' => $satgasType,
-                        'reporter' => auth()->user()->id,
-                        'asset_code' => $asset['asset_code'],
-                        'kondisi' => $status,
-                        'kondisi_saat_ini' => $asset_condition->kondisi,
-                        'user_id' => auth()->user()->id,
-                        'catatan' => $asset['catatan'] ?? $request->catatan,
-                        'attachment' => $status == 1 ? '' : $attachmentPath, // Save attachment if provided
-                    ]);
-    
-                    // Update Asset
-                    Asset::where('asset_code', $asset['asset_code'])->update([
-                        'kondisi' => $status,
-                        'user_id' => auth()->user()->id,
-                    ]);
-    
-                    // Create AssetLog
-                    $assetDetail = Asset::where('asset_code', $asset['asset_code'])->first();
-                    AssetLog::create([
-                        'asset_code' => $asset['asset_code'],
-                        'no_un' => $assetDetail->no_un ?? '',
-                        'no_rangka' => $assetDetail->no_rangka ?? '',
-                        'no_mesin' => $assetDetail->no_mesin ?? '',
-                        'kategori' => $assetDetail->kategori ?? '',
-                        'subkategori' => $assetDetail->subkategori ?? '',
-                        'jenis' => $assetDetail->jenis ?? '',
-                        'merk' => $assetDetail->merk ?? '',
-                        'th_pembuatan'  => $assetDetail->th_pembuatan,
-                        'th_operasi'    => $assetDetail->th_operasi,
-                        'user_id' => auth()->user()->id,
-                        'pic' => auth()->user()->id,
-                        'kondisi' => $status,
-                        'lokasi' => $satgas,
-                        'remark' => auth()->user()->name . 'telah update kondisi aset',
-                    ]);
+        $lastCode = Inventaris::orderBy('id', 'desc')->first();
+        $currentMonth = idate('m');
+        $currentYear = idate('y');
+        $romanMonth = NumConvert::roman($currentMonth);
+
+        $ticketCode = ($lastCode && explode('/', $lastCode->inventaris_code)[2] === $romanMonth)
+            ? (explode('/', $lastCode->inventaris_code)[0] + 1) . "/INV/{$romanMonth}/{$currentYear}"
+            : "1/INV/{$romanMonth}/{$currentYear}";
+
+        DB::transaction(function () use ($request, $ticketCode) {
+            $satgas = $request->satgas ?? auth()->user()->satgas;
+            $satgasType = MasterSatgas::find($satgas)->type;
+            $inventaris = Inventaris::create([
+                'inventaris_code' => $ticketCode,
+                'bulan'           => date('Y-m-d'),
+                'satgas'          => $satgas,
+                'satgas_type'     => $satgasType,
+                'reporter'        => auth()->user()->id,
+                'user_id'         => auth()->user()->id,
+                'catatan'         => '-',
+            ]);
+
+            $assets      = json_decode($request->input('data'), true);
+            $attachments = $request->file('attachments') ?? [];
+            // dd($attachments);
+            foreach ($assets as $asset) {
+                
+                $kondisiAsset = 0;
+                if($asset['kondisi'] == 'BAIK' ){
+                    $kondisiAsset = 1;
+                }else if($asset['kondisi'] == 'RR OPS'){
+                    $kondisiAsset = 2;
+                    
+                }else if($asset['kondisi'] =='RB'){
+                    $kondisiAsset = 3;
+                    
+                }else if($asset['kondisi'] == 'RR TDK OPS'){
+                    $kondisiAsset = 4;
+                    
+                }else if($asset['kondisi'] == 'M'){
+                    $kondisiAsset = 5;
+                    
+                }else if($asset['kondisi'] == 'D'){
+                    $kondisiAsset = 6;
+
                 }
-            });
-    
-            return ResponseFormatter::success(null, 'Asset berhasil ditambahkan');
-        // } catch (\Throwable $th) {
-        //     return ResponseFormatter::error($th->getMessage(), 'Asset gagal ditambahkan', 500);
-        // }
-    }
-    
-    
-    
-    
+                $status           = $kondisiAsset;
+                $assetCode        = $asset['asset_code'];
+                $asset_condition  = Asset::where('asset_code', $assetCode)->first();
+                $attachmentPaths  = [];
+                $attachmentString = '-';
+               
+                if (isset($attachments[$assetCode]) && is_array($attachments[$assetCode])) {
+                    
+                    foreach ($attachments[$assetCode] as $file) {
+                        $assetCodeSanitized = str_replace('/', '_', $assetCode);
+                        $dateSuffix         = date('YmdHis');
+                        $fileName           = "{$assetCodeSanitized}_{$dateSuffix}_" . uniqid() . '.' . $file->getClientOriginalExtension();
+                        $filePath           = "transaction/asset/inventaris/{$fileName}";
+                        $file->storeAs('transaction/asset/inventaris', $fileName, 'public');
+                        $attachmentPaths[] = $filePath;
+                    }
+                    $attachmentString = implode(',', $attachmentPaths);
+                }
+                
+                // Insert to InventarisDetail
+                InventarisDetail::create([
+                    'inventaris_code' => $ticketCode,
+                    'bulan'           => date('Y-m-d'),
+                    'satgas'          => $satgas,
+                    'satgas_type'     => $satgasType,
+                    'reporter'        => auth()->user()->id,
+                    'asset_code'      => $assetCode,
+                    'kondisi'         => $status,
+                    'user_id'         => auth()->user()->id,
+                    'catatan'         => $asset['catatan'] ?? $request->catatan,
+                    'attachment'      => $attachmentString,
+                ]);
 
-    
+                // Insert to InventarisDetailLog
+                InventarisDetailLog::create([
+                    'inventaris_code'   => $ticketCode,
+                    'bulan'             => date('Y-m-d'),
+                    'satgas'            => $satgas,
+                    'satgas_type'       => $satgasType,
+                    'reporter'          => auth()->user()->id,
+                    'asset_code'        => $assetCode,
+                    'kondisi'           => $status,
+                    'kondisi_saat_ini'  => $asset_condition->kondisi ?? null,
+                    'user_id'           => auth()->user()->id,
+                    'catatan'           => $asset['catatan'] ?? $request->catatan,
+                    'attachment'        => $attachmentString,
+                ]);
+
+                $asset_condition->update([
+                    'kondisi' => $status,
+                    'user_id' => auth()->user()->id,
+                ]);
+
+                // Create Asset Log
+                AssetLog::create([
+                    'asset_code'     => $assetCode,
+                    'no_un'          => $asset_condition->no_un ?? '',
+                    'no_rangka'      => $asset_condition->no_rangka ?? '',
+                    'no_mesin'       => $asset_condition->no_mesin ?? '',
+                    'kategori'       => $asset_condition->kategori ?? '',
+                    'subkategori'    => $asset_condition->subkategori ?? '',
+                    'jenis'          => $asset_condition->jenis ?? '',
+                    'merk'           => $asset_condition->merk ?? '',
+                    'th_pembuatan'   => $asset_condition->th_pembuatan,
+                    'th_operasi'     => $asset_condition->th_operasi,
+                    'user_id'        => auth()->user()->id,
+                    'pic'            => auth()->user()->id,
+                    'kondisi'        => $status,
+                    'lokasi'         => $satgas,
+                    'remark'         => $asset['catatan'] ?? '-',
+                ]);
+            }
+        });
+
+        return ResponseFormatter::success(null, 'Asset berhasil ditambahkan');
+    }
    
     function updateInventaris(Request $request, UpdateInventaris $updateInventaris)
 {
@@ -330,7 +555,7 @@ class AssetInventarisController extends Controller
     $fileNameLog = '';
     if ($request->hasFile('update_attachment')) {
         $file = $request->file('update_attachment');
-        $fileNameLog = $sanitized_ticket_code . '_' . time() . '.' . $file->getClientOriginalExtension(); // Add timestamp to prevent overwriting
+        $fileNameLog = $sanitized_ticket_code . '_' . time() . '.' . $file->getClientOriginalExtension();
         $fileName = $sanitized_ticket_code.date('Ymd'). '.' . $file->getClientOriginalExtension();
         $attachmentPath = 'transaction/asset/inventaris/' . $fileName;
         $attachmentPathLog = 'transaction/asset/inventarisLog/' . $fileNameLog;
@@ -339,7 +564,7 @@ class AssetInventarisController extends Controller
     // Get Satgas type and Asset
     $asset = Asset::where('asset_code', $request->asset_code)->first();
     $detailInventaris = InventarisDetail::where('inventaris_code', $request->inventaris_code)->where('asset_code', $request->asset_code)->first();
-    // dd($detailInventaris);   
+     
     $postInventarisDetailLog = [
         'inventaris_code' => $detailInventaris->inventaris_code,
         'bulan' => $detailInventaris-> bulan,
@@ -349,7 +574,6 @@ class AssetInventarisController extends Controller
         'asset_code' => $detailInventaris->asset_code, 
         'kondisi' => $detailInventaris->kondisi,
         'kondisi_saat_ini' => $asset->kondisi,
-      
         'catatan' => $request->update_catatan,
         'user_id' => auth()->user()->id,
         'attachment' => $attachmentPathLog

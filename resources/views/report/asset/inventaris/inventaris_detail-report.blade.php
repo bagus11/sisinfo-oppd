@@ -137,12 +137,19 @@
                         <td>{{$item->assetRelation ->no_mesin}}</td>
                         <td>{{$item->catatan}}</td>
                         <td>
-                            @if($item->attachment !== '')
-                                <img style="width:150px" src="{{ public_path('storage/'.$item->attachment) }}" alt="">
-                            @else
-                                <!-- No attachment logic goes here -->
+                        @php
+                        $attachments = explode(',', $item->attachment);
+                        @endphp
+                        @foreach($attachments as $img)
+                            @php
+                                $path = public_path('storage/' . trim($img));
+                            @endphp
+                            @if(file_exists($path) || $item == '-')
+                                <img style="width:300px; margin:5px;" src="{{ $path }}" alt="attachment">
                             @endif
+                        @endforeach
                         </td>
+                    
                     </tr>  
                 @endforeach
             @else

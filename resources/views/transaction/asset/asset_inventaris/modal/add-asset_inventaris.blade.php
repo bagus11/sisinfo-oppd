@@ -128,10 +128,9 @@
                                             <label for="">Attachment</label>
                                         </div>
                                         <div class="col-8 col-sm-8 col-md-5">
-                                            <input type="file" class="form-control" id="attachment">
+                                            <input type="file" class="form-control" id="attachment" name="attachment[]" multiple>
                                             <span class="message_error attachment_name_error text-red d-block"></span>
-                                        </div>
-                                       
+                                        </div>                                        `
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-4 col-sm-4 col-md-1 mt-2">
@@ -165,6 +164,3 @@
         </div>
     </div>
 </div>
-<script>
-
-</script>

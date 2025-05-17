@@ -5,26 +5,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="title">{{ $title .' '. \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-    <div class="date">Tanggal: {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</div>
-    @if (!empty($parameter))
-        <div style="text-align: left; font-size: 12px; margin-bottom: 10px;">
-            @foreach ($parameter as $p)
-                <div>{{ $p }}</div>
-            @endforeach
-        </div>
-    @endif
+    <div class="title">Report Asset 10 Mei 2025</div>
 
-        <p style="font-size: 12px">Berikut Merupakan detail item dari asset sebagai berikut : </p>
-        <p style="font-size: 10px; font-weight: bold;">Total Item: {{ count($data) }}</p>
-    <table class="table-stepper" style="margin-top: 10px">
+    <div class="header-info">
+        <div><strong>Kondisi:</strong> BAIK</div>
+        <div><strong>Tanggal:</strong> 10 Mei 2025</div>
+    </div>
+    
+    <div class="subtitle"><strong>Total Item:</strong> {{ count($data) }}</div>
+    
+    <table class="table-stepper">
         <thead>
             <tr>
                 <th>No</th>
                 <th>Asset Code</th>
-                <th>Satgas</th>
+                <th>Satuan</th>
                 <th>Lokasi</th>
-                <th>No UN</th>
+                <th>No UIN</th>
                 <th>Kategori</th>
                 <th>Sub Kategori</th>
                 <th>Jenis</th>
@@ -32,10 +29,11 @@
                 <th>No Mesin</th>
                 <th>No Rangka</th>
                 <th>Kondisi</th>
+                <th>Catatan Terkini</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($data as $item)
+            @foreach($data as $i => $item)
             @php
                 switch ($item->kondisi) {
                     case 1: $kondisi = "BAIK"; break;
@@ -60,75 +58,75 @@
                 <td>{{$item->no_mesin}}</td>
                 <td>{{$item->no_rangka}}</td>
                 <td>{{$kondisi}}</td>
+                <td class="catatan">{{$item->latest_remark}}</td>
             </tr>  
-        @endforeach
+            @endforeach
         </tbody>
     </table>
+    
+    
 </body>
 </html>
 <style>
     body {
         font-family: 'Poppins', sans-serif;
+        font-size: 12px;
     }
 
     .title {
         text-align: center;
-        font-size: 16px;
         font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 10px;
     }
 
-    .date {
-        text-align: right;
-        font-size: 12px;
+    .subtitle {
+        font-size: 10px;
+        margin-bottom: 5px;
     }
 
-    .image {
-        max-width: 85mm !important;
-        min-height: 85mm !important;
-        max-height: 85mm !important;
-        display: block;
-        text-align: left;
-    }
-
-    .chart {
-        text-align: left;
-        margin-top: 10px;
-    }
-
-    .table-stepper {
-        font-family: 'Poppins', sans-serif;
+    table.table-stepper {
+        width: 100%;
         border-collapse: collapse;
-        width: 100% !important;
-        font-size: 9px;
-        border: 1px solid #ddd;
+        table-layout: fixed;
+    }
+
+    .table-stepper th, .table-stepper td {
+        border: 1px solid #aaa;
+        padding: 6px 8px;
+        text-align: left;
+        vertical-align: top;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    .table-stepper th {
+        background-color: #2973B2;
+        color: white;
+        text-align: center;
     }
 
     .table-stepper tr:nth-child(even) {
         background-color: #f2f2f2;
     }
 
-    .table-stepper tr:hover {
-        background-color: #ddd;
+    .table-stepper td.catatan {
+        width: 250px;
+        max-width: 250px;
+        word-wrap: break-word;
     }
 
-    .table-stepper th {
-        border: 1px solid rgb(182, 181, 181);
-        padding: 5px;
-        text-align: center;
-        background-color: #2973B2;
-        color: white;
+    .header-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 10px;
     }
 
-    .table-stepper td {
-        padding: 8px;
-        border: 1px solid rgb(182, 181, 181);
-    }
-
-    .datatable-bordered {
-        font-family: 'Poppins', sans-serif;
-        border-collapse: collapse;
-        width: 100% !important;
-        font-size: 12px;
+    .footer-note {
+        font-size: 8px;
+        margin-top: 20px;
+        color: #555;
     }
 </style>
 

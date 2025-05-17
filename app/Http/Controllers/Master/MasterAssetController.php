@@ -15,6 +15,7 @@ use App\Models\Setting\InventoryBrand;
 use App\Models\Setting\InventoryCategory;
 use App\Models\Setting\InventorySubCategory;
 use App\Models\Setting\MasterSatgas;
+use Carbon\Carbon;
 use Database\Seeders\InventoryType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -98,36 +99,24 @@ class MasterAssetController extends Controller
     }
     function getMasterAssetInventarisTable(Request $request) {
        
-    if(auth()->user()->hasPermissionTo('get-except_satgas-asset_inventaris')){
-        $data = Asset::with([
+        $query = Asset::with([
             'detailInventarisRelation',
             'categoryRelation',
             'subCategoryRelation',
             'typeRelation',
             'merkRelation',
             'satgasRelation',
+        ])->whereDoesntHave('detailInventarisRelation', function ($query) {
+            $oneWeekAgo = Carbon::now()->subWeek();
+            $query->whereDate('bulan', '>=', $oneWeekAgo);
+        });
         
-        ])
-        ->whereDoesntHave('detailInventarisRelation', function ($query) {
-            $query->whereDate('bulan', now()); // Filter untuk mengecualikan data dengan tanggal hari ini
-        })
-        ->get();
-    }else{
-        $data = Asset::with([
-            'detailInventarisRelation',
-            'categoryRelation',
-            'subCategoryRelation',
-            'typeRelation',
-            'merkRelation',
-            'satgasRelation',
+        if (!auth()->user()->hasPermissionTo('get-except_satgas-asset_inventaris')) {
+            $query->where('lokasi', auth()->user()->satgas);
+        }
         
-        ])
-        ->whereDoesntHave('detailInventarisRelation', function ($query) {
-            $query->whereDate('bulan', now()); 
-        })
-        ->where('lokasi', auth()->user()->satgas)
-        ->get();
-    }
+        $data = $query->get();
+        
         if ($request->ajax()) {
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {
@@ -225,7 +214,7 @@ class MasterAssetController extends Controller
                 'th_operasi'          =>$request->th_operasi,
                 'user_id'       =>auth()->user()->id,
                 'pic'           =>0,
-                'kondisi'           =>1,
+                'kondisi'           =>$request->kondisi,
                 'lokasi'        =>$lokasi->id
             ];
             $postLog=[
@@ -241,7 +230,7 @@ class MasterAssetController extends Controller
                 'th_pembuatan'          =>$request->th_pembuatan,
                 'th_operasi'          =>$request->th_operasi,
                 'pic'           =>0,
-                'kondisi'           =>1,
+                'kondisi'           =>$request->kondisi,
                 'lokasi'        =>$lokasi->id,
                 'remark'        => auth()->user()->name. ' telah menambahkan asset'
             ];
