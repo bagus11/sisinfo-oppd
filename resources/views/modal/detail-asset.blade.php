@@ -63,6 +63,7 @@
                                 <th>Th Operasi</th>
                                 <th>Kondisi</th>
                                 <th>Catatan Terkini</th>
+                                <th>Last Update</th>
                             </tr>
                         </thead>
                     </table>

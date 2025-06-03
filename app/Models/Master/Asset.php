@@ -11,6 +11,7 @@ use App\Models\Transaction\Asset\InventarisDetail;
 use App\Models\Transaction\Asset\StatusDistribusiItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Asset extends Model
@@ -35,7 +36,6 @@ class Asset extends Model
         return $this->hasOne(InventoryBrand::class, 'id', 'merk');
     }
     function satgasRelation() {
-        // return $this->hasOne(MasterSatgas::class,'id','lokasi');
          return $this->belongsTo(MasterSatgas::class, 'lokasi', 'id');
     }
     function detailInventarisRelation() {
@@ -46,5 +46,8 @@ class Asset extends Model
     }
     function historyRelation(){
         return $this->hasMany(AssetLog::class,'asset_code', 'asset_code');
+    }
+    function inventarisRelation() {
+        return $this->hasMany(InventarisDetail::class, 'asset_code', 'asset_code');
     }
 }

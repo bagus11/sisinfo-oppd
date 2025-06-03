@@ -244,7 +244,7 @@ $(document).ready(function() {
                 console.error('Invalid response for getMasterAsset:', response);
             }
         });
-        $('#asset_table').DataTable().clear().destroy();
+     $('#asset_table').DataTable().clear().destroy();
         $('#asset_table').DataTable({
             processing: true,
             serverSide: true,
@@ -255,11 +255,11 @@ $(document).ready(function() {
             },
             columns: [
                 {
-                    data: null, // No data binding for checkbox column
-                    orderable: false, // Disable ordering for this column
-                    searchable: false, // Disable searching for this column
-                    render: function(data, type, row) {
-                        return `<input type="checkbox" class="row-checkbox" value="${row.asset_code}">`; // Replace `row.id` with the appropriate unique identifier
+                    data: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return `<input type="checkbox" class="row-checkbox" value="${row.asset_code}">`;
                     }
                 },
                 {
@@ -278,32 +278,62 @@ $(document).ready(function() {
                         }
                     }
                 },
-                { data: 'satgas_relation.name', name: 'satgas_relation.name' },
+                {
+                    data: 'satgas_relation',
+                    name: 'satgas_relation.name',
+                    render: function (data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
                 { data: 'no_un', name: 'no_un' },
-                { data: 'category_relation.name', name: 'category_relation.name' },
-                { data: 'sub_category_relation.name', name: 'sub_category_relation.name' },
-                { data: 'type_relation.name', name: 'type_relation.name' },
-                { data: 'merk_relation.name', name: 'merk_relation.name' },
+                {
+                    data: 'category_relation',
+                    name: 'category_relation.name',
+                    render: function (data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                {
+                    data: 'sub_category_relation',
+                    name: 'sub_category_relation.name',
+                    render: function (data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                {
+                    data: 'type_relation',
+                    name: 'type_relation.name',
+                    render: function (data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
+                {
+                    data: 'merk_relation',
+                    name: 'merk_relation.name',
+                    render: function (data) {
+                        return data && data.name ? data.name : '-';
+                    }
+                },
                 { data: 'no_mesin', name: 'no_mesin' },
                 { data: 'no_rangka', name: 'no_rangka' },
                 {
-                    data: 'inventaris_relation.attachment',
+                    data: 'inventaris_relation',
                     name: 'inventaris_relation.attachment',
-                    render: function (data, type, row) {
-                        if (data) {
+                    render: function (data) {
+                        if (data && data.attachment) {
                             return `<a style="color:#76ABAE !important;font-size:10px !important" 
                                         title="Click Here For Attachment" 
-                                        href="storage/${data}" 
+                                        href="storage/${data.attachment}" 
                                         target="_blank">
                                         <i class="fa-solid fa-file-pdf"></i> Click Here
                                     </a>`;
                         }
                         return '-';
                     }
-                },
-              
+                }
             ]
         });
+
     });
 });
 $(document).ready(function () {

@@ -225,7 +225,6 @@ onChange('select_role_edit','role_edit')
 // Role Permission
 // Operation
 
-
 // Function
 function mappingRoleUser(response){
     var data =''

@@ -173,6 +173,8 @@ $(document).ready(function() {
                 type: 'bar',
                 height: '200%', // Biarkan tinggi otomatis
                 width: '150%',  // Biarkan lebar otomatis
+                // height: 'auto',
+                // width:'auto',
                 toolbar: { show: false }, // Hilangkan toolbar di mobile,
                 events: {
                     dataPointSelection: function(event, chartContext, config) {
@@ -282,7 +284,8 @@ $(document).ready(function() {
                     breakpoint: 768,
                     options: {
                         chart: {
-                            height: 400 // Tambah tinggi di mobile
+                            height: 400,
+                            width: 600 // Tambah tinggi di mobile
                         },
                         legend: { position: 'bottom' }
                     }
@@ -583,6 +586,18 @@ function kondisiChart(response) {
         xaxis: {
             categories: kondisi,  // Data kondisi (yang sudah di-mapping) untuk sumbu X
         },
+        responsive: [
+            {
+                breakpoint: 768,
+                options: {
+                    chart: {
+                        height: 400,
+                        width: 600 // Tambah tinggi di mobile
+                    },
+                    legend: { position: 'bottom' }
+                }
+            }
+        ],
         series: seriesData,  // Data series berdasarkan satgas
      
     };

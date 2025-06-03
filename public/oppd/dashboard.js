@@ -74,12 +74,13 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
 
                 // Fixed color mapping for each kondisi
                 const kondisiColors = {
-                    'BAIK': "var(--bs-success)",       // Green
-                    'RR OPS': "var(--bs-info)",     // Blue
-                    'RB': "var(--bs-danger)",         // Red
-                    'RR TDK OPS': "var(--bs-primary)", // Purple
-                    'M': '#697565',          // Grey
-                    'D': '#3C3D37'           // Dark Grey
+                     'BAIK': "#CFF7FF",       // Green
+                    'RR OPS': "#D8FCD2",     // Blue
+                    'RB': "#FF6A00",         // Red
+                    'RR TDK OPS': "#FFF5C2", // Purple
+                    'M': '#FF9898',          // Grey
+                    'D': '#333446'           // Dark Grey
+     
                 };
 
                 let seriesData = response.data.map(item => Number(item.total));
@@ -231,6 +232,15 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
                                             render: function (data) {
                                                 return data || '-';
                                             }
+                                        },
+                                        {
+                                            data: 'latest_update',
+                                            name: 'latest_update',
+                                            orderable: false,
+                                            searchable: false,
+                                            render: function (data) {
+                                                return data || '-';
+                                            }
                                         }
                                     ],
                                     "drawCallback": function (settings) {
@@ -313,12 +323,13 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
 
                 // Fixed color mapping for each kondisi
                 const kondisiColors = {
-                    'BAIK': "var(--bs-success)",       // Green
-                    'RR OPS': "var(--bs-info)",     // Blue
-                    'RB': "var(--bs-danger)",         // Red
-                    'RR TDK OPS': "var(--bs-primary)", // Purple
-                    'M': '#697565',          // Grey
-                    'D': '#3C3D37'           // Dark Grey
+                    'BAIK': "#CFF7FF",       // Green
+                    'RR OPS': "#D8FCD2",     // Blue
+                    'RB': "#FF6A00",         // Red
+                    'RR TDK OPS': "#FFF5C2", // Purple
+                    'M': '#FF9898',          // Grey
+                    'D': '#333446'           // Dark Grey
+     
                 };
 
                 let seriesData = response.data.map(item => Number(item.total));
@@ -547,73 +558,65 @@ function getRadialBar(response) {
         console.error("Invalid response data:", response);
         return;
     }
+
     let sumOfArray = 0;
     let kondisi = [];
+    let colors = [];
+
+    const colorMapping = {
+        1: '#CFF7FF',   // BAIK
+        2: '#D8FCD2',   // RR OPS
+        3: '#FF6A00',   // RB
+        4: '#FFF5C2',   // RR TDK OPS
+        5: '#FF9898',   // M
+        6: '#333446'    // D
+    };
+
+    const kondisiMapping = {
+        1: 'BAIK',
+        2: 'RR OPS',
+        3: 'RB',
+        4: 'RR TDK OPS',
+        5: 'M',
+        6: 'D'
+    };
+
     for (let i = 0; i < response.data.length; i++) {
+        let kondisiVal = parseInt(response.data[i].kondisi, 10);
+        let labelKondisi = kondisiMapping[kondisiVal] || 'Unknown';
+
         sumOfArray += parseInt(response.data[i].total, 10);
-        let labelKondisi = '';
-
-        switch (parseInt(response.data[i].kondisi)) {
-            case 1:
-                labelKondisi = 'BAIK';
-                break;
-            case 2:
-                labelKondisi = 'RR OPS';
-                break;
-            case 3:
-                labelKondisi = 'RB';
-                break;
-            case 4:
-                labelKondisi = 'RR TDK OPS';
-                break;
-            case 5:
-                labelKondisi = 'M';
-                break;
-            case 6:
-                labelKondisi = 'D';
-                break;
-            default:
-                labelKondisi = 'Unknown';
-        }
-
         kondisi.push(labelKondisi);
+        colors.push(colorMapping[kondisiVal] || '#999999'); // fallback warna default jika kondisi tidak dikenali
     }
+
     const percentageData = response.data.map(item => ((item.total / sumOfArray) * 100).toFixed(2));
 
-    if (userHasPermission) {
-        var radialBarOption = {
-            series: percentageData,
-            chart: {
-                type: "radialBar",
-                height: 600,
-                width: '100%',
-                fontFamily: "inherit",
-                foreColor: "#c6d1e9",
+    const chartConfig = {
+        series: percentageData,
+        chart: {
+            type: "radialBar",
+            height: 600,
+            width: '100%',
+            fontFamily: "inherit",
+            foreColor: "#c6d1e9",
+            ...(userHasPermission && {
                 events: {
                     dataPointSelection: function (event, chartContext, config) {
                         let selectedIndex = config.dataPointIndex;
-                        let selectedKondisi = kondisi[selectedIndex]; // Ambil kondisi berdasarkan index
-                        let selectedValue = response.data[selectedIndex]?.total || 0; // Ambil total dari data
-                        // Tampilkan modal dengan kondisi yang dipilih
+                        let selectedKondisi = kondisi[selectedIndex];
+                        let selectedValue = response.data[selectedIndex]?.total || 0;
+
                         $('#detailAssetModal').modal('show');
                         $('#modal_title').html(selectedKondisi + " : " + selectedValue);
-                        $('#selectedKondisi').val('');
-                        $('#select_th_operasi').val('')
-                        $('#select_th_pembuatan').val('')
-                        $('#select_th_pembuatan').select2().trigger('change');
-                        $('#select_th_operasi').select2().trigger('change');
-                        $('#satgasTypeFilter').val('');
                         $('#selectedKondisi').val(selectedKondisi);
+                        $('#select_th_operasi').val('');
+                        $('#select_th_pembuatan').val('');
+                        $('#select_th_operasi').select2().trigger('change');
+                        $('#select_th_pembuatan').select2().trigger('change');
+                        $('#satgasTypeFilter').val('');
                         $('#asset_table').DataTable().clear().destroy();
 
-                        var kondisiMapping = {
-                            1: 'BAIK',
-                            2: 'RR OPS',
-                            3: 'RB',
-                            4: 'RR TDK OPS',
-                            5: 'M',
-                            6: 'D'
-                        };
                         $('#asset_table').DataTable({
                             processing: true,
                             serverSide: true,
@@ -629,291 +632,113 @@ function getRadialBar(response) {
                                 }
                             },
                             columns: [
-                                {
-                                    data:'asset_code',
-                                    name:'asset_code'
-                                },
-                                    {
-                                        data: 'satgas_type',
-                                        name: 'master_satgas.type',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'satgas_name',
-                                        name: 'master_satgas.name',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'no_un',
-                                        name: 'assets.no_un',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'category_name',
-                                        name: 'inventory_categories.name',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'subcategory_name',
-                                        name: 'inventory_sub_categories.name',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'type_name',
-                                        name: 'inventory_types.name',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'merk_name',
-                                        name: 'inventory_brands.name',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'no_mesin',
-                                        name: 'assets.no_mesin',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'no_rangka',
-                                        name: 'assets.no_rangka',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'th_pembuatan',
-                                        name: 'assets.th_pembuatan',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'th_operasi',
-                                        name: 'assets.th_operasi',
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'kondisi',
-                                        name: 'assets.kondisi',
-                                        render: function (data) {
-                                            return kondisiMapping[data] || '-';
-                                        }
-                                    },
-                                    {
-                                        data: 'latest_remark',
-                                        name: 'latest_remark',
-                                        orderable: false,
-                                        searchable: false,
-                                        render: function (data) {
-                                            return data || '-';
-                                        }
-                                    }
-                                ],                                
-                            "drawCallback": function (settings) {
-                                // This function will be called after each draw (after the data is refreshed)
-                                let totalItems = settings.json.recordsFiltered;
-                                $('#totalItemAsset').text(totalItems);
+                                { data:'asset_code', name:'asset_code' },
+                                { data: 'satgas_type', name: 'master_satgas.type', render: d => d || '-' },
+                                { data: 'satgas_name', name: 'master_satgas.name', render: d => d || '-' },
+                                { data: 'no_un', name: 'assets.no_un', render: d => d || '-' },
+                                { data: 'category_name', name: 'inventory_categories.name', render: d => d || '-' },
+                                { data: 'subcategory_name', name: 'inventory_sub_categories.name', render: d => d || '-' },
+                                { data: 'type_name', name: 'inventory_types.name', render: d => d || '-' },
+                                { data: 'merk_name', name: 'inventory_brands.name', render: d => d || '-' },
+                                { data: 'no_mesin', name: 'assets.no_mesin', render: d => d || '-' },
+                                { data: 'no_rangka', name: 'assets.no_rangka', render: d => d || '-' },
+                                { data: 'th_pembuatan', name: 'assets.th_pembuatan', render: d => d || '-' },
+                                { data: 'th_operasi', name: 'assets.th_operasi', render: d => d || '-' },
+                                { data: 'kondisi', name: 'assets.kondisi', render: d => kondisiMapping[d] || '-' },
+                                { data: 'latest_remark', name: 'latest_remark', orderable: false, searchable: false, render: d => d || '-' },
+                                { data: 'latest_update', name: 'latest_update', orderable: false, searchable: false, render: d => d || '-' },
+                            ],
+                            drawCallback: function (settings) {
+                                $('#totalItemAsset').text(settings.json.recordsFiltered);
                             }
                         });
                     }
                 }
-            },
-            labels: kondisi,
-            plotOptions: {
-                radialBar: {
-                    inverseOrder: false,
-                    startAngle: 0,
-                    endAngle: 270,
-                    hollow: {
-                        margin: 1,
-                        size: "20%",
+            })
+        },
+        labels: kondisi,
+        colors: colors,
+        plotOptions: {
+            radialBar: {
+                inverseOrder: false,
+                startAngle: 0,
+                endAngle: 270,
+                hollow: {
+                    margin: 1,
+                    size: "20%",
+                },
+                track: {
+                    background: '#e7e7e7',
+                    strokeWidth: '100%',
+                },
+                dataLabels: {
+                    name: {
+                        show: true,
+                        fontSize: "16px",
+                        color: "#333",
+                        offsetY: -10,
                     },
-                    track: {
-                        background: '#e7e7e7',
-                        strokeWidth: '100%',
+                    value: {
+                        show: true,
+                        fontSize: "12px",
+                        color: "#111",
+                        offsetY: 5,
+                        formatter: val => `${val}%`,
                     },
-                    dataLabels: {
-                        name: {
-                            show: true,
-                            fontSize: "16px",
-                            color: "#333",
-                            offsetY: -10,
+                    total: {
+                        show: true,
+                        label: "Total",
+                        color: "#000",
+                        style: {
+                            fontSize: "18px",
+                            fontWeight: "bold",
                         },
-                        value: {
-                            show: true,
-                            fontSize: "12px",
-                            color: "#111",
-                            offsetY: 5,
-                            formatter: function (val) {
-                                return `${val}%`;
-                            },
-                        },
-                        total: {
-                            show: true,
-                            label: "Total",
-                            color: "#000",
-                            style: {
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                            },
-                            formatter: function () {
-                                return sumOfArray;
-                            },
-                        },
+                        formatter: () => sumOfArray,
                     },
                 },
             },
-            stroke: { width: 10, lineCap: "round" },
-            colors: ["var(--bs-primary)", "var(--bs-secondary)", "var(--bs-danger)", "var(--bs-success)"],
-            tooltip: {
-                enabled: true,
-                theme: "light",
-                y: {
-                    formatter: function (val, opts) {
-                        const count = response.data[opts.seriesIndex]?.total || 0;
-                        return `Total: ${count}`;
-                    },
+        },
+        stroke: { width: 10, lineCap: "round" },
+        tooltip: {
+            enabled: true,
+            theme: "light",
+            y: {
+                formatter: function (val, opts) {
+                    const count = response.data[opts.seriesIndex]?.total || 0;
+                    return `Total: ${count}`;
                 },
             },
-            legend: {
-                show: true,
-                position: "left",
-                floating: true,
-                offsetX: -30,
-                offsetY: -10,
-                markers: {
-                    width: 10,
-                    height: 10,
-                    radius: 5,
-                },
-                labels: {
-                    colors: "#333",
-                    style: {
-                        fontSize: "10px",
-                        fontWeight: "bold",
-                    },
-                    useSeriesColors: false,
-                },
-                itemMargin: {
-                    horizontal: 5,
-                    vertical: 5,
-                },
-            }
-        };
-    } else {
-        var radialBarOption = {
-            series: percentageData,
-            chart: {
-                type: "radialBar",
-                height: 600,
-                fontFamily: "inherit",
-                foreColor: "#c6d1e9",
+        },
+        legend: {
+            show: true,
+            position: "left",
+            floating: true,
+            offsetX: -30,
+            offsetY: -10,
+            markers: {
+                width: 10,
+                height: 10,
+                radius: 5,
             },
-            labels: kondisi,
-            plotOptions: {
-                radialBar: {
-                    inverseOrder: false,
-                    startAngle: 0,
-                    endAngle: 270,
-                    hollow: {
-                        margin: 1,
-                        size: "20%",
-                    },
-                    track: {
-                        background: '#e7e7e7',
-                        strokeWidth: '100%',
-                    },
-                    dataLabels: {
-                        name: {
-                            show: true,
-                            fontSize: "16px",
-                            color: "#333",
-                            offsetY: -10,
-                        },
-                        value: {
-                            show: true,
-                            fontSize: "12px",
-                            color: "#111",
-                            offsetY: 5,
-                            formatter: function (val) {
-                                return `${val}%`;
-                            },
-                        },
-                        total: {
-                            show: true,
-                            label: "Total",
-                            color: "#000",
-                            style: {
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                            },
-                            formatter: function () {
-                                return sumOfArray;
-                            },
-                        },
-                    },
+            labels: {
+                colors: "#333",
+                style: {
+                    fontSize: "10px",
+                    fontWeight: "bold",
                 },
+                useSeriesColors: false,
             },
-            stroke: { width: 10, lineCap: "round" },
-            colors: ["var(--bs-primary)", "var(--bs-secondary)", "var(--bs-danger)", "var(--bs-success)"],
-            tooltip: {
-                enabled: true,
-                theme: "light",
-                y: {
-                    formatter: function (val, opts) {
-                        const count = response.data[opts.seriesIndex]?.total || 0;
-                        return `Total: ${count}`;
-                    },
-                },
+            itemMargin: {
+                horizontal: 5,
+                vertical: 5,
             },
-            legend: {
-                show: true,
-                position: "left",
-                floating: true,
-                offsetX: 0,
-                offsetY: 5,
-                markers: {
-                    width: 10,
-                    height: 5,
-                    radius: 5,
-                },
-                labels: {
-                    colors: "#333",
-                    style: {
-                        fontSize: "10px",
-                        fontWeight: "bold",
-                    },
-                    useSeriesColors: false,
-                },
-                itemMargin: {
-                    horizontal: 5,
-                    vertical: 5,
-                },
-            }
-        };
-    }
+        }
+    };
 
-    const chart = new ApexCharts(document.querySelector("#radialChart"), radialBarOption);
+    const chart = new ApexCharts(document.querySelector("#radialChart"), chartConfig);
     chart.render();
 }
+
 
 function adjustZoomForScreens() {
     const screenWidth = window.screen.width;
@@ -1104,6 +929,15 @@ $('#btn_filter_asset').on('click', function () {
             {
                 data: 'latest_remark',
                 name: 'latest_remark',
+                orderable: false,
+                searchable: false,
+                render: function (data) {
+                    return data || '-';
+                }
+            },
+            {
+                data: 'latest_update',
+                name: 'latest_update',
                 orderable: false,
                 searchable: false,
                 render: function (data) {

@@ -79,7 +79,6 @@ class LaporanController extends Controller
         ]);
     }
     function getDetailMaintenance(Request $request) {
-        // dd($request->request_code);
         $data = MaintenanceDetail::with([
             'assetRelation',
             'assetRelation.categoryRelation',
