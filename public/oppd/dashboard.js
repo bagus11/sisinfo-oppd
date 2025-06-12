@@ -77,7 +77,7 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
                      'BAIK': "#CFF7FF",       // Green
                     'RR OPS': "#D8FCD2",     // Blue
                     'RB': "#FF6A00",         // Red
-                    'RR TDK OPS': "#FFF5C2", // Purple
+                    'RR TDK OPS': "#FFD66B", // Purple
                     'M': '#FF9898',          // Grey
                     'D': '#333446'           // Dark Grey
      
@@ -326,7 +326,7 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
                     'BAIK': "#CFF7FF",       // Green
                     'RR OPS': "#D8FCD2",     // Blue
                     'RB': "#FF6A00",         // Red
-                    'RR TDK OPS': "#FFF5C2", // Purple
+                    'RR TDK OPS': "#FFD66B", // Purple
                     'M': '#FF9898',          // Grey
                     'D': '#333446'           // Dark Grey
      
@@ -567,7 +567,7 @@ function getRadialBar(response) {
         1: '#CFF7FF',   // BAIK
         2: '#D8FCD2',   // RR OPS
         3: '#FF6A00',   // RB
-        4: '#FFF5C2',   // RR TDK OPS
+        4: '#FFD66B',   // RR TDK OPS
         5: '#FF9898',   // M
         6: '#333446'    // D
     };
