@@ -32,7 +32,9 @@ class AssetsImport implements ToModel, WithStartRow
         // Ambil ID terkait
         $kategori = InventoryCategory::where('name', $row[4])->first();
         $subkategori = InventorySubCategory::where('name', $row[5])->first();
-        $jenis = Inventory_type::where('name', $row[6])->first();
+        // $jenis = Inventory_type::where('name', $row[6])->first();
+        $nameJenis = strtolower(trim($row[6]));
+        $jenis = Inventory_type::whereRaw('LOWER(name) = ?', [$nameJenis])->first();
         $merk = InventoryBrand::where('name', $row[7])->first();
         $lokasi = MasterSatgas::where('name', $row[8])->first();
         $lokasiType = MasterSatgas::where('type', $row[8])->first();
