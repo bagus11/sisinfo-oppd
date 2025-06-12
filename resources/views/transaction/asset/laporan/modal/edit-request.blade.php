@@ -6,7 +6,7 @@
 </style>
 
 <div class="modal fade" id="editRequestModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Detail Pengajuan</h5>
@@ -66,8 +66,8 @@
                         
                         <fieldset class="mt-4">
                             <legend>Detail Asset</legend>
-                            <div class="table-responsive" style="overflow-y: hidden">
-                                <table id="edit_asset_table" class="table table-striped table-bordered text-nowrap">
+                            <div class="table-responsive" style="overflow-y: hidden"  style="overflow-x: auto;">
+                                <table id="edit_asset_table" class="table table-striped table-bordered text-nowrap" style="width: 100%">
                                     <thead class="text-dark fs-1">
                                         <tr>
                                             <th>Status</th>

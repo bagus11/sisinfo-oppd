@@ -22,9 +22,9 @@ class AddMaintenanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type'  =>'required',
+            // 'type'  =>'required',
             'catatan'  =>'required',
-            'reporter'  =>'required',
+            // 'reporter'  =>'required',
         ];
     }
 }

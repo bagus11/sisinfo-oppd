@@ -55,6 +55,7 @@
             </div>
         </div>
     </div>
+    @include('transaction.asset.laporan.modal.attachment-request')
     @include('transaction.asset.laporan.modal.add-request')
     @include('transaction.asset.laporan.modal.edit-request')
     @include('transaction.asset.laporan.modal.update-asset')

@@ -232,7 +232,8 @@ class MasterAssetController extends Controller
                 'pic'           =>0,
                 'kondisi'           =>$request->kondisi,
                 'lokasi'        =>$lokasi->id,
-                'remark'        => auth()->user()->name. ' telah menambahkan asset'
+                'remark'        => auth()->user()->name. ' telah menambahkan asset',
+                'attachment'    =>''
             ];
             Asset::create($post);
             AssetLog::create($postLog);
@@ -309,7 +310,8 @@ class MasterAssetController extends Controller
                 'pic'               =>$detail->pic,
                 'kondisi'           =>$detail->kondisi,
                 'lokasi'            =>$detail->lokasi,
-                'remark'            =>auth()->user()->name . ' telah mengubah di master asset'
+                'remark'            =>auth()->user()->name . ' telah mengubah di master asset',
+                'attachment'        =>''
             ];
             Asset::where('asset_code', $request->asset_code)->update($post);
             AssetLog::create($post_log);

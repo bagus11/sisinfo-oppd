@@ -124,7 +124,7 @@ class AssetsImport implements ToModel, WithStartRow
             'th_pembuatan'  => $row[10] ?? 0,
             'th_operasi'    => $row[11] ?? 0,
             'lokasi'        => $lokasi_id,
-            'remark'        => auth()->user()->name . ' telah menambahkan asset'
+            'remark'        => $row[12]
         ]);
     }
 

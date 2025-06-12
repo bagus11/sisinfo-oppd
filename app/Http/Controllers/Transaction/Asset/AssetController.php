@@ -170,7 +170,7 @@ class AssetController extends Controller
     }
     function getPengajuanAsset(Request $request)  {
         if ($request->ajax()) {
-            $data = Maintenance::whereIn('type',[1])->get();
+            $data = Maintenance::all();
             return DataTables::of($data)
                 ->make(true);
         }

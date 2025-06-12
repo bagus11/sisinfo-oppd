@@ -8,6 +8,7 @@ use App\Models\Setting\InventorySubCategory;
 use App\Models\Setting\MasterSatgas;
 use App\Models\Transaction\Asset\Inventaris;
 use App\Models\Transaction\Asset\InventarisDetail;
+use App\Models\Transaction\Asset\MaintenanceDetail;
 use App\Models\Transaction\Asset\StatusDistribusiItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -50,4 +51,11 @@ class Asset extends Model
     function inventarisRelation() {
         return $this->hasMany(InventarisDetail::class, 'asset_code', 'asset_code');
     }
+    function latestHistoryRelation() {
+        return $this->hasOne(AssetLog::class, 'asset_code', 'asset_code')->latestOfMany();
+    }
+    function maintenanceRelation() {
+        return $this->hasMany(MaintenanceDetail::class, 'asset_code', 'asset_code');
+    }
+
 }

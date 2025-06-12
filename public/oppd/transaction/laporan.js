@@ -38,7 +38,7 @@ const table = $('#laporan_table').DataTable({
                 switch (data) {
                     case 1: return 'Pengajuan Perbaikan';
                     case 2: return 'Pengajuan Penggantian';
-                    default: return 'Unknown'; // Default for undefined or unexpected types
+                    default: return 'Waiting'; // Default for undefined or unexpected types
                 }
             }
         },
@@ -89,7 +89,6 @@ $('#btn_update_asset').on('click', function(e){
 $(document).on('click', '.openTab', function () {
     var asset =$(this).data('asset')
     getCallbackNoSwal('getDetailAsset',{'asset_code':asset},function(response){
-        console.log(response)
         var kondisi = '';
         switch (response.detail.kondisi) {
             case 0:
@@ -157,7 +156,7 @@ $('#laporan_table tbody').on('click', 'tr', function () {
     $('#edit_asset_table').DataTable().clear().destroy();
     $('#edit_asset_table').DataTable({
         responsive: true, 
-        lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
+        // lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
         scrollX: true,    
         autoWidth: true,
         processing: true,
@@ -179,6 +178,7 @@ $('#laporan_table tbody').on('click', 'tr', function () {
                     }
                 }
             },
+         
             {
                 data: 'asset_relation.kondisi',
                 name: 'asset_relation.kondisi',
@@ -195,19 +195,22 @@ $('#laporan_table tbody').on('click', 'tr', function () {
                     }
                 }
             },
-        
-            {
-                data: 'asset_code', // Explicitly set to `null` for custom rendering
+           {
+                data: 'asset_code',
                 name: 'asset_code',
                 className: 'nowrap',
-                // width: '300px',
-                render: function (data) {
-                    return `
-                    <button class="btn btn-sm btn-secondary openTab" data-bs-toggle="modal" style="font-size:10px" data-bs-target="#updateRequestModal" title="Update kondisi asset" data-asset="${data}">
-                        <i class="fa-solid fa-file-pen"></i> Update Kondisi
-                    </button>
-                    `;
-                },
+                render: function (data, type, row) {
+                    console.log(row)
+                    if (row.status !== 0) {
+                        return `
+                            <button class="btn btn-sm btn-secondary openTab" data-bs-toggle="modal" style="font-size:10px" data-bs-target="#updateRequestModal" title="Update kondisi asset" data-asset="${data}">
+                                <i class="fa-solid fa-file-pen"></i> Update Kondisi
+                            </button>
+                        `;
+                    } else {
+                        return '-';
+                    }
+                }
             },
             { data: 'asset_relation.satgas_relation.name', name: 'asset_relation.satgas_relation.name' },
             { data: 'asset_relation.no_un', name: 'asset_relation.no_un' },
@@ -263,6 +266,10 @@ $(document).ready(function() {
                     }
                 },
                 {
+                    data : 'asset_code',
+                    name : 'asset_code'
+                },
+                {
                     data: 'kondisi',
                     name: 'kondisi',
                     render: function (data) {
@@ -278,6 +285,7 @@ $(document).ready(function() {
                         }
                     }
                 },
+                
                 {
                     data: 'satgas_relation',
                     name: 'satgas_relation.name',
@@ -317,23 +325,61 @@ $(document).ready(function() {
                 { data: 'no_mesin', name: 'no_mesin' },
                 { data: 'no_rangka', name: 'no_rangka' },
                 {
-                    data: 'inventaris_relation',
-                    name: 'inventaris_relation.attachment',
-                    render: function (data) {
+                    data: 'latest_history_relation',
+                    name: 'latest_history_relation.attachment',
+                    render: function (data, type, row) {
                         if (data && data.attachment) {
-                            return `<a style="color:#76ABAE !important;font-size:10px !important" 
-                                        title="Click Here For Attachment" 
-                                        href="storage/${data.attachment}" 
-                                        target="_blank">
-                                        <i class="fa-solid fa-file-pdf"></i> Click Here
-                                    </a>`;
+                            return `<button 
+                                        class="btn btn-sm btn-info btn-show-attachments" type="button"
+                                        data-attachments="${data.attachment.replace(/"/g, '&quot;')}">
+                                        <i class="fa-solid fa-file-pdf"></i> Show Attachment
+                                    </button>`;
                         }
                         return '-';
                     }
                 }
+
+
             ]
         });
 
+    });
+  $(document).on('click', '.btn-show-attachments', function (e) {
+        e.preventDefault();
+        const rawData = $(this).data('attachments');
+        const attachments = rawData.split(',');
+
+        let html = '<ul>';
+        attachments.forEach((att, index) => {
+            att = att.trim();
+            const ext = att.split('.').pop().toLowerCase();
+            const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext);
+            const fullPath = `storage/${att}`;
+
+            if (isImage) {
+                html += `<li style="margin-bottom: 10px;">
+                            <div style="text-align: center;">
+                                <img src="${fullPath}" alt="Attachment ${index + 1}" 
+                                    style="width: 500px; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                            </div>
+                        </li>`;
+            } else {
+                html += `<li>
+                            <a href="${fullPath}" target="_blank" style="color:#76ABAE;font-size:12px">
+                                <i class="fa-solid fa-file-pdf"></i> Attachment ${index + 1}
+                            </a>
+                        </li>`;
+            }
+        });
+        html += '</ul>';
+
+        $('#attachmentsContainer').html(html);
+        $('#addRequestModal').modal('hide');
+        $('#modalAttachments').modal('show');
+    });
+
+    $('#modalAttachments').on('hidden.bs.modal', function () {
+        $('#addRequestModal').modal('show');
     });
 });
 $(document).ready(function () {
@@ -417,8 +463,8 @@ $('#btn_save_request').on('click', function(e){
     e.preventDefault()
     var data        = new FormData();    
     
-    data.append('type',$('#type').val())
-    data.append('reporter',$('#reporter').val())
+    // data.append('type',$('#type').val())
+    // data.append('reporter',$('#reporter').val())
     data.append('catatan',$('#catatan').val())
     data.append('attachment',$('#attachment')[0].files[0]);
     var assetArray = [];

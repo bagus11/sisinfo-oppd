@@ -533,6 +533,7 @@ class AssetInventarisController extends Controller
                     'kondisi'        => $status,
                     'lokasi'         => $satgas,
                     'remark'         => $asset['catatan'] ?? '-',
+                    'attachment'        => $attachmentString,
                 ]);
             }
         });
@@ -599,6 +600,7 @@ class AssetInventarisController extends Controller
         'lokasi'      => $asset->lokasi,
         'th_operasi' => $asset->th_operasi,
         'th_pembuatan' => $asset->th_pembuatan,
+        'attachment' => $attachmentPathLog,
         'remark'     => auth()->user()->name . ' telah update kondisi aset',
     ];
 

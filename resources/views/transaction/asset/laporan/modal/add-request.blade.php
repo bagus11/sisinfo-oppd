@@ -39,6 +39,7 @@
                                             <thead class="text-dark fs-1">
                                                 <tr>
                                                     <th></th>
+                                                    <th>Asset Code</th>
                                                     <th>Kondisi</th>
                                                     <th>Satgas</th>
                                                     <th>No UN</th>
