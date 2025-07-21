@@ -202,6 +202,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('exportAssetKondisiPDF', 'App\Http\Controllers\Report\ReportAssetController@exportAssetKondisiPDF');
     Route::get('exportAssetKondisi', 'App\Http\Controllers\Report\ReportAssetController@exportAssetKondisi');
     Route::get('getCategoryFilter', 'App\Http\Controllers\Report\ReportAssetController@getCategoryFilter');
+    Route::get('getCustomPivot', 'App\Http\Controllers\Report\ReportAssetController@getCustomPivot');
     
     // Report   
 

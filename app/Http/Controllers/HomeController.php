@@ -48,7 +48,7 @@ class HomeController extends Controller
             ->orderBy('id', 'asc')
             ->get();
     
-            $country = DB::table('assets as a')
+        $country = DB::table('assets as a')
             ->join('master_satgas as c', 'a.lokasi', '=', 'c.id')
             ->select(DB::raw('COUNT(a.id) as total'),'c.type','c.country','c.x','c.y')
             ->groupBy('c.country', 'c.x', 'c.y','c.type') // Include c.country in GROUP BY

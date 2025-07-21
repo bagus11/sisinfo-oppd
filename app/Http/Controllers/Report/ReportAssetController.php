@@ -825,4 +825,59 @@ class ReportAssetController extends Controller
     
         return abort(403, 'Unauthorized action.');
     }
+
+    function getCustomPivot(Request $request) {
+        $query = DB::table('assets')->select(
+            'inventory_categories.name as category',
+            'inventory_sub_categories.name as subcategory',
+            'inventory_types.name as jenis',
+            'inventory_brands.name as merk',
+            DB::raw('COUNT(*) as total_aset')
+        )
+        ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+        ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
+        ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
+        ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id');
+        
+        // SELECT dan GROUP BY dinamis
+        $select = [];
+        $groupBy = [];
+
+        if ($request->filled('category') && $request->category != 0) {
+            $query->where('kategori', $request->category);
+            $select[] = 'inventory_categories.name as category';
+            $groupBy[] = 'inventory_categories.name';
+        }
+
+        if ($request->filled('sub_category') && $request->sub_category != 0) {
+            $query->where('subkategori', $request->sub_category);
+            $select[] = 'inventory_sub_categories.name as subcategory';
+            $groupBy[] = 'inventory_sub_categories.name';
+        }
+
+        if ($request->filled('jenis') && $request->jenis != 0) {
+            $query->where('jenis', $request->jenis);
+            $select[] = 'inventory_types.name as jenis';
+            $groupBy[] = 'inventory_types.name';
+        }
+
+        if ($request->filled('merk') && $request->merk != 0) {
+            $query->where('merk', $request->merk);
+            $select[] = 'inventory_brands.name as merk';
+            $groupBy[] = 'inventory_brands.name';
+        }
+
+      
+        // Tambahkan total_aset ke SELECT
+        $select[] = DB::raw('COUNT(*) as total_aset');
+
+        // $query->select($select);
+        // if (!empty($groupBy)) {
+        //     $query->groupBy(...$groupBy);
+        // }
+        // $query->select('inventory_categories.name','inventory_sub_categories.name', 'inventory_types.name','inventory_brands.name');
+
+        $query->groupBy('inventory_categories.name','inventory_sub_categories.name', 'inventory_types.name','inventory_brands.name');
+        return DataTables::of($query)->make(true);
+    }
 }

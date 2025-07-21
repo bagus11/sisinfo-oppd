@@ -438,6 +438,121 @@ $('#tab_2').on('click', function() {
     });
 });
 
+$('#tab_3').on('click', function(){
+    getActiveItems('getInventoryCategory', null, 'select_category','Kategori');
+    getActiveItems('getInventorySubCategory', null, 'select_sub_category','Sub Kategori');
+    getActiveItems('getInventoryType', null, 'select_type','Jenis');
+    getActiveItems('getInventoryBrand', null, 'select_brand','Merk');
+    $('#custom_table_container').prop('hidden', true)
+    //  $('#pivot_table_custom').DataTable().destroy();
+})
+$('#btn_filter_custom').on('click', function(){
+    $('#custom_table_container').prop('hidden', false);
+
+    var category = $('#select_category').val();
+    var sub_category = $('#select_sub_category').val();
+    var jenis = $('#select_type').val();
+    var merk = $('#select_brand').val();
+
+    var data = {
+        'category': category,
+        'sub_category': sub_category,
+        'jenis': jenis,
+        'merk': merk,
+    };
+
+    console.log(data);
+
+    let columns = [];
+    let theadHTML = '';
+
+    // if (category !== '' && category != 0) {
+        columns.push({ data: 'category', name: 'category' });
+        theadHTML += '<th>Category</th>';
+    // }
+
+    // if (sub_category !== '' && sub_category != 0) {
+        columns.push({ data: 'subcategory', name: 'subcategory' });
+        theadHTML += '<th>Sub Category</th>';
+    // }
+
+    // if (jenis !== '' && jenis != 0) {
+        columns.push({ data: 'jenis', name: 'jenis' });
+        theadHTML += '<th>Jenis</th>';
+    // }
+
+    // if (merk !== '' && merk != 0) {
+        columns.push({ data: 'merk', name: 'merk' });
+        theadHTML += '<th>Merk</th>';
+    // }
+
+    // Kolom total_aset selalu ditambahkan
+    columns.push({ data: 'total_aset', name: 'total_aset' });
+    theadHTML += '<th>Total Aset</th>';
+
+    // Destroy dulu jika sudah ada DataTable sebelumnya
+    if ($.fn.DataTable.isDataTable('#pivot_table_custom')) {
+        $('#pivot_table_custom').DataTable().clear().destroy();
+    }
+
+    // Setelah destroy, ubah thead-nya
+    $('#pivot_table_custom thead').html('<tr>' + theadHTML + '</tr>');
+
+    // Inisialisasi ulang DataTable
+  $('#pivot_table_custom').DataTable({
+    processing: true,
+    serverSide: true,
+    paging: false,         // tampilkan semua
+    ordering: false,       // matikan sorting
+    searching: false,      // matikan search
+    info: false,           // matikan info bawah
+    ajax: {
+        url: 'getCustomPivot',
+        data: data
+    },
+    columns: columns,
+   drawCallback: function (settings) {
+        let api = this.api();
+
+        // Hitung total dari semua baris (bukan cuma current page)
+        let total = 0;
+        let dataRows = [];
+
+        api.rows({ page: 'all' }).every(function () {
+            let rowData = this.data();
+            total += parseInt(rowData.total_aset);
+            dataRows.push(this.node()); // Simpan node <tr>
+        });
+
+        const tbody = $('#pivot_table_custom tbody');
+        tbody.empty(); // Kosongkan tbody
+
+        // Tambahkan baris total paling atas
+        let totalRow = '<tr class="">';
+        // for (let i = 0; i < columns.length; i++) {
+        //     if (i === 0) {
+        //         totalRow += `<td>Total Keseluruhan</td>`;
+        //     } else if (i === columns.length - 1) {
+        //         totalRow += `<td>${total}</td>`;
+        //     } else {
+        //         totalRow += `<td></td>`;
+        //     }
+        // }
+        totalRow += '</tr>';
+        tbody.append(totalRow);
+
+        // Tambahkan kembali baris-baris data biasa
+        for (let i = 0; i < dataRows.length; i++) {
+            $(dataRows[i]).removeClass(''); // pastikan gak ada class sisa
+            tbody.append(dataRows[i]);
+        }
+    }
+
+    });
+
+});
+
+
 function kondisiChart(response) {
     var satgas = [];
     var kondisiData = {};

@@ -55,7 +55,7 @@ $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first(
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header bg-core">
+            <div class="card-header p-0 mx-2 bg-core">
                 <div class="row">
                     <div class="col-12">
                         <div class="d-flex overflow-auto">
@@ -89,7 +89,7 @@ $satgas = DB::table('master_satgas')->where('id',auth()->user()->satgas)->first(
                 <div class="tab-content">
                     @include('report.asset.modal.tab-summary_asset')
                     @include('report.asset.modal.tab-summary_kondisi')
-                    @include('report.asset.modal.tab-summary_kondisi')
+                    @include('report.asset.modal.tab-summary_custom')
                 </div>  
             </div>
         </div>

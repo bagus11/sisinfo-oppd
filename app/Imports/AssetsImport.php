@@ -33,13 +33,13 @@ class AssetsImport implements ToModel, WithStartRow
         $kategori = InventoryCategory::where('name', $row[4])->first();
         $subkategori = InventorySubCategory::where('name', $row[5])->first();
         // $jenis = Inventory_type::where('name', $row[6])->first();
-        $nameJenis = strtolower(trim($row[6]));
-        $jenis = Inventory_type::whereRaw('LOWER(name) = ?', [$nameJenis])->first();
+        $nameJenis = strtoupper(trim($row[6]));
+        $jenis = Inventory_type::whereRaw('UPPER(name) = ?', [$nameJenis])->first();
         $merk = InventoryBrand::where('name', $row[7])->first();
         $lokasi = MasterSatgas::where('name', $row[8])->first();
         $lokasiType = MasterSatgas::where('type', $row[8])->first();
         $lokasi_id = $lokasi->id ?? ($lokasiType->id ?? 0);
-    
+        
         $kondisi = 0;
         switch ($row[9]) {
             case 'BAIK': $kondisi = 1; break;
@@ -109,8 +109,8 @@ class AssetsImport implements ToModel, WithStartRow
         }
     
         Asset::create($post);
-    
-        return new AssetLog([
+        // dd($row[12]);
+        $postLog = [
             'asset_code'    => $ticket_code,
             'created_at'    => $created_at,
             'no_un'         => $row[1] ?? '',
@@ -126,8 +126,11 @@ class AssetsImport implements ToModel, WithStartRow
             'th_pembuatan'  => $row[10] ?? 0,
             'th_operasi'    => $row[11] ?? 0,
             'lokasi'        => $lokasi_id,
-            'remark'        => $row[12]
-        ]);
+            'remark'        => $row[12] ? $row[12] : '-',
+            'attachment'    => ''
+        ];
+       
+        return new AssetLog($postLog);
     }
 
     /**
