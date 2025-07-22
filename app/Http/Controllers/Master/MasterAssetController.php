@@ -338,31 +338,55 @@ class MasterAssetController extends Controller
              'Asset berhasil dihapus'
          );
     }
-    public function uploadAsset(Request $request) {
-        $request->validate([
-            'file_upload_asset' => 'required|mimes:xlsx,xls,csv|max:2048',
-        ]);
-    
-        try {
-            $file = $request->file('file_upload_asset');
-    
-            // Import file data
-            Excel::import(new AssetsImport, $file);
-    
-            // Ambil data yang memiliki lokasi = 0
-            $assetsWithNoLocation = Asset::where('lokasi', 0)->get(['asset_code', 'no_un', 'no_rangka', 'no_mesin']);
-    
-            return response()->json([
-                'success' => true,  
-                'message' => 'Assets imported successfully!',
-                'assets_no_location' => $assetsWithNoLocation, // Tampilkan asset tanpa lokasi
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error importing assets: ' . $e->getMessage(),
-            ], 500);
+   public function uploadAsset(Request $request)
+{
+    $request->validate([
+        'file_upload_asset' => 'required|mimes:xlsx,xls,csv|max:2048',
+    ]);
+
+    try {
+        $file = $request->file('file_upload_asset');
+
+        // Gunakan instance agar bisa akses jumlah row & skipped rows
+        $import = new \App\Imports\AssetsImport;
+        Excel::import($import, $file);
+
+        // Ambil data skipped
+        $skippedRows = $import->getSkippedRows();
+
+        // Buat file .txt untuk skipped rows
+        $txtPath = storage_path('app/skipped_assets_' . date('Ymd_His') . '.txt');
+        $txtContent = "=== SKIPPED ASSETS REPORT ===\nGenerated at: " . now()->toDateTimeString() . "\n\n";
+
+        foreach ($skippedRows as $row) {
+            $txtContent .= "Row: " . $row['row'] . "\n";
+            $txtContent .= "Reason: " . $row['reason'] . "\n";
+            $txtContent .= "Data: " . implode(' | ', $row['data']) . "\n";
+            $txtContent .= "------------------------------------\n";
         }
+
+        file_put_contents($txtPath, $txtContent);
+
+        // Ambil data dengan lokasi = 0
+        $assetsWithNoLocation = Asset::where('lokasi', 0)
+            ->get(['asset_code', 'no_un', 'no_rangka', 'no_mesin']);
+
+        return response()->json([
+            'success'            => true,
+            'message'            => 'Assets imported successfully!',
+            'total_rows'         => $import->getRowCount(),
+            'skipped_rows_count' => count($skippedRows),
+            'txt_report'         => basename($txtPath),
+            'assets_no_location' => $assetsWithNoLocation,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error importing assets: ' . $e->getMessage(),
+        ], 500);
     }
+}
+
+
     
 }

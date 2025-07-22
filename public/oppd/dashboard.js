@@ -589,8 +589,8 @@ function getRadialBar(response) {
         kondisi.push(labelKondisi);
         colors.push(colorMapping[kondisiVal] || '#999999'); // fallback warna default jika kondisi tidak dikenali
     }
-
-    const percentageData = response.data.map(item => ((item.total / sumOfArray) * 100).toFixed(2));
+    const percentageData = response.data.map(item => parseFloat(((item.total / sumOfArray) * 100).toFixed(2)));
+    // const percentageData = response.data.map(item => ((item.total / sumOfArray) * 100).toFixed(2));
 
     const chartConfig = {
         series: percentageData,
@@ -734,7 +734,6 @@ function getRadialBar(response) {
             },
         }
     };
-
     const chart = new ApexCharts(document.querySelector("#radialChart"), chartConfig);
     chart.render();
 }

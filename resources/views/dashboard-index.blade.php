@@ -40,9 +40,11 @@
     display: flex; /* Ensure both child elements adjust to each other's height */
     align-items: stretch; /* Ensure children align to the tallest */
   }
-    #radialChart{
-      width: 100% !important;
-    }
+  #radialChart {
+      min-height: 400px;
+      width: 100%;
+  }
+
 
     .select2-container{
         z-index:0 !important;
