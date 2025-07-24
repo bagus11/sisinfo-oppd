@@ -87,7 +87,7 @@ class AssetsImport implements ToModel, WithStartRow
             ->first();
     
         // Jika ingin skip duplikat, bisa aktifkan ini:
-        /*
+        
         if ($existingAsset) {
             $this->skippedRows[] = [
                 'row'    => $this->rowCount + 1,
@@ -96,7 +96,7 @@ class AssetsImport implements ToModel, WithStartRow
             ];
             return null;
         }
-        */
+        
     
         // Generate kode asset
         $increment_code = Asset::withTrashed()->orderBy('id', 'desc')->first();

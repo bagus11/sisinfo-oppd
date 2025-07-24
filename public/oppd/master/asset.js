@@ -479,16 +479,160 @@ function toggleDeleteButton() {
         }
     });
 
-    $('#uploadAssetForm').on('submit', function (e) {
-        e.preventDefault();
-        let data = new FormData(this);
-        postAttachment('uploadAsset', data, false, function(response){
-            swal.close()
-            $('#uploadAssetModal').modal('hide')
-            toastr['success'](response.message)
+$('#uploadAssetForm').on('submit', function (e) {
+    e.preventDefault();
+    let data = new FormData(this);
+
+    postAttachment('uploadAsset', data, false, function(response){
+        swal.close();
+
+        if (response.success) {
+            const skippedRows = response.detail_result || [];
+            const rowsPerPage = 5; 
+            let currentPage = 1;
+
+            // Fungsi generate CSV
+            function generateCSV(data) {
+                let csvContent = "Row,Data,Reason\n";
+                data.forEach(row => {
+                    csvContent += `"${row.row}","${row.data}","${row.reason}"\n`;
+                });
+                return csvContent;
+            }
+
+            function downloadCSV() {
+                const csvContent = generateCSV(skippedRows);
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `skipped_rows_${new Date().toISOString().slice(0,10)}.csv`;
+                link.click();
+            }
+
+            function renderPage(page) {
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const currentRows = skippedRows.slice(start, end);
+
+                let skippedDetail = '';
+                let skippedText = "=== SKIPPED ROWS ===\n";
+                if (currentRows.length > 0) {
+                    skippedDetail = '<hr><strong>Skipped Rows:</strong><ul style="text-align:left;">';
+                    currentRows.forEach(row => {
+                        skippedDetail += `
+                            <li>
+                                <div class="row">
+                                    <div class="col-3"><p><strong>Row:</strong></p></div>
+                                    <div class="col-9"><p>${row.row}</p></div>
+                                    <div class="col-3"><p><strong>Data:</strong></p></div>
+                                    <div class="col-9"><p>${row.data}</p></div>
+                                    <div class="col-3"><p><strong>Reason:</strong></p></div>
+                                    <div class="col-9"><p>${row.reason}</p></div>
+                                </div>
+                            </li>`;
+                        skippedText += `Row: ${row.row}\nData: ${row.data}\nReason: ${row.reason}\n-------------------\n`;
+                    });
+                    skippedDetail += '</ul>';
+                }
+
+                const totalPages = Math.ceil(skippedRows.length / rowsPerPage);
+
+                let paginationButtons = '';
+                if (totalPages > 1) {
+                    paginationButtons = `
+                        <div class="mt-2" style="display:flex; justify-content:space-between; align-items:center;">
+                            <button class="btn btn-sm btn-outline-primary prev-btn" ${page === 1 ? 'disabled' : ''}>
+                                &laquo; Previous
+                            </button>
+                            <span>Page ${page} of ${totalPages}</span>
+                            <button class="btn btn-sm btn-outline-primary next-btn" ${page === totalPages ? 'disabled' : ''}>
+                                Next &raquo;
+                            </button>
+                        </div>
+                    `;
+                }
+
+                if (skippedRows.length > 0) {
+                    skippedDetail += `
+                        <div class="mt-2 d-flex justify-content-between">
+                            <button id="copySkippedRows" class="btn btn-sm btn-outline-secondary">
+                                Copy All Details
+                            </button>
+                            <button id="downloadSkippedCSV" class="btn btn-sm btn-outline-success">
+                                Download CSV
+                            </button>
+                        </div>`;
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Import Completed!',
+                    html: `<strong>Total Rows:</strong> ${response.total_rows}
+                           <br><strong>Skipped:</strong> ${response.skipped_rows_count}
+                           ${skippedDetail}
+                           ${paginationButtons}`,
+                    width: 650,
+                    confirmButtonText: 'OK',
+                    didRender: () => {
+                        // Copy button
+                        const copyButton = document.getElementById('copySkippedRows');
+                        if (copyButton) {
+                            copyButton.addEventListener('click', function() {
+                                let allText = "=== SKIPPED ROWS ===\n";
+                                skippedRows.forEach(row => {
+                                    allText += `Row: ${row.row}\nData: ${row.data}\nReason: ${row.reason}\n-------------------\n`;
+                                });
+                                navigator.clipboard.writeText(allText).then(() => {
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'Copied!',
+                                        text: 'All skipped rows copied to clipboard.',
+                                        timer: 1500,
+                                        showConfirmButton: false
+                                    });
+                                });
+                            });
+                        }
+
+                        // Download CSV button
+                        const downloadButton = document.getElementById('downloadSkippedCSV');
+                        if (downloadButton) {
+                            downloadButton.addEventListener('click', downloadCSV);
+                        }
+
+                        // Pagination buttons
+                        document.querySelectorAll('.prev-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                    renderPage(currentPage);
+                                }
+                            });
+                        });
+                        document.querySelectorAll('.next-btn').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                    renderPage(currentPage);
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+            renderPage(currentPage);
+
             $('#asset_table').DataTable().ajax.reload();
-        })
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Import Failed',
+                text: response.message,
+            });
+        }
     });
+});
+
 });
 $('#btn_print_pdf').on('click', function(){
     var detail = $('#asset_code').val()

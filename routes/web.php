@@ -1,6 +1,7 @@
 <?php
 
 use Alexusmai\LaravelFileManager\Controllers\FileManagerController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -133,6 +134,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/getSatgasType', 'App\Http\Controllers\Transaction\Asset\AssetController@getSatgasType')->name('getSatgasType');
             Route::post('/addAsset', 'App\Http\Controllers\Transaction\Asset\AssetController@addAsset')->name('addAsset');
             Route::get('/printAssetDashboard/{type}/{kondisi}/{th_operasi}/{th_pembuatan}/{format}', 'App\Http\Controllers\Transaction\Asset\AssetController@printAssetDashboard');
+            Route::get('/download-skipped-report/{filename}', 'App\Http\Controllers\Transaction\Asset\AssetController@downloadSkippedReport');
             
 
           

@@ -338,7 +338,7 @@ class MasterAssetController extends Controller
              'Asset berhasil dihapus'
          );
     }
-   public function uploadAsset(Request $request)
+public function uploadAsset(Request $request)
 {
     $request->validate([
         'file_upload_asset' => 'required|mimes:xlsx,xls,csv|max:2048',
@@ -347,27 +347,22 @@ class MasterAssetController extends Controller
     try {
         $file = $request->file('file_upload_asset');
 
-        // Gunakan instance agar bisa akses jumlah row & skipped rows
+        // Import data
         $import = new \App\Imports\AssetsImport;
         Excel::import($import, $file);
 
-        // Ambil data skipped
         $skippedRows = $import->getSkippedRows();
-
-        // Buat file .txt untuk skipped rows
-        $txtPath = storage_path('app/skipped_assets_' . date('Ymd_His') . '.txt');
-        $txtContent = "=== SKIPPED ASSETS REPORT ===\nGenerated at: " . now()->toDateTimeString() . "\n\n";
+        $array_result = [];
 
         foreach ($skippedRows as $row) {
-            $txtContent .= "Row: " . $row['row'] . "\n";
-            $txtContent .= "Reason: " . $row['reason'] . "\n";
-            $txtContent .= "Data: " . implode(' | ', $row['data']) . "\n";
-            $txtContent .= "------------------------------------\n";
+            $array_result[] = [
+                'row'    => $row['row'],
+                'data'   => implode(' | ', $row['data']),
+                'reason' => $row['reason'],
+            ];
         }
 
-        file_put_contents($txtPath, $txtContent);
-
-        // Ambil data dengan lokasi = 0
+        // Ambil asset tanpa lokasi
         $assetsWithNoLocation = Asset::where('lokasi', 0)
             ->get(['asset_code', 'no_un', 'no_rangka', 'no_mesin']);
 
@@ -376,7 +371,7 @@ class MasterAssetController extends Controller
             'message'            => 'Assets imported successfully!',
             'total_rows'         => $import->getRowCount(),
             'skipped_rows_count' => count($skippedRows),
-            'txt_report'         => basename($txtPath),
+            'detail_result'      => $array_result,
             'assets_no_location' => $assetsWithNoLocation,
         ]);
     } catch (\Exception $e) {
@@ -386,6 +381,22 @@ class MasterAssetController extends Controller
         ], 500);
     }
 }
+
+public function downloadSkippedReport($filename)
+{
+    $path = storage_path('app/' . $filename);
+
+    if (!file_exists($path)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Report file not found'
+        ], 404);
+    }
+
+    return response()->download($path);
+}
+
+
 
 
     
