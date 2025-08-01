@@ -58,368 +58,250 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
     for (let i = 0; i < response.countingSatgasAsset.length; i++) {
         getPieSatgas(i, response.countingSatgasAsset[i].type); // Kirim index dan type
     }
-
-
     function getPieSatgas(index, satgasType) {
-        if (userHasPermission) {
-            getCallbackNoSwal('getSatgasPie', { type: satgasType }, function (response) {
-                const kondisiMapping = {
-                    1: 'BAIK',
-                    2: 'RR OPS',
-                    3: 'RB',
-                    4: 'RR TDK OPS',
-                    5: 'M',
-                    6: 'D'
-                };
+    const kondisiMapping = {
+        1: 'BAIK',
+        2: 'RR OPS',
+        3: 'RB',
+        4: 'RR TDK OPS',
+        5: 'M',
+        6: 'D'
+    };
 
-                // Fixed color mapping for each kondisi
-                const kondisiColors = {
-                     'BAIK': "#CFF7FF",       // Green
-                    'RR OPS': "#D8FCD2",     // Blue
-                    'RB': "#FF6A00",         // Red
-                    'RR TDK OPS': "#FFD66B", // Purple
-                    'M': '#FF9898',          // Grey
-                    'D': '#333446'           // Dark Grey
-     
-                };
+    const kondisiColors = {
+        'BAIK': "#CFF7FF",
+        'RR OPS': "#D8FCD2",
+        'RB': "#FF6A00",
+        'RR TDK OPS': "#FFD66B",
+        'M': '#FF9898',
+        'D': '#333446'
+    };
 
-                let seriesData = response.data.map(item => Number(item.total));
-                let labelsData = response.data.map(item => kondisiMapping[item.kondisi] || "No Data");
+    getCallbackNoSwal('getSatgasPie', { type: satgasType }, function (response) {
+        let seriesData = response.data.map(item => Number(item.total));
+        let labelsData = response.data.map(item => kondisiMapping[item.kondisi] || "No Data");
+        let colorsData = labelsData.map(label => kondisiColors[label] || '#CCCCCC');
+        let targetElement = document.querySelector(`#pieSatgas${index}`);
 
-                // Assign colors based on kondisi mapping
-                let colorsData = labelsData.map(label => kondisiColors[label] || '#CCCCCC'); // Default color if not found
-
-                let targetElement = document.querySelector(`#pieSatgas${index}`);
-                if (!targetElement) {
-                    console.error(`Element #pieSatgas${index} not found!`);
-                    return;
-                }
-
-                let options = {
-                    chart: {
-                        type: 'donut',
-                        height: 280,
-                        toolbar: { show: false },
-                        dropShadow: {
-                            enabled: false,
-                            top: 5,
-                            left: 0,
-                            blur: 5,
-                            opacity: 0.2
-                        },
-                        events: {
-                            dataPointSelection: function (event, chartContext, config) {
-                                let selectedKondisi = labelsData[config.dataPointIndex];
-                                $('#detailAssetModal').modal('show');
-                                $('#satgasTypeFilter').val('');
-                                $('#selectedKondisi').val('');
-                                $('#select_th_pembuatan').val('')
-                                $('#select_th_pembuatan').select2().trigger('change');
-                                $('#select_th_operasi').select2().trigger('change');
-                                $('#satgasTypeFilter').val(satgasType);
-                                $('#modal_title').html(satgasType + " : " + selectedKondisi);
-                                $('#selectedKondisi').val(selectedKondisi);
-                                $('#asset_table').DataTable().clear().destroy();
-                                $('#asset_table').DataTable({
-                                    processing: true,
-                                    serverSide: true,
-                                    lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
-                                    ajax: {
-                                        url: `getAssetFilter`,
-                                        type: 'GET',
-                                        data:
-                                        {
-                                            'type': $('#satgasTypeFilter').val(),
-                                            'kondisi': $('#selectedKondisi').val(),
-                                            'th_operasi': $('#select_th_operasi').val(),
-                                            'th_pembuatan': $('#select_th_pembuatan').val()
-                                        }
-                                    },
-                                    columns: [
-                                        {
-                                            data:'asset_code',
-                                            name:'asset_code'
-                                        },
-                                        {
-                                            data: 'satgas_type',
-                                            name: 'master_satgas.type',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'satgas_name',
-                                            name: 'master_satgas.name',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'no_un',
-                                            name: 'assets.no_un',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'category_name',
-                                            name: 'inventory_categories.name',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'subcategory_name',
-                                            name: 'inventory_sub_categories.name',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'type_name',
-                                            name: 'inventory_types.name',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'merk_name',
-                                            name: 'inventory_brands.name',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'no_mesin',
-                                            name: 'assets.no_mesin',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'no_rangka',
-                                            name: 'assets.no_rangka',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'th_pembuatan',
-                                            name: 'assets.th_pembuatan',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'th_operasi',
-                                            name: 'th_operasi',
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'kondisi',
-                                            name: 'assets.kondisi',
-                                            render: function (data) {
-                                                return kondisiMapping[data] || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'latest_remark',
-                                            name: 'latest_remark',
-                                            orderable: false,
-                                            searchable: false,
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        },
-                                        {
-                                            data: 'latest_update',
-                                            name: 'latest_update',
-                                            orderable: false,
-                                            searchable: false,
-                                            render: function (data) {
-                                                return data || '-';
-                                            }
-                                        }
-                                    ],
-                                    "drawCallback": function (settings) {
-                                        // This function will be called after each draw (after the data is refreshed)
-                                        let totalItems = settings.json.recordsFiltered;
-                                        $('#totalItemAsset').text(totalItems);
-                                    }
-                                });
-                            }
-                        }
-                    },
-                    series: seriesData,
-                    labels: labelsData,
-                    colors: colorsData, // Use fixed colors based on kondisi
-                    plotOptions: {
-                        pie: {
-                            donut: {
-                                size: '60%',
-                                labels: {
-                                    show: true,
-                                    total: {
-                                        show: true,
-                                        label: 'Total',
-                                        fontSize: '12px',
-                                        color: '#000'
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    dataLabels: {
-                        enabled: true,
-                        style: {
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            colors: ['#fff']
-                        },
-                        dropShadow: {
-                            enabled: false,
-                            top: 1,
-                            left: 1,
-                            blur: 2,
-                            opacity: 0.5
-                        }
-                    },
-                    tooltip: {
-                        enabled: true, // Enable tooltips
-                        theme: "light", // Use dark theme (white font by default)
-                        style: {
-                            fontSize: '12px', // Adjust font size
-                            color: '#fff', // Force white font color
-                        },
-                        y: {
-                            formatter: function (value) {
-                                return value + " Assets";
-                            }
-                        }
-                    },
-                    legend: {
-                        position: 'bottom',
-                        color: '#000',
-                        fontSize: '12px',
-                        markers: { radius: 12 }
-                    }
-                };
-
-                let chart = new ApexCharts(targetElement, options);
-                chart.render();
-            });
-        } else {
-            getCallbackNoSwal('getSatgasPie', { type: satgasType }, function (response) {
-                const kondisiMapping = {
-                    1: 'BAIK',
-                    2: 'RR OPS',
-                    3: 'RB',
-                    4: 'RR TDK OPS',
-                    5: 'M',
-                    6: 'D'
-                };
-
-                // Fixed color mapping for each kondisi
-                const kondisiColors = {
-                    'BAIK': "#CFF7FF",       // Green
-                    'RR OPS': "#D8FCD2",     // Blue
-                    'RB': "#FF6A00",         // Red
-                    'RR TDK OPS': "#FFD66B", // Purple
-                    'M': '#FF9898',          // Grey
-                    'D': '#333446'           // Dark Grey
-     
-                };
-
-                let seriesData = response.data.map(item => Number(item.total));
-                let labelsData = response.data.map(item => kondisiMapping[item.kondisi] || "No Data");
-
-                // Assign colors based on kondisi mapping
-                let colorsData = labelsData.map(label => kondisiColors[label] || '#CCCCCC'); // Default color if not found
-
-                let targetElement = document.querySelector(`#pieSatgas${index}`);
-                if (!targetElement) {
-                    console.error(`Element #pieSatgas${index} not found!`);
-                    return;
-                }
-
-                let options = {
-                    chart: {
-                        type: 'donut',
-                        height: 280,
-                        toolbar: { show: false },
-                        dropShadow: {
-                            enabled: false,
-                            top: 5,
-                            left: 0,
-                            blur: 5,
-                            opacity: 0.2
-                        },
-
-                    },
-                    series: seriesData,
-                    labels: labelsData,
-                    colors: colorsData, // Use fixed colors based on kondisi
-                    plotOptions: {
-                        pie: {
-                            donut: {
-                                size: '60%',
-                                labels: {
-                                    show: true,
-                                    total: {
-                                        show: true,
-                                        label: 'Total',
-                                        fontSize: '12px',
-                                        color: '#000'
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    dataLabels: {
-                        enabled: true,
-                        style: {
-                            fontSize: '10px',
-                            fontWeight: 'bold',
-                            colors: ['#fff']
-                        },
-                        dropShadow: {
-                            enabled: false,
-                            top: 1,
-                            left: 1,
-                            blur: 2,
-                            opacity: 0.5
-                        }
-                    },
-                    tooltip: {
-                        enabled: true, // Enable tooltips
-                        theme: "light", // Use dark theme (white font by default)
-                        style: {
-                            fontSize: '12px', // Adjust font size
-                            color: '#fff', // Force white font color
-                        },
-                        y: {
-                            formatter: function (value) {
-                                return value + " Assets";
-                            }
-                        }
-                    },
-                    legend: {
-                        position: 'bottom',
-                        color: '#000',
-                        fontSize: '12px',
-                        markers: { radius: 12 }
-                    }
-                };
-
-                let chart = new ApexCharts(targetElement, options);
-                chart.render();
-            });
+        if (!targetElement) {
+            console.error(`Element #pieSatgas${index} not found!`);
+            return;
         }
 
+        let options = {
+            chart: {
+                type: 'donut',
+                height: 280,
+                toolbar: { show: false },
+                dropShadow: {
+                    enabled: false,
+                    top: 5,
+                    left: 0,
+                    blur: 5,
+                    opacity: 0.2
+                },
+                events: userHasPermission ? {
+                    dataPointSelection: function (event, chartContext, config) {
+                        let selectedKondisi = labelsData[config.dataPointIndex];
+                        showAssetModal(satgasType, selectedKondisi);
+                    }
+                } : {}
+            },
+            series: seriesData,
+            labels: labelsData,
+            colors: colorsData,
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '60%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'Total',
+                                fontSize: '12px',
+                                color: '#000'
+                            }
+                        }
+                    }
+                }
+            },
+            dataLabels: {
+                enabled: true,
+                style: {
+                    fontSize: '10px',
+                    fontWeight: 'bold',
+                    colors: ['#fff']
+                },
+                dropShadow: {
+                    enabled: false,
+                    top: 1,
+                    left: 1,
+                    blur: 2,
+                    opacity: 0.5
+                }
+            },
+            tooltip: {
+                enabled: true,
+                theme: "light",
+                style: {
+                    fontSize: '12px',
+                    color: '#fff',
+                },
+                y: {
+                    formatter: function (value) {
+                        return value + " Assets";
+                    }
+                }
+            },
+            legend: {
+                position: 'bottom',
+                color: '#000',
+                fontSize: '12px',
+                markers: { radius: 12 }
+            }
+        };
 
+        let chart = new ApexCharts(targetElement, options);
+        chart.render().then(() => {
+            // === Tambahkan overlay klik tengah donut chart ===
+            if (userHasPermission) {
+                const overlayId = `donutCenterOverlay${index}`;
+                const overlay = document.createElement("div");
+
+                overlay.id = overlayId;
+                overlay.style.position = "absolute";
+                overlay.style.top = `${targetElement.offsetTop + 90}px`; // Atur posisi tengah chart
+                overlay.style.left = `${targetElement.offsetLeft + 90}px`;
+                overlay.style.width = "100px";
+                overlay.style.height = "100px";
+                overlay.style.borderRadius = "50%";
+                overlay.style.cursor = "pointer";
+                overlay.style.zIndex = 10;
+                overlay.style.backgroundColor = "transparent";
+
+                overlay.addEventListener("click", function () {
+                    showAssetModal(satgasType, ''); // tanpa kondisi
+                });
+
+                targetElement.parentNode.style.position = "relative";
+                targetElement.parentNode.appendChild(overlay);
+            }
+        });
+    });
+
+    // === Fungsi untuk tampilkan modal asset berdasarkan satgasType + kondisi ===
+    function showAssetModal(satgasType, selectedKondisi) {
+        $('#detailAssetModal').modal('show');
+        $('#satgasTypeFilter').val(satgasType);
+        $('#selectedKondisi').val(selectedKondisi);
+        $('#select_th_pembuatan').val('');
+        $('#select_th_operasi').val('');
+        $('#select_th_pembuatan').select2().trigger('change');
+        $('#select_th_operasi').select2().trigger('change');
+
+        const kondisiLabel = selectedKondisi ? selectedKondisi : "ALL KONDISI";
+        $('#modal_title').html(`${satgasType} : ${kondisiLabel}`);
+
+        $('#asset_table').DataTable().clear().destroy();
+        $('#asset_table').DataTable({
+            processing: true,
+            serverSide: true,
+            lengthMenu: [[10, 100, 500, -1], [10, 100, 500, "All"]],
+            ajax: {
+                url: `getAssetFilter`,
+                type: 'GET',
+                data: {
+                    'type': satgasType,
+                    'kondisi': selectedKondisi,
+                    'th_operasi': $('#select_th_operasi').val(),
+                    'th_pembuatan': $('#select_th_pembuatan').val()
+                }
+            },
+            columns: [
+                { data: 'asset_code', name: 'asset_code' },
+                {
+                    data: 'satgas_type',
+                    name: 'master_satgas.type',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'satgas_name',
+                    name: 'master_satgas.name',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'no_un',
+                    name: 'assets.no_un',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'category_name',
+                    name: 'inventory_categories.name',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'subcategory_name',
+                    name: 'inventory_sub_categories.name',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'type_name',
+                    name: 'inventory_types.name',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'merk_name',
+                    name: 'inventory_brands.name',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'no_mesin',
+                    name: 'assets.no_mesin',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'no_rangka',
+                    name: 'assets.no_rangka',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'th_pembuatan',
+                    name: 'assets.th_pembuatan',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'th_operasi',
+                    name: 'th_operasi',
+                    render: data => data || '-'
+                },
+                {
+                    data: 'kondisi',
+                    name: 'assets.kondisi',
+                    render: data => kondisiMapping[data] || '-'
+                },
+                {
+                    data: 'latest_remark',
+                    name: 'latest_remark',
+                    orderable: false,
+                    searchable: false,
+                    render: data => data || '-'
+                },
+                {
+                    data: 'latest_update',
+                    name: 'latest_update',
+                    orderable: false,
+                    searchable: false,
+                    render: data => data || '-'
+                }
+            ],
+            drawCallback: function (settings) {
+                let totalItems = settings.json.recordsFiltered;
+                $('#totalItemAsset').text(totalItems);
+            }
+        });
     }
+}
 
     // Horizontal Bar
     getHorizontalBar(response)
