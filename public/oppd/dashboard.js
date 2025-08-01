@@ -58,7 +58,7 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
     for (let i = 0; i < response.countingSatgasAsset.length; i++) {
         getPieSatgas(i, response.countingSatgasAsset[i].type); // Kirim index dan type
     }
-    function getPieSatgas(index, satgasType) {
+function getPieSatgas(index, satgasType) {
     const kondisiMapping = {
         1: 'BAIK',
         2: 'RR OPS',
@@ -88,21 +88,25 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
             return;
         }
 
+        const donutBgId = `donutCenterBg${index}`;
+        const overlayId = `donutCenterOverlay${index}`;
+        const donutLabelId = `donutCenterLabel${index}`;
+        const donutTotalId = `donutCenterTotal${index}`;
+
+        const totalValue = seriesData.reduce((sum, val) => sum + val, 0);
+
         let options = {
             chart: {
                 type: 'donut',
                 height: 280,
                 toolbar: { show: false },
-                dropShadow: {
-                    enabled: false,
-                    top: 5,
-                    left: 0,
-                    blur: 5,
-                    opacity: 0.2
-                },
                 events: userHasPermission ? {
                     dataPointSelection: function (event, chartContext, config) {
-                        let selectedKondisi = labelsData[config.dataPointIndex];
+                        const selectedColor = colorsData[config.dataPointIndex];
+                        const donutBg = document.getElementById(donutBgId);
+                        if (donutBg) donutBg.style.backgroundColor = selectedColor;
+
+                        const selectedKondisi = labelsData[config.dataPointIndex];
                         showAssetModal(satgasType, selectedKondisi);
                     }
                 } : {}
@@ -116,12 +120,7 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
                         size: '60%',
                         labels: {
                             show: true,
-                            total: {
-                                show: true,
-                                label: 'Total',
-                                fontSize: '12px',
-                                color: '#000'
-                            }
+                            total: { show: false }
                         }
                     }
                 }
@@ -132,65 +131,107 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
                     fontSize: '10px',
                     fontWeight: 'bold',
                     colors: ['#fff']
-                },
-                dropShadow: {
-                    enabled: false,
-                    top: 1,
-                    left: 1,
-                    blur: 2,
-                    opacity: 0.5
                 }
             },
             tooltip: {
                 enabled: true,
                 theme: "light",
-                style: {
-                    fontSize: '12px',
-                    color: '#fff',
-                },
                 y: {
-                    formatter: function (value) {
-                        return value + " Assets";
-                    }
+                    formatter: value => value + " Assets"
                 }
             },
             legend: {
-                position: 'bottom',
-                color: '#000',
-                fontSize: '12px',
-                markers: { radius: 12 }
+                position: 'top',
+                fontSize: '8px',
+                markers: { radius: 8 }
             }
         };
 
         let chart = new ApexCharts(targetElement, options);
         chart.render().then(() => {
-            // === Tambahkan overlay klik tengah donut chart ===
+            const container = targetElement.parentNode;
+            container.style.position = "relative";
+
+            // Background warna tengah (berubah saat klik)
+            const donutBg = document.createElement("div");
+            donutBg.id = donutBgId;
+            Object.assign(donutBg.style, {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "125px",
+                height: "125px",
+                borderRadius: "50%",
+                backgroundColor: "#B2C3D0",
+                zIndex: 1,
+                transition: "background-color 0.3s"
+            });
+
+            // Label "TOTAL"
+            const donutLabel = document.createElement("div");
+            donutLabel.id = donutLabelId;
+            Object.assign(donutLabel.style, {
+                position: "absolute",
+                top: "45%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontWeight: "bold",
+                fontSize: "12px",
+                color: "black",
+                zIndex: 5,
+                pointerEvents: "none"
+            });
+            donutLabel.innerText = "TOTAL";
+
+            // Angka total
+            const donutTotal = document.createElement("div");
+            donutTotal.id = donutTotalId;
+            Object.assign(donutTotal.style, {
+                position: "absolute",
+                top: "58%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontWeight: "bold",
+                fontSize: "18px",
+                color: "black",
+                zIndex: 5,
+                pointerEvents: "none"
+            });
+            donutTotal.innerText = totalValue.toLocaleString();
+
+            container.appendChild(donutBg);
+            container.appendChild(donutLabel);
+            container.appendChild(donutTotal);
+
+            // Overlay klik tengah (untuk reset warna + buka ALL kondisi)
             if (userHasPermission) {
-                const overlayId = `donutCenterOverlay${index}`;
                 const overlay = document.createElement("div");
-
                 overlay.id = overlayId;
-                overlay.style.position = "absolute";
-                overlay.style.top = `${targetElement.offsetTop + 90}px`; // Atur posisi tengah chart
-                overlay.style.left = `${targetElement.offsetLeft + 90}px`;
-                overlay.style.width = "100px";
-                overlay.style.height = "100px";
-                overlay.style.borderRadius = "50%";
-                overlay.style.cursor = "pointer";
-                overlay.style.zIndex = 10;
-                overlay.style.backgroundColor = "transparent";
-
-                overlay.addEventListener("click", function () {
-                    showAssetModal(satgasType, ''); // tanpa kondisi
+                Object.assign(overlay.style, {
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "100px",
+                    height: "100px",
+                    borderRadius: "50%",
+                    cursor: "pointer",
+                    zIndex: 10,
+                    backgroundColor: "transparent"
                 });
 
-                targetElement.parentNode.style.position = "relative";
-                targetElement.parentNode.appendChild(overlay);
+                overlay.addEventListener("click", function () {
+                    const donutBg = document.getElementById(donutBgId);
+                    if (donutBg) donutBg.style.backgroundColor = "#D9D9D9";
+                    showAssetModal(satgasType, '');
+                });
+
+                container.appendChild(overlay);
             }
         });
     });
 
-    // === Fungsi untuk tampilkan modal asset berdasarkan satgasType + kondisi ===
     function showAssetModal(satgasType, selectedKondisi) {
         $('#detailAssetModal').modal('show');
         $('#satgasTypeFilter').val(satgasType);
@@ -200,7 +241,7 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
         $('#select_th_pembuatan').select2().trigger('change');
         $('#select_th_operasi').select2().trigger('change');
 
-        const kondisiLabel = selectedKondisi ? selectedKondisi : "ALL KONDISI";
+        const kondisiLabel = selectedKondisi || "ALL KONDISI";
         $('#modal_title').html(`${satgasType} : ${kondisiLabel}`);
 
         $('#asset_table').DataTable().clear().destroy();
@@ -219,89 +260,32 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
                 }
             },
             columns: [
-                { data: 'asset_code', name: 'asset_code' },
-                {
-                    data: 'satgas_type',
-                    name: 'master_satgas.type',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'satgas_name',
-                    name: 'master_satgas.name',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'no_un',
-                    name: 'assets.no_un',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'category_name',
-                    name: 'inventory_categories.name',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'subcategory_name',
-                    name: 'inventory_sub_categories.name',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'type_name',
-                    name: 'inventory_types.name',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'merk_name',
-                    name: 'inventory_brands.name',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'no_mesin',
-                    name: 'assets.no_mesin',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'no_rangka',
-                    name: 'assets.no_rangka',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'th_pembuatan',
-                    name: 'assets.th_pembuatan',
-                    render: data => data || '-'
-                },
-                {
-                    data: 'th_operasi',
-                    name: 'th_operasi',
-                    render: data => data || '-'
-                },
+                { data: 'asset_code' },
+                { data: 'satgas_type', render: d => d || '-' },
+                { data: 'satgas_name', render: d => d || '-' },
+                { data: 'no_un', render: d => d || '-' },
+                { data: 'category_name', render: d => d || '-' },
+                { data: 'subcategory_name', render: d => d || '-' },
+                { data: 'type_name', render: d => d || '-' },
+                { data: 'merk_name', render: d => d || '-' },
+                { data: 'no_mesin', render: d => d || '-' },
+                { data: 'no_rangka', render: d => d || '-' },
+                { data: 'th_pembuatan', render: d => d || '-' },
+                { data: 'th_operasi', render: d => d || '-' },
                 {
                     data: 'kondisi',
-                    name: 'assets.kondisi',
-                    render: data => kondisiMapping[data] || '-'
+                    render: d => kondisiMapping[d] || '-'
                 },
-                {
-                    data: 'latest_remark',
-                    name: 'latest_remark',
-                    orderable: false,
-                    searchable: false,
-                    render: data => data || '-'
-                },
-                {
-                    data: 'latest_update',
-                    name: 'latest_update',
-                    orderable: false,
-                    searchable: false,
-                    render: data => data || '-'
-                }
+                { data: 'latest_remark', render: d => d || '-' },
+                { data: 'latest_update', render: d => d || '-' }
             ],
             drawCallback: function (settings) {
-                let totalItems = settings.json.recordsFiltered;
-                $('#totalItemAsset').text(totalItems);
+                $('#totalItemAsset').text(settings.json.recordsFiltered);
             }
         });
     }
 }
+
 
     // Horizontal Bar
     getHorizontalBar(response)
