@@ -33,6 +33,7 @@
         </div>
 
     </div>
+ @include('setting.asset.category.modal.edit-category_asset')
  @include('setting.asset.category.modal.add-category_asset')
 @endsection
 @push('js')

@@ -17,7 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 
 Auth::routes();
-
+// Route::middleware(['block.non.indo'])->group(function () {
+// });
+  Route::get('403', function () {
+            return response()
+        ->view('errors.403', [], 403);
+        });
 Route::group(['middleware' => 'auth'], function () {
         Route::get('/', function () {
             return redirect('/home');
@@ -93,7 +98,21 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/setting_category_asset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@index')->name('setting_category_asset');
         Route::get('/getCategoryAsset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@getCategoryAsset')->name('getCategoryAsset');
         Route::post('/addCategoryAsset', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@addCategoryAsset')->name('addCategoryAsset');
+        Route::post('/updateCategory', 'App\Http\Controllers\Setting\Asset\CategoryAssetController@updateCategory')->name('updateCategory');
         // CategoryAsset
+        
+        // Sub CategoryAsset
+        Route::get('/sub_category_asset', 'App\Http\Controllers\Setting\Asset\SubCategoryController@index')->name('sub_category_asset');
+        Route::get('/getSubCategory', 'App\Http\Controllers\Setting\Asset\SubCategoryController@getSubCategory')->name('getSubCategory');
+        Route::post('/addSubCategoryAsset', 'App\Http\Controllers\Setting\Asset\SubCategoryController@addSubCategoryAsset')->name('addSubCategoryAsset');
+        Route::post('/updateSubCategory', 'App\Http\Controllers\Setting\Asset\SubCategoryController@updateSubCategory')->name('updateSubCategory');
+        // Sub CategoryAsset
+        
+        // Inventory Type
+        Route::get('/setting_type_asset', 'App\Http\Controllers\Setting\Asset\InventoryTypeController@index')->name('setting_type_asset');
+        Route::get('/getInventoryType', 'App\Http\Controllers\Setting\Asset\InventoryTypeController@getInventoryType')->name('getInventoryType');
+
+        // Inventory Type
     // Setting
 
     // Dashboard

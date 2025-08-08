@@ -17,6 +17,29 @@ $('#btn_save_category').click(function(){
         })
     })
 })
+
+$('#category_asset_table').on('click', '.edit', function(){
+    var id = $(this).data('id')
+    var name = $(this).data('name')
+    $('#editCategoryModal').modal('show')
+    $('#edit_name').val(name)
+    $('#id').val(id)
+})
+
+$('#btn_update_category').on('click', function(){
+    var data ={
+        'id' : $('#id').val(),
+        'edit_name' : $('#edit_name').val(),
+    }
+    postCallback('updateCategory',data, function(response){
+        swal.close()
+        toastr['success'](response.meta.message)
+        $('#editCategoryModal').modal('hide')
+        getCallbackNoSwal('getCategoryAsset', null, function(response){
+            mappingTable(response.data)
+        })
+    })
+})
 function mappingTable(response){
     var data =''
     $('#category_asset_table').DataTable().clear();
@@ -27,7 +50,7 @@ function mappingTable(response){
                 <tr>
                     <td style="width:80%">${response[i].name}</td>
                     <td>
-                        <button class="btn btn-sm btn-warning" onclick="editCategoryAsset(${response[i].id})"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-sm btn-warning edit" data-id="${response[i].id}" data-name="${response[i].name}"><i class="fa fa-edit"></i></button>
                     </td>
                 </tr>`
         }

@@ -44,4 +44,26 @@ class CategoryAssetController extends Controller
         // }
       
     }
+    function updateCategory(Request $request) {
+           // try {
+          
+            $post = InventoryCategory::find($request->id)->update(
+                [
+                    'name'  => $request->edit_name,
+                ]
+            );
+            return ResponseFormatter::success(
+                $post,
+                 'Category successfully updated'
+             );          
+            
+        // } catch (\Throwable $th) {
+        //     return ResponseFormatter::error(
+        //         $th,
+        //         'Menus failed to update',
+        //         500
+        //     );
+        // }
+      
+    }
 }
