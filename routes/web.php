@@ -108,11 +108,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/updateSubCategory', 'App\Http\Controllers\Setting\Asset\SubCategoryController@updateSubCategory')->name('updateSubCategory');
         // Sub CategoryAsset
         
-        // Inventory Type
+        // Asset Type
         Route::get('/setting_type_asset', 'App\Http\Controllers\Setting\Asset\InventoryTypeController@index')->name('setting_type_asset');
         Route::get('/getInventoryType', 'App\Http\Controllers\Setting\Asset\InventoryTypeController@getInventoryType')->name('getInventoryType');
+        Route::post('/addAssetType', 'App\Http\Controllers\Setting\Asset\InventoryTypeController@addAssetType')->name('addAssetType');
+        Route::post('/updateAssetType', 'App\Http\Controllers\Setting\Asset\InventoryTypeController@updateAssetType')->name('updateAssetType');
+        // Asset Type
 
-        // Inventory Type
+        // Asset Brand
+            Route::get('/setting_merk_asset', 'App\Http\Controllers\Setting\Asset\InventoryBrandController@index')->name('setting_merk_asset');
+            Route::get('/getAssetBrand', 'App\Http\Controllers\Setting\Asset\InventoryBrandController@getAssetBrand')->name('getAssetBrand');
+            Route::post('/addAssetBrand', 'App\Http\Controllers\Setting\Asset\InventoryBrandController@addAssetBrand')->name('addAssetBrand');
+            Route::post('/updateAssetBrand', 'App\Http\Controllers\Setting\Asset\InventoryBrandController@updateAssetBrand')->name('updateAssetBrand');
+        // Asset Brand
     // Setting
 
     // Dashboard
