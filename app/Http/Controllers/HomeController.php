@@ -178,6 +178,7 @@ class HomeController extends Controller
         ->leftJoin('master_satgas as b', 'a.lokasi', '=', 'b.id')
         ->select(DB::raw('COUNT(a.id) as total'),'kondisi')
         ->where('b.type',$request->type)
+        ->where('a.deleted_at', null)
         ->groupBy('a.kondisi')
         ->get();
         return response()->json([

@@ -46,6 +46,7 @@ class MasterAssetController extends Controller
             'master_satgas.name as satgasName',
             'master_satgas.type as satgasType',
         ])
+        ->where('assets.deleted_at', null)
         ->where('assets.kondisi', 'like', '%' . $request->kondisi . '%');
         if(auth()->user()->hasPermissionTo('get-except_satgas-master_asset')){
             if (!empty($request->satgas_type)) {

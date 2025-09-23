@@ -217,7 +217,7 @@ class AssetController extends Controller
                     'master_satgas.name as satgas_name',
                     'master_satgas.type as satgas_type',
                     DB::raw('(SELECT remark FROM asset_logs WHERE asset_logs.asset_code = assets.asset_code ORDER BY created_at DESC LIMIT 1) AS latest_remark'),
-                );
+                )->where('assets.deleted_at', null);
                   
                 if($kondisi != 0){
                     $data->where('assets.kondisi', $kondisi);
