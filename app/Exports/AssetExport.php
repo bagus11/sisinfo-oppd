@@ -37,6 +37,8 @@ class AssetExport implements  FromCollection, WithHeadings, WithMapping, WithSty
             'Satgas',
             'Lokasi',
             'Kondisi',
+            'Th Pembuatan',
+            'Th Operasi',
         ];
     }
 
@@ -76,12 +78,14 @@ class AssetExport implements  FromCollection, WithHeadings, WithMapping, WithSty
             $asset->satgasRelation->type ?? '',           // Satgas Type
             $asset->satgasRelation->name ?? '',           // Satgas Name
             $kondisi,                              // Kondisi
+            $asset->th_pembuatan ?? '',           // Satgas Name
+            $asset->th_operasi ?? '',           // Satgas Name
         ];
     }
     public function styles($sheet)
     {
         // Set column width for A-K
-        foreach (range('A', 'K') as $column) {
+        foreach (range('A', 'M') as $column) {
             $sheet->getColumnDimension($column)->setWidth(20);
         }
     
@@ -91,7 +95,7 @@ class AssetExport implements  FromCollection, WithHeadings, WithMapping, WithSty
         }
     
         // Style header row
-        $sheet->getStyle('A1:K1')->applyFromArray([
+        $sheet->getStyle('A1:M1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12,
