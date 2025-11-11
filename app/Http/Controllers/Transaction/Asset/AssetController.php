@@ -88,6 +88,10 @@ class AssetController extends Controller
                 $data->where('master_satgas.type', $request->type);
             }
 
+            if(!empty($request->jenis)){
+                $data->where('assets.jenis', $request->jenis);
+            }
+
             if (!empty($request->th_operasi)) {
                 if ($request->th_operasi == "1") {
                     $data->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
@@ -183,7 +187,7 @@ class AssetController extends Controller
         }
     }
 
-    function printAssetDashboard($type,$kondisi,$th_operasi,$th_pembuatan,$format) {
+    function printAssetDashboard($type,$kondisi,$th_operasi,$th_pembuatan,$jenis,$format) {
         
         $currentYear = date('Y');
                 // Konversi kondisi ke angka
@@ -229,7 +233,7 @@ class AssetController extends Controller
                         $q->whereRaw('master_satgas.type = ?', [$type]);
                     });
                 }
-                            
+                
         
                 // **Filter Tahun Operasi (th_operasi)**
                 if ($th_operasi !== '*') {
@@ -241,7 +245,9 @@ class AssetController extends Controller
                         $data->where('assets.th_operasi', '<', $currentYear - 10);
                     }
                 }
-        
+                if($jenis !== '*'){
+                    $data->where('assets.jenis', $jenis);
+                }
                 // **Filter Tahun Pembuatan (th_pembuatan)**
                 if ($th_pembuatan !== '*') {
                     if ($th_pembuatan == "1") {

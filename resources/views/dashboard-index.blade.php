@@ -259,7 +259,7 @@
     <script>
       $(document).ready(function () {
         $('#detailAssetModal').on('shown.bs.modal', function () {
-            $('#select_th_operasi, #select_th_pembuatan').select2({
+            $('#select_th_operasi, #select_th_pembuatan, #select_asset_jenis_filter').select2({
                 dropdownParent: $('#detailAssetModal'),
                 width: '100%'
             });

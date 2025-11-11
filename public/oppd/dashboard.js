@@ -5,6 +5,7 @@ getCallbackNoSwal('getCountingAsset', null, function (response) {
     response.group.forEach(group => {
         $('#select_asset_type').append(`<option value="${group.type}">${group.type}</option>`);
     });
+
     var containerSatgas = ''
     // $('#satgas_type_container').empty()
     var colors = [
@@ -330,7 +331,8 @@ function getPieSatgas(index, satgasType) {
     });
 
 });
-
+$('#select_asset_jenis_filter').empty();
+getActiveItems('getInventoryType', null, 'select_asset_jenis_filter', 'jenis');
 $('#pengajuan_asset_table').DataTable().clear().destroy();
 $('#pengajuan_asset_table').DataTable({
     scrollY: 200,
@@ -686,6 +688,7 @@ $('#btn_filter_asset').on('click', function () {
     };
     let thOperasi = $('#select_th_operasi').val();
     let thPembuatan = $('#select_th_pembuatan').val();
+    let jenis = $('#select_asset_jenis_filter').val();
     $('#asset_table').DataTable().clear().destroy();
 
     let table = $('#asset_table').DataTable({
@@ -699,6 +702,7 @@ $('#btn_filter_asset').on('click', function () {
                 'type': $('#satgasTypeFilter').val(),
                 'kondisi': $('#selectedKondisi').val(),
                 'th_operasi': thOperasi,
+                'jenis': jenis,
                 'th_pembuatan': thPembuatan
             }
         },
@@ -824,6 +828,7 @@ $('#btn_export_asset').on('click', function () {
     var kondisi = $('#selectedKondisi').val()
     var th_operasi = $('#select_th_operasi').val()
     var th_pembuatan = $('#select_th_pembuatan').val()
+    var jenis = $('#select_asset_jenis_filter').val()
 
     Swal.fire({
         title: 'Export Data',
@@ -836,10 +841,10 @@ $('#btn_export_asset').on('click', function () {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/pdf`, '_blank');
+            window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/${jenis ? jenis : '*'}/pdf`, '_blank');
 
         } else if (result.isDenied) {
-            window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/excel`, '_blank');
+            window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/${jenis ? jenis : '*'}/excel`, '_blank');
         }
     });
 });

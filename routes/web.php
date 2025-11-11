@@ -160,7 +160,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/getMasterSatgas', 'App\Http\Controllers\Transaction\Asset\AssetController@getMasterSatgas')->name('getMasterSatgas');
             Route::get('/getSatgasType', 'App\Http\Controllers\Transaction\Asset\AssetController@getSatgasType')->name('getSatgasType');
             Route::post('/addAsset', 'App\Http\Controllers\Transaction\Asset\AssetController@addAsset')->name('addAsset');
-            Route::get('/printAssetDashboard/{type}/{kondisi}/{th_operasi}/{th_pembuatan}/{format}', 'App\Http\Controllers\Transaction\Asset\AssetController@printAssetDashboard');
+            Route::get('/printAssetDashboard/{type}/{kondisi}/{th_operasi}/{th_pembuatan}/{jenis}/{format}', 'App\Http\Controllers\Transaction\Asset\AssetController@printAssetDashboard');
             Route::get('/download-skipped-report/{filename}', 'App\Http\Controllers\Transaction\Asset\AssetController@downloadSkippedReport');
             
 

@@ -11,8 +11,8 @@
                 <fieldset class="mx-2">
                     <legend>Filter</legend>
                     <div class="row mx-2">
-                        <div class="col-md-6 col-lg-5 d-flex align-items-center mt-2">
-                            <label class="me-5 mb-0">Th Operasi</label>
+                        <div class="col-md-6 col-lg-3 d-flex align-items-center mt-2">
+                            <label class="me-5 mb-0">Th Ops</label>
                             <select name="select_th_operasi" class="select2 form-select w-100" id="select_th_operasi">
                                 <option value="">All Condition</option>
                                 <option value="1">< 5 Tahun</option>
@@ -21,13 +21,19 @@
                             </select>
                         </div>
                     
-                        <div class="col-md-6 col-lg-5 d-flex align-items-center mt-2">
-                            <label class="me-5 mb-0">Th Pembuatan</label>
+                        <div class="col-md-6 col-lg-3 d-flex align-items-center mt-2">
+                            <label class="me-5 mb-0">Th Pem</label>
                             <select name="select_th_pembuatan" class="select2 form-select w-100" id="select_th_pembuatan">
                                 <option value="">All Condition</option>
                                 <option value="1">< 5 Tahun</option>
                                 <option value="2">5 - 10 Tahun</option>
                                 <option value="3">> 10 Tahun</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-lg-3 d-flex align-items-center mt-2">
+                            <label class="me-5 mb-0">Jenis</label>
+                            <select name="select_asset_jenis_filter" class="select2 form-select w-100" id="select_asset_jenis_filter">
+                              
                             </select>
                         </div>
                     
@@ -39,9 +45,7 @@
                                 <i class="fas fa-file"></i> Export
                             </button>
                         </div>
-                    </div>
-                    
-                    
+                    </div>                   
                     
                 </fieldset>
                 <p style="font-size: 16px; font-weight:bold" class="mx-4 mt-2">Total Asset: <span id="totalItemAsset">0</span> item</p>
