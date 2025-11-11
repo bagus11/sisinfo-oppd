@@ -66,7 +66,7 @@ class AssetInventarisController extends Controller
                 $q->where('type', $satgas->type);
             });
         }
-    
+        $query->orderBy('id', 'desc');
         $data = $query->get()->map(function ($inventaris) {
             $kondisiMapping = [
                 0 => '-',

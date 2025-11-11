@@ -42,82 +42,101 @@ class AssetController extends Controller
 
         return abort(403, 'Unauthorized action.');
     }
-
     public function getAssetFilter(Request $request)
-    {
-        if ($request->ajax()) {
-            $currentYear = date('Y');
+{
+    abort_unless($request->ajax(), 403, 'Unauthorized action.');
 
-            $kondisi = match ($request->kondisi) {
-                "BAIK" => 1,
-                "RR OPS" => 2,
-                "RB" => 3,
-                "RR TDK OPS" => 4,
-                "M" => 5,
-                "D" => 6,
-                default => 0,
-            };
+    $currentYear = now()->year;
+    $kondisiMap = [
+        "BAIK" => 1,
+        "RR OPS" => 2,
+        "RB" => 3,
+        "RR TDK OPS" => 4,
+        "M" => 5,
+        "D" => 6,
+    ];
+    $kondisi = $kondisiMap[$request->kondisi] ?? null;
 
-            $data = Asset::query()
-                ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
-                ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
-                ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
-                ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
-                ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
-                ->with([
-                    'detailInventarisRelation',
-                    'distribusiRelation',
-                ])
-                ->select(
-                    'assets.*',
-                    'inventory_categories.name as category_name',
-                    'inventory_sub_categories.name as subcategory_name',
-                    'inventory_types.name as type_name',
-                    'inventory_brands.name as merk_name',
-                    'master_satgas.name as satgas_name',
-                    'master_satgas.type as satgas_type',
-                    DB::raw('(SELECT remark FROM asset_logs WHERE asset_logs.asset_code = assets.asset_code ORDER BY created_at DESC LIMIT 1) AS latest_remark'),
-                    DB::raw('(SELECT created_at FROM asset_logs WHERE asset_logs.asset_code = assets.asset_code ORDER BY created_at DESC LIMIT 1) AS latest_update'),
-                );
+    // 🔹 Query utama super ringan
+    $data = Asset::query()
+        ->leftJoin('inventory_categories', 'assets.kategori', '=', 'inventory_categories.id')
+        ->leftJoin('inventory_sub_categories', 'assets.subkategori', '=', 'inventory_sub_categories.id')
+        ->leftJoin('inventory_types', 'assets.jenis', '=', 'inventory_types.id')
+        ->leftJoin('inventory_brands', 'assets.merk', '=', 'inventory_brands.id')
+        ->leftJoin('master_satgas', 'assets.lokasi', '=', 'master_satgas.id')
+        ->select(
+            'assets.asset_code',
+            'assets.kondisi',
+            'assets.th_operasi',
+            'assets.th_pembuatan',
+            'inventory_categories.name as category_name',
+            'inventory_sub_categories.name as subcategory_name',
+            'inventory_types.name as type_name',
+            'inventory_brands.name as merk_name',
+            'master_satgas.name as satgas_name',
+            'master_satgas.type as satgas_type'
+        );
 
-            if ($kondisi != 0) {
-                $data->where('assets.kondisi', $kondisi);
-            }
+    // === Apply Filters ===
+    if ($kondisi) $data->where('assets.kondisi', $kondisi);
+    if ($request->filled('type')) $data->where('master_satgas.type', $request->type);
+    if ($request->filled('jenis')) $data->where('assets.jenis', $request->jenis);
 
-            if (!empty($request->type)) {
-                $data->where('master_satgas.type', $request->type);
-            }
-
-            if(!empty($request->jenis)){
-                $data->where('assets.jenis', $request->jenis);
-            }
-
-            if (!empty($request->th_operasi)) {
-                if ($request->th_operasi == "1") {
-                    $data->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
-                } elseif ($request->th_operasi == "2") {
-                    $data->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]);
-                } elseif ($request->th_operasi == "3") {
-                    $data->where('assets.th_operasi', '<', $currentYear - 10);
-                }
-            }
-
-            if (!empty($request->th_pembuatan)) {
-                if ($request->th_pembuatan == "1") {
-                    $data->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]);
-                } elseif ($request->th_pembuatan == "2") {
-                    $data->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]);
-                } elseif ($request->th_pembuatan == "3") {
-                    $data->where('assets.th_pembuatan', '<', $currentYear - 10);
-                }
-            }
-
-            return DataTables::of($data)
-                ->make(true);
-        }
-
-        return abort(403, 'Unauthorized action.');
+    // Tahun operasi
+    if ($request->filled('th_operasi')) {
+        match ($request->th_operasi) {
+            "1" => $data->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]),
+            "2" => $data->whereBetween('assets.th_operasi', [$currentYear - 10, $currentYear - 5]),
+            "3" => $data->where('assets.th_operasi', '<', $currentYear - 10),
+            default => null,
+        };
     }
+
+    // Tahun pembuatan
+    if ($request->filled('th_pembuatan')) {
+        match ($request->th_pembuatan) {
+            "1" => $data->whereBetween('assets.th_pembuatan', [$currentYear - 4, $currentYear]),
+            "2" => $data->whereBetween('assets.th_pembuatan', [$currentYear - 10, $currentYear - 5]),
+            "3" => $data->where('assets.th_pembuatan', '<', $currentYear - 10),
+            default => null,
+        };
+    }
+
+    // === Datatables ===
+    return DataTables::of($data)
+        ->addColumn('latest_remark', function($row) {
+            static $cache = [];
+            if (!isset($cache[$row->asset_code])) {
+                $log = DB::table('asset_logs')
+                    ->where('asset_code', $row->asset_code)
+                    ->orderByDesc('created_at')
+                    ->select('remark')
+                    ->first();
+                $cache[$row->asset_code] = $log->remark ?? '-';
+            }
+            return $cache[$row->asset_code];
+        })
+        ->addColumn('latest_update', function($row) {
+            static $cache = [];
+            if (!isset($cache[$row->asset_code])) {
+                $log = DB::table('asset_logs')
+                    ->where('asset_code', $row->asset_code)
+                    ->orderByDesc('created_at')
+                    ->select('created_at')
+                    ->first();
+                $cache[$row->asset_code] = optional($log)->created_at?->format('Y-m-d H:i') ?? '-';
+            }
+            return $cache[$row->asset_code];
+        })
+        ->filterColumn('satgas_type', fn($q, $k) => $q->where('master_satgas.type', 'like', "%{$k}%"))
+        ->filterColumn('satgas_name', fn($q, $k) => $q->where('master_satgas.name', 'like', "%{$k}%"))
+        ->filterColumn('category_name', fn($q, $k) => $q->where('inventory_categories.name', 'like', "%{$k}%"))
+        ->filterColumn('subcategory_name', fn($q, $k) => $q->where('inventory_sub_categories.name', 'like', "%{$k}%"))
+        ->filterColumn('type_name', fn($q, $k) => $q->where('inventory_types.name', 'like', "%{$k}%"))
+        ->filterColumn('merk_name', fn($q, $k) => $q->where('inventory_brands.name', 'like', "%{$k}%"))
+        ->make(true);
+}
+
     
     function getMasterSatgas() {
         $data = MasterSatgas::all();
@@ -233,9 +252,7 @@ class AssetController extends Controller
                         $q->whereRaw('master_satgas.type = ?', [$type]);
                     });
                 }
-                
-        
-                // **Filter Tahun Operasi (th_operasi)**
+    
                 if ($th_operasi !== '*') {
                     if ($th_operasi == "1") {
                         $data->whereBetween('assets.th_operasi', [$currentYear - 4, $currentYear]);
