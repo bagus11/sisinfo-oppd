@@ -69,6 +69,7 @@ class AssetController extends Controller
             'assets.kondisi',
             'assets.no_un',
             'assets.no_rangka',
+            'assets.no_mesin',
             'assets.th_operasi',
             'assets.th_pembuatan',
             'inventory_categories.name as category_name',
