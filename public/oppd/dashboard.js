@@ -1,4 +1,11 @@
 
+getCallbackNoSwal('getInventoryType', null, function (response) {
+    $('#select_asset_jenis_filter').empty();
+    $('#select_asset_jenis_filter').append('<option value="">Pilih Jenis</option>');
+    response.data.forEach(group => {
+        $('#select_asset_jenis_filter').append(`<option value="${group.id}">${group.name}</option>`);
+    });
+})
 getCallbackNoSwal('getCountingAsset', null, function (response) {
     $('#select_asset_type').empty();
     $('#select_asset_type').append('<option value="">OPPD</option>');
@@ -331,8 +338,6 @@ function getPieSatgas(index, satgasType) {
     });
 
 });
-$('#select_asset_jenis_filter').empty();
-getActiveItems('getInventoryType', null, 'select_asset_jenis_filter', 'jenis');
 $('#pengajuan_asset_table').DataTable().clear().destroy();
 $('#pengajuan_asset_table').DataTable({
     scrollY: 200,
