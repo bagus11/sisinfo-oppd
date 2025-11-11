@@ -67,6 +67,7 @@ class AssetController extends Controller
         ->select(
             'assets.asset_code',
             'assets.kondisi',
+            'assets.no_un',
             'assets.th_operasi',
             'assets.th_pembuatan',
             'inventory_categories.name as category_name',
