@@ -289,6 +289,12 @@ function getPieSatgas(index, satgasType) {
             ],
             drawCallback: function (settings) {
                 $('#totalItemAsset').text(settings.json.recordsFiltered);
+            },
+             initComplete: function () {
+                $('div.dataTables_filter input').on('keyup change', function () {
+                    $('#hidden_search_value').val(this.value);
+                    console.log("Search value updated:", this.value);
+                });
             }
         });
     }
@@ -523,6 +529,13 @@ function getRadialBar(response) {
                             ],
                             drawCallback: function (settings) {
                                 $('#totalItemAsset').text(settings.json.recordsFiltered);
+                            },
+                             initComplete: function () {
+                                // Event listener baru aktif setelah datatable siap
+                                $('div.dataTables_filter input').on('keyup change', function () {
+                                    $('#hidden_search_value').val(this.value);
+                                    console.log("Search value updated:", this.value);
+                                });
                             }
                         });
                     }
@@ -823,17 +836,54 @@ $('#btn_filter_asset').on('click', function () {
             // This function will be called after each draw (after the data is refreshed)
             let totalItems = settings.json.recordsFiltered;
             $('#totalItemAsset').text(totalItems);
-        }
+        },
+         initComplete: function () {
+        // Event listener baru aktif setelah datatable siap
+        $('div.dataTables_filter input').on('keyup change', function () {
+            $('#hidden_search_value').val(this.value);
+            console.log("Search value updated:", this.value);
+        });
+    }
     });
 });
 
-$('#btn_export_asset').on('click', function () {
+// $('#btn_export_asset').on('click', function () {
 
-    var type = $('#satgasTypeFilter').val()
-    var kondisi = $('#selectedKondisi').val()
-    var th_operasi = $('#select_th_operasi').val()
-    var th_pembuatan = $('#select_th_pembuatan').val()
-    var jenis = $('#select_asset_jenis_filter').val()
+//     var type = $('#satgasTypeFilter').val()
+//     var kondisi = $('#selectedKondisi').val()
+//     var th_operasi = $('#select_th_operasi').val()
+//     var th_pembuatan = $('#select_th_pembuatan').val()
+//     var jenis = $('#select_asset_jenis_filter').val()
+
+//     Swal.fire({
+//         title: 'Export Data',
+//         text: 'Pilih format export yang kamu mau:',
+//         icon: 'question',
+//         showCancelButton: true,
+//         showDenyButton: true,
+//         confirmButtonText: 'PDF',
+//         denyButtonText: 'Excel',
+//         cancelButtonText: 'Batal'
+//     }).then((result) => {
+//         if (result.isConfirmed) {
+//             window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/${jenis ? jenis : '*'}/pdf`, '_blank');
+
+//         } else if (result.isDenied) {
+//             window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/${jenis ? jenis : '*'}/excel`, '_blank');
+//         }
+//     });
+// });
+// Asumsikan DataTable udah diset kayak gini:
+
+$(document).ready(function () {
+    $('#btn_export_asset').on('click', function () {
+    var searchValue = $('#hidden_search_value').val() || '';
+
+    var type = $('#satgasTypeFilter').val();
+    var kondisi = $('#selectedKondisi').val();
+    var th_operasi = $('#select_th_operasi').val();
+    var th_pembuatan = $('#select_th_pembuatan').val();
+    var jenis = $('#select_asset_jenis_filter').val();
 
     Swal.fire({
         title: 'Export Data',
@@ -845,11 +895,11 @@ $('#btn_export_asset').on('click', function () {
         denyButtonText: 'Excel',
         cancelButtonText: 'Batal'
     }).then((result) => {
-        if (result.isConfirmed) {
-            window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/${jenis ? jenis : '*'}/pdf`, '_blank');
-
-        } else if (result.isDenied) {
-            window.open(`printAssetDashboard/${type ? type : '*'}/${kondisi ? kondisi : '*'}/${th_operasi ? th_operasi : '*'}/${th_pembuatan ? th_pembuatan : '*'}/${jenis ? jenis : '*'}/excel`, '_blank');
+        if (result.isConfirmed || result.isDenied) {
+            var format = result.isConfirmed ? 'pdf' : 'excel';
+            window.open(`printAssetDashboard/${type || '*'}/${kondisi || '*'}/${th_operasi || '*'}/${th_pembuatan || '*'}/${jenis || '*'}/${format}?search=${encodeURIComponent(searchValue)}`, '_blank');
         }
     });
+});
+
 });

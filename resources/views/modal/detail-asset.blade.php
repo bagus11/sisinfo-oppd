@@ -58,6 +58,7 @@
                 </div>
                 <p style="font-size: 16px; font-weight:bold" class="mx-4 mt-2">Total Asset: <span id="totalItemAsset">0</span> item</p>
                 <div class="table-responsive" style="overflow-y: hidden">
+                    <input type="hidden" id="hidden_search_value">
                     <table id="asset_table" class="table table-striped table-bordered text-nowrap">
                         <thead class="text-dark fs-1">
                             <tr>
