@@ -104,42 +104,42 @@ class AssetController extends Controller
             default => null,
         };
     }
+// Ambil semua asset_code yang akan diproses
+$assetCodes = $data->pluck('assets.asset_code')->filter()->toArray();
 
-    // === Datatables ===
-    return DataTables::of($data)
-        ->addColumn('latest_remark', function($row) {
-            static $cache = [];
-            if (!isset($cache[$row->asset_code])) {
-                $log = DB::table('asset_logs')
-                    ->where('asset_code', $row->asset_code)
-                    ->orderByDesc('created_at')
-                    ->select('remark')
-                    ->first();
-                $cache[$row->asset_code] = $log->remark ?? '-';
-            }
-            return $cache[$row->asset_code];
-        })
-        ->addColumn('latest_update', function($row) {
-            static $cache = [];
-            if (!isset($cache[$row->asset_code])) {
-                $log = DB::table('asset_logs')
-                    ->where('asset_code', $row->asset_code)
-                    ->orderByDesc('created_at')
-                    ->select('created_at')
-                    ->first();
-                $cache[$row->asset_code] = optional($log)->created_at?->format('Y-m-d H:i') ?? '-';
-            }
-            return $cache[$row->asset_code];
-        })
-        ->filterColumn('satgas_type', fn($q, $k) => $q->where('master_satgas.type', 'like', "%{$k}%"))
-        ->filterColumn('satgas_name', fn($q, $k) => $q->where('master_satgas.name', 'like', "%{$k}%"))
-        ->filterColumn('category_name', fn($q, $k) => $q->where('inventory_categories.name', 'like', "%{$k}%"))
-        ->filterColumn('subcategory_name', fn($q, $k) => $q->where('inventory_sub_categories.name', 'like', "%{$k}%"))
-        ->filterColumn('type_name', fn($q, $k) => $q->where('inventory_types.name', 'like', "%{$k}%"))
-        ->filterColumn('merk_name', fn($q, $k) => $q->where('inventory_brands.name', 'like', "%{$k}%"))
-        ->make(true);
+// Ambil log terakhir dari asset_logs sekaligus (hemat query)
+$latestLogs = DB::table('asset_logs')
+    ->select('asset_code', 'remark', 'created_at')
+    ->whereIn('asset_code', $assetCodes)
+    ->orderByDesc('created_at')
+    ->get()
+    ->groupBy('asset_code')
+    ->map(function ($logs) {
+        $latest = $logs->first();
+        return [
+            'remark' => $latest->remark ?? '-',
+            'created_at' => optional($latest->created_at)->format('Y-m-d H:i') ?? '-',
+        ];
+    });
+
+return DataTables::of($data)
+    ->addColumn('latest_remark', function ($row) use ($latestLogs) {
+        $log = $latestLogs[$row->asset_code] ?? null;
+        return $log['remark'] ?? '-';
+    })
+    ->addColumn('latest_update', function ($row) use ($latestLogs) {
+        $log = $latestLogs[$row->asset_code] ?? null;
+        return $log['created_at'] ?? '-';
+    })
+    ->filterColumn('satgas_type', fn($q, $k) => $q->where('master_satgas.type', 'like', "%{$k}%"))
+    ->filterColumn('satgas_name', fn($q, $k) => $q->where('master_satgas.name', 'like', "%{$k}%"))
+    ->filterColumn('category_name', fn($q, $k) => $q->where('inventory_categories.name', 'like', "%{$k}%"))
+    ->filterColumn('subcategory_name', fn($q, $k) => $q->where('inventory_sub_categories.name', 'like', "%{$k}%"))
+    ->filterColumn('type_name', fn($q, $k) => $q->where('inventory_types.name', 'like', "%{$k}%"))
+    ->filterColumn('merk_name', fn($q, $k) => $q->where('inventory_brands.name', 'like', "%{$k}%"))
+    ->make(true);
+
 }
-
     
     function getMasterSatgas() {
         $data = MasterSatgas::all();
