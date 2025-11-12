@@ -5,11 +5,10 @@
   z-index: 90 !important; /* Remove 'px' */
 }
 #asset_map_track {
-  width: 100%; /* Ensure full width */
-  height: 200px; /* Default height for mobile */
-  min-height: 200px; /* Prevent collapse */
-  max-height: 800px;
-  /* border-radius: 10px !important; */
+  width: 100%;
+  aspect-ratio: 16 / 9; /* sesuaikan sesuai map */
+  max-height: 515px;
+  min-height: 200px;
   z-index: 1 !important;
   padding-bottom: 30px !important;
 }
@@ -109,6 +108,23 @@
           height: 100% !important;
       }
 
+      .apexcharts-datalabels-group text {
+        dominant-baseline: middle;
+      }
+
+      /* Resize dan atur posisi tulisan “Total” */
+      .apexcharts-datalabel-label {
+        font-size: 12px !important; /* ubah ukuran teks “Total” */
+        font-weight: 600 !important;
+        transform: translateY(0px); /* naikkin sedikit */
+      }
+
+      /* Resize dan atur posisi angka total */
+      .apexcharts-datalabel-value {
+        font-size: 14px !important; /* ubah ukuran angka */
+        transform: translateY(-10px) !important; 
+      }
+
 
 </style>
 <div class="row mb-0" id="content-wrapper">
@@ -146,7 +162,6 @@
         </div>
       </div>
       <div class="col-12">
-      
           <div class="card">
             <div class="card-header header-info p-2 bg-opacity-8 rounded-top">
               <div class="row">
@@ -162,7 +177,6 @@
               <div class="p-0" style="padding:0 !important" id="asset_bar_chart"></div>
             </div>
           </div>
-
       </div>
     </div>
   </div>

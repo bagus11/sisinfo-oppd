@@ -151,7 +151,11 @@ function getPieSatgas(index, satgasType) {
             legend: {
                 position: 'top',
                 fontSize: '8px',
-                markers: { radius: 8 }
+                markers: { radius: 8 },
+                itemMargin: {
+                    horizontal: 4,
+                    vertical: 2,
+                }
             }
         };
 
@@ -576,7 +580,7 @@ function getRadialBar(response) {
                         label: "Total",
                         color: "#000",
                         style: {
-                            fontSize: "18px",
+                            fontSize: "12px",
                             fontWeight: "bold",
                         },
                         formatter: () => sumOfArray,
@@ -609,15 +613,15 @@ function getRadialBar(response) {
             labels: {
                 colors: "#333",
                 style: {
-                    fontSize: "10px",
                     fontWeight: "bold",
                 },
                 useSeriesColors: false,
             },
             itemMargin: {
-                horizontal: 5,
-                vertical: 5,
+                horizontal: 4,
+                vertical: 2,
             },
+             fontSize: '10px',
         }
     };
     const chart = new ApexCharts(document.querySelector("#radialChart"), chartConfig);

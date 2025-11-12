@@ -198,7 +198,7 @@
                         <!-- ------------------------------- -->
                         <!-- start notification Dropdown -->
                         <!-- ------------------------------- -->
-                        <li class="nav-item dropdown nav-icon-hover-bg rounded-circle">
+                        <li class="nav-item dropdown nav-icon-hover-bg rounded-circle" hidden>
                             <a class="nav-link position-relative" href="javascript:void(0)" id="drop2"
                                 aria-expanded="false">
                                 <iconify-icon icon="solar:bell-bing-line-duotone" class="fs-6"></iconify-icon>
